@@ -6,6 +6,7 @@ ENV PATH /root/src/app/node_modules/.bin:$PATH
 RUN npm install -g yarn
 
 COPY . .
+RUN /bin/sh -l -c "ls -a"
 
 RUN yarn
 RUN npm run build
