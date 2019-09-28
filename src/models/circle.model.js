@@ -3,9 +3,10 @@ export default function(sequelize, DataTypes) {
         "circle", // Model Name
         {
             id: {
-                type: DataTypes.INT,
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: true
+                unique: true,
+                primaryKey: true
             },
             name: {
                 type: DataTypes.STRING,
