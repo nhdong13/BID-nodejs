@@ -33,14 +33,14 @@ export default function (sequelize, DataTypes) {
     );
 
     sittingRequest.associate = function (models) {
-        models.sittingRequest.hasMany(models.invitation, {
+        sittingRequest.hasMany(models.invitation, {
             foreignKey: 'sittingRequestId',
             sourceKey: 'id'
         }, {
             foreignKey: 'sender',
             sourceKey: 'createdUser'
         });
-        models.sittingRequest.hasMany(models.transaction);
+        sittingRequest.hasMany(models.transaction);
     }
 
     return sittingRequest;

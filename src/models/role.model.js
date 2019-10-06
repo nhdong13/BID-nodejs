@@ -10,7 +10,7 @@ export default function (sequelize, DataTypes) {
     );
 
     role.associate = function (models) {
-        models.role.hasMany(models.user);
+        role.hasMany(models.user);
     }
 
     return role;
