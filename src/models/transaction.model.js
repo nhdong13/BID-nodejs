@@ -1,4 +1,4 @@
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
     const transaction = sequelize.define(
         "transaction", // Model Name
         {
@@ -22,20 +22,14 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.FLOAT,
                 allowNull: true
             },
-            createdAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW
-            },
-            updatedAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW,
-                onUpdate: DataTypes.NOW
-            }
+        },
+        {
+            timestamps: true,
         }
     );
 
     transaction.associate = function (models) {
-        
+
     }
 
     return transaction;

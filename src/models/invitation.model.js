@@ -1,4 +1,4 @@
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
     const invitation = sequelize.define(
         "invitation", // Model Name
         {
@@ -29,15 +29,9 @@ export default function(sequelize, DataTypes) {
                 defaultValue: false,
                 allowNull: false
             },
-            createdAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW
-            },
-            updatedAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW,
-                onUpdate: DataTypes.NOW
-            }
+        },
+        {
+            timestamps: true,
         }
     );
 

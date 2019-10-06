@@ -29,20 +29,14 @@ export default function (sequelize, DataTypes) {
                 defaultValue: false,
                 allowNull: false
             },
-            createdAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW
-            },
-            updatedAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW,
-                onUpdate: DataTypes.NOW
-            }
+        },
+        {
+            timestamps: true,
         }
     );
 
     user.associate = function (models) {
-        models.user.hasMany(models.sittingRequest);
+        user.hasMany(models.sittingRequest);
     }
 
     return user;

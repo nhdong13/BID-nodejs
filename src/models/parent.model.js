@@ -10,11 +10,14 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: true
             },
+        },
+        {
+            timestamps: true,
         }
     );
 
     parent.associate = function (models) {
-        models.parent.belongsTo(models.user)
+        parent.belongsTo(models.user)
     }
 
     return parent;

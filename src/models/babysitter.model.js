@@ -22,11 +22,14 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
+        },
+        {
+            timestamps: true,
         }
     );
 
     babysitter.associate = function (models) {
-        models.babysitter.belongsTo(models.user)
+        babysitter.belongsTo(models.user)
     }
 
     return babysitter;
