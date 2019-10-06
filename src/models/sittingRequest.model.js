@@ -6,7 +6,7 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            recivedUser: {
+            acceptedBabysitter: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
@@ -37,8 +37,10 @@ export default function (sequelize, DataTypes) {
     );
 
     sittingRequest.associate = function (models) {
-        sittingRequest.hasMany(models.invitation);
-        sittingRequest.hasMany(models.transaction);
+        models.sittingRequest.hasMany(models.invitation, 
+            {foreinKey: 'sittingRequestId', sourceKey: 'id'}, 
+            {foreinKey: 'sender', sourceKey: 'createdUser'});
+        models.sittingRequest.hasMany(models.transaction);
     }
 
     return sittingRequest;

@@ -2,6 +2,10 @@ export default function(sequelize, DataTypes) {
     const parent = sequelize.define(
         "parent", // Model Name
         {
+            userId: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+            },
             childrenNumber: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
@@ -17,7 +21,8 @@ export default function(sequelize, DataTypes) {
     );
 
     parent.associate = function (models) {
-        parent.belongsTo(models.user)
+        models.parent.belongsTo(models.user,
+            {foreinKey: 'userId', sourceKey: 'id'});
     }
 
     return parent;

@@ -2,41 +2,27 @@ export default function (sequelize, DataTypes) {
     const invitation = sequelize.define(
         "invitation", // Model Name
         {
-            phoneNumber: {
-                type: DataTypes.STRING,
+            sittingRequestId: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: true
             },
-            email: {
-                type: DataTypes.STRING,
+            sender: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: true
             },
-            password: {
-                type: DataTypes.STRING,
-                allowNull: false
+            receiver: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
             },
-            nickname: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-            address: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
-            isAdmin: {
-                type: DataTypes.BOOLEAN,
-                defaultValue: false,
-                allowNull: false
-            },
-        },
-        {
-            timestamps: true,
+            status: {
+                type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'DENIED'),
+                allowNull: false,
+            }
         }
     );
 
     invitation.associate = function (models) {
-        models.invitation.hasOne(models.babysitter);
+
     }
 
     return invitation;
