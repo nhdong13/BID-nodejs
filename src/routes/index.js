@@ -7,8 +7,8 @@ const router = express.Router();
 
 router.get("/status", (req, res) => res.send("Server is up!"));
 
+router.use("/auth", authRoutes);
 router.use("/trackings", trackingRoutes);
 router.use("/users", userRoutes);
-router.use("/auth", authRoutes);
 
 export default router;
