@@ -1,6 +1,6 @@
-export default function (sequelize, DataTypes) {
-    const user = sequelize.define(
-        "user", // Model Name
+export default function(sequelize, DataTypes) {
+    const invitation = sequelize.define(
+        "invitation", // Model Name
         {
             phoneNumber: {
                 type: DataTypes.STRING,
@@ -41,9 +41,9 @@ export default function (sequelize, DataTypes) {
         }
     );
 
-    user.associate = function (models) {
-        models.user.hasMany(models.sittingRequest);
+    invitation.associate = function (models) {
+        models.invitation.hasOne(models.babysitter);
     }
 
-    return user;
+    return invitation;
 }
