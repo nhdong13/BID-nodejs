@@ -7,6 +7,7 @@ import morgan from "morgan";
 import routes from "@routes";
 import models from "@models";
 import { checkEnvLoaded } from "@utils/env";
+import { insertDatabase } from "@utils/bootstrap";
 
 const app = express();
 
@@ -17,7 +18,9 @@ async function main() {
         // Init DB
         try {
             models.sequelize.authenticate();
-            models.sequelize.sync({ force: true });
+            models.sequelize.sync({ force: true }).then(() => {
+                insertDatabase();
+            });
         } catch (dbError) {
             console.error("DB Error: ", dbError);
             process.exit(1);
@@ -43,7 +46,7 @@ async function main() {
         // Init roues
         app.use("/api/v1", routes);
 
-        app.listen(3000, function() {
+        app.listen(3000, function () {
             console.log("App is listening on port 3000!");
         });
     } catch (error) {
