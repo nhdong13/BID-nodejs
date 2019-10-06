@@ -36,7 +36,7 @@ export default function (sequelize, DataTypes) {
     );
 
     user.associate = function (models) {
-        user.hasMany(models.sittingRequest);
+        models.user.hasMany(models.sittingRequest, {foreignKey: 'createdUser', sourceKey: 'id'});
     }
 
     return user;
