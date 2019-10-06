@@ -22,7 +22,7 @@ export default function(sequelize, DataTypes) {
 
     parent.associate = function (models) {
         models.parent.belongsTo(models.user,
-            {foreinKey: 'userId', sourceKey: 'id'});
+            {foreignKey: 'userId', sourceKey: 'id'});
     }
 
     return parent;

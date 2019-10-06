@@ -17,6 +17,15 @@ export default function (sequelize, DataTypes) {
             status: {
                 type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'DENIED'),
                 allowNull: false,
+            },
+            createdAt: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW
+            },
+            updatedAt: {
+                type: DataTypes.DATE,
+                defaultValue: DataTypes.NOW,
+                onUpdate: DataTypes.NOW
             }
         }
     );
