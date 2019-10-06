@@ -1,4 +1,4 @@
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
     const sittingRequest = sequelize.define(
         "sittingRequest", // Model Name
         {
@@ -30,21 +30,15 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.ENUM('PENDING', 'CONFIRM', 'CANCEL', 'ONGOING', 'DONE'),
                 allowNull: false,
             },
-            createdAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW
-            },
-            updatedAt: {
-                type: DataTypes.DATE,
-                defaultValue: DataTypes.NOW,
-                onUpdate: DataTypes.NOW
-            }
+        },
+        {
+            timestamps: true,
         }
     );
 
     sittingRequest.associate = function (models) {
-        models.sittingRequest.hasMany(models.invitation);
-        models.sittingRequest.hasMany(models.transaction);
+        sittingRequest.hasMany(models.invitation);
+        sittingRequest.hasMany(models.transaction);
     }
 
     return sittingRequest;
