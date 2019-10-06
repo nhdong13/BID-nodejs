@@ -2,9 +2,13 @@ export default function (sequelize, DataTypes) {
     const babysitter = sequelize.define(
         "babysitter", // Model Name
         {
+            userId: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+            },
             workDate: {
                 type: DataTypes.STRING,
-                allowNull: true
+                allowNull: true,
             },
             workTime: {
                 type: DataTypes.STRING,
@@ -29,7 +33,10 @@ export default function (sequelize, DataTypes) {
     );
 
     babysitter.associate = function (models) {
-        babysitter.belongsTo(models.user)
+        models.babysitter.belongsTo(models.user, 
+            {foreignKey: 'userId', sourceKey: 'id'});
+        models.babysitter.hasMany(models.invitation, 
+            {foreignKey: 'receiver', sourceKey: 'userId'});
     }
 
     return babysitter;
