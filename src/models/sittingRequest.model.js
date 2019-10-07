@@ -17,13 +17,13 @@ export default function (sequelize, DataTypes) {
             endTime: {
                 type: DataTypes.TIME,
                 allowNull: false,
-            },
+            }, 
             sittingAddress: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('PENDING', 'CONFIRM', 'CANCEL', 'ONGOING', 'DONE'),
+                type: DataTypes.ENUM('PENDING', 'CONFIRMED', 'CANCELED', 'ONGOING', 'DONE'),
                 allowNull: false,
             },
         },

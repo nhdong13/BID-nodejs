@@ -1,4 +1,5 @@
 import models from '@models';
+import moment from 'moment';
 import { hashPassword } from '@utils/hash';
 
 
@@ -6,6 +7,26 @@ export async function insertDatabase() {
     const db = models.sequelize.models;
     console.log("inserting records to databse....");
     // muon insert bang nao thi db.ten_model cua bang do ex: db.circle, db.parent
+
+    // seed roles
+    db.role.bulkCreate(
+        [
+            {
+                roleName: 'admin',
+            },
+            {
+                roleName: 'parent',
+            },
+            {
+                roleName: 'babysitter',
+            },
+            {
+                roleName: 'staff',
+            },
+        ]
+    );
+
+    // seed users
     db.user.bulkCreate(
         [
             {
@@ -23,23 +44,66 @@ export async function insertDatabase() {
                 nickname: 'thobaytmau',
                 address: '321 heaven Q12, TP Ho Chi Minh, Viet Nam',
                 roleId: 3,
+            },
+            {
+                phoneNumber: '097111111111',
+                email: 'kytom@gmail.com',
+                password: await hashPassword('12341234'),
+                nickname: 'kydaica',
+                address: '321 livepool, Brexit',
+                roleId: 3,
             }
         ]
     );
-    db.role.bulkCreate(
+
+    // seed parents
+    db.parent.bulkCreate(
         [
             {
-                roleName: 'admin',
+                userId: 1,
+                childrenNumber: 3,
+                familyDescription: 'something that only we know',
+            }
+        ]
+    );
+
+    // seed babysitters
+    db.babysitter.bulkCreate(
+        [
+            {
+                userId: 2,
+                workDate: moment().format(),
+                workTime: moment().format(),
+                MinAgeOfChildren: 1,
+                MaxNumOfChildren: 2,
+                MaxTravelDistance: 10, 
             },
             {
-                roleName: 'parent',
-            },
+                userId: 3,
+                workDate: moment().format(),
+                workTime: moment().format(),
+                MinAgeOfChildren: 2,
+                MaxNumOfChildren: 1,
+                MaxTravelDistance: 5, 
+            }
+        ]
+    );
+
+    // seed sittingRequests
+    let date = new Date();
+    date.setUTCHours(13);
+    date.setUTCMinutes(0);
+    db.sittingRequest.bulkCreate(
+        [
             {
-                roleName: 'babysitter',
-            },
-            {
-                roleName: 'staff',
+                createdUser: 1,
+                acceptedBabysitter: null,
+                sittingDate: moment().format(),
+                startTime: moment().set({'hour': 13, 'minute': 0, 'second': 0}).format('hh:mm:ss'),
+                endTime: moment().set({'hour': 17, 'minute': 0, 'second': 0}).format('hh:mm:ss'),
+                sittingAddress: '123 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
+                status: 'PENDING',
             },
         ]
-    )
+    );
 }

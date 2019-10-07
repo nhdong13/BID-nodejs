@@ -1,4 +1,4 @@
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
     const parent = sequelize.define(
         "parent", // Model Name
         {
@@ -12,17 +12,19 @@ export default function(sequelize, DataTypes) {
             },
             familyDescription: {
                 type: DataTypes.STRING,
-                allowNull: true
+                allowNull: true,
             },
-        },
-        {
+        }, {
             timestamps: true,
         }
     );
 
     parent.associate = function (models) {
-        parent.belongsTo(models.user,
-            {foreignKey: 'userId', sourceKey: 'id'});
+        parent.belongsTo(models.user, {
+            foreignKey: 'userId',
+            sourceKey: 'id',
+            as: 'user'
+        }, );
     }
 
     return parent;

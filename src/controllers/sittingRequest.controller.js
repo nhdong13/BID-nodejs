@@ -3,29 +3,41 @@ import models from "@models";
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
 
-    const listSittings = await models.sittingRequest.findAll({
-        where: {
-            createdUser: parentId,
-        }
-    });
-    res.send(listSittings);
+    try {
+        const listSittings = await models.sittingRequest.findAll({
+            where: {
+                createdUser: parentId,
+            }
+        });
+        res.send(listSittings);
+    } catch(err) {
+        res.status(400);
+        res.send(err);
+    }
 };
 
-const listParentAndStatus = async (req, res, next) => {
+const listByParentAndStatus = async (req, res, next) => {
     const parentId = req.body.userId;
     const status = req.body.status;
 
-    const listSittings = await models.sittingRequest.findAll({
-        where: {
-            createdUser: parentId,
-            status: status,
-        }
-    });
-    res.send(listSittings);
+    try {
+        const listSittings = await models.sittingRequest.findAll({
+            where: {
+                createdUser: parentId,
+                status: status,
+            }
+        });
+        res.send(listSittings);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }   
 }
 
 const create = async (req, res) => {
-    const newItem = req.body;
+    let newItem = req.body;
+    // initial status is PENDING
+    newItem.status = 'PENDING';
 
     try {
         const newSittingReq = await models.sittingRequest.create(newItem);
@@ -91,4 +103,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { listByParentId, listParentAndStatus, create, read, update, destroy };
+export default { listByParentId, listByParentAndStatus, create, read, update, destroy };
