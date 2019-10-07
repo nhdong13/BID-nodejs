@@ -26,17 +26,22 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-        },
-        {
+        }, {
             timestamps: true,
         }
     );
 
     babysitter.associate = function (models) {
-        babysitter.belongsTo(models.user, 
-            {foreignKey: 'userId', sourceKey: 'id'});
-        babysitter.hasMany(models.invitation, 
-            {foreignKey: 'receiver', sourceKey: 'userId'});
+        babysitter.belongsTo(models.user, {
+            foreignKey: 'userId',
+            sourceKey: 'id',
+            as: 'user'
+        });
+        babysitter.hasMany(models.invitation, {
+            foreignKey: 'receiver',
+            sourceKey: 'userId',
+            as: 'invitation'
+        });
     }
 
     return babysitter;
