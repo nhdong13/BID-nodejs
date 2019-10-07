@@ -18,7 +18,7 @@ async function main() {
         // Init DB
         try {
             models.sequelize.authenticate();
-            models.sequelize.sync({ force: true }).then(() => {
+            models.sequelize.sync({force: true}).then(() => {
                 insertDatabase();
             });
         } catch (dbError) {
