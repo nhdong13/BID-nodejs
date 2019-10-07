@@ -24,14 +24,17 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: false
             },
-        },
-        {
+        }, {
             timestamps: true,
         }
     );
 
     user.associate = function (models) {
-        models.user.hasMany(models.sittingRequest, {foreignKey: 'createdUser', sourceKey: 'id'});
+        user.hasMany(models.sittingRequest, {
+            foreignKey: 'createdUser',
+            sourceKey: 'id',
+            as: 'sittingRequests'
+        });
     }
 
     return user;

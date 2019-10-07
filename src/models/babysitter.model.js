@@ -33,9 +33,9 @@ export default function (sequelize, DataTypes) {
     );
 
     babysitter.associate = function (models) {
-        models.babysitter.belongsTo(models.user, 
+        babysitter.belongsTo(models.user, 
             {foreignKey: 'userId', sourceKey: 'id'});
-        models.babysitter.hasMany(models.invitation, 
+        babysitter.hasMany(models.invitation, 
             {foreignKey: 'receiver', sourceKey: 'userId'});
     }
 

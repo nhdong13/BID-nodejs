@@ -17,13 +17,13 @@ export default function (sequelize, DataTypes) {
             endTime: {
                 type: DataTypes.TIME,
                 allowNull: false,
-            },
+            }, 
             sittingAddress: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('PENDING', 'CONFIRM', 'CANCEL', 'ONGOING', 'DONE'),
+                type: DataTypes.ENUM('PENDING', 'CONFIRMED', 'CANCELED', 'ONGOING', 'DONE'),
                 allowNull: false,
             },
         },
@@ -33,14 +33,14 @@ export default function (sequelize, DataTypes) {
     );
 
     sittingRequest.associate = function (models) {
-        models.sittingRequest.hasMany(models.invitation, {
+        sittingRequest.hasMany(models.invitation, {
             foreignKey: 'sittingRequestId',
             sourceKey: 'id'
         }, {
             foreignKey: 'sender',
             sourceKey: 'createdUser'
         });
-        models.sittingRequest.hasMany(models.transaction);
+        sittingRequest.hasMany(models.transaction);
     }
 
     return sittingRequest;
