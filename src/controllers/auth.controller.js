@@ -3,11 +3,11 @@ import { createJWT } from "@utils/jwt";
 import { comparePassword } from "@utils/hash";
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
+    const { phoneNumber, password } = req.body;
     try {
         const user = await models.user.findOne({
             where: {
-                email
+                phoneNumber
             }
         });
 

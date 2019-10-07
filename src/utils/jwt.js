@@ -5,11 +5,11 @@ export function createJWT(id) {
         {
             data: id
         },
-        "tudeptrai",
+        "fuckthisshit",
         { expiresIn: "24h" }
     );
 }
 
 export function verifyJWT(token) {
-    return jwt.verify(token, "tudeptrai");
+    return jwt.verify(token, "fuckthisshit");
 }
