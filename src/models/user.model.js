@@ -30,6 +30,11 @@ export default function (sequelize, DataTypes) {
     );
 
     user.associate = function (models) {
+        user.hasOne(models.parent, {
+            foreignKey: 'userId',
+            as: 'parent'
+        });
+
         user.hasMany(models.sittingRequest, {
             foreignKey: 'createdUser',
             sourceKey: 'id',

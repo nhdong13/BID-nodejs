@@ -22,8 +22,8 @@ export default function (sequelize, DataTypes) {
     parent.associate = function (models) {
         parent.belongsTo(models.user, {
             foreignKey: 'userId',
-            sourceKey: 'id',
-            as: 'user'
+            as: 'user',
+            onDelete: 'CASCADE',
         }, );
     }
 
