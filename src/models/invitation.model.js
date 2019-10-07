@@ -13,7 +13,15 @@ export default function (sequelize, DataTypes) {
     );
 
     invitation.associate = function (models) {
-
+        invitation.belongsTo(models.sittingRequest, {
+            foreignKey: 'sittingRequestId',
+            as: 'sittingRequest'
+        })
+        invitation.belongsTo(models.babysitter, {
+            foreignKey: 'receiver',
+            sourceKey: 'userId',
+            as: 'babysitter'
+        })
     }
 
     return invitation;

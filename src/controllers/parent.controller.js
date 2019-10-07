@@ -12,17 +12,21 @@ const getParentRequest = async (req, res, next) => {
     const sittingReqId = req.body.id;
 
     try {
-        const request = await models.sittingRequest.findAll({
+        const request = await models.invitation.findAll({
             where: {
-                id: sittingReqId,
-                include: [{
-                    model: models.user,
-                    where: { id: models.sittingRequest.createdUser}
-                }]
-            }
+                id: 1,
+            },
+            include: [{
+                model: models.babysitter,
+                as: 'babysitter',
+                
+            }, {
+                model: models.sittingRequest,
+            }],
         });
         res.send(request);
     } catch (error) {
+        console.log(error);
         res.status(400);
         res.send(error);
     }
