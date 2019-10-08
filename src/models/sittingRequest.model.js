@@ -36,9 +36,6 @@ export default function (sequelize, DataTypes) {
         sittingRequest.hasMany(models.invitation, {
             foreignKey: 'sittingRequestId',
             sourceKey: 'id'
-        }, {
-            foreignKey: 'sender',
-            sourceKey: 'createdUser'
         });
         sittingRequest.hasMany(models.transaction);
     }

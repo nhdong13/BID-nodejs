@@ -38,9 +38,12 @@ export default function (sequelize, DataTypes) {
         //     as: 'user'
         // });
         babysitter.hasMany(models.invitation, {
-            foreignKey: 'receiver',
+            foreignKey: {
+                name: 'receiver',
+                allowNull: false
+            },
             sourceKey: 'userId',
-            as: 'invitation'
+            as: 'invitation',
         });
     }
 

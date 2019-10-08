@@ -30,20 +30,30 @@ export default function (sequelize, DataTypes) {
     );
 
     user.associate = function (models) {
+        // user - parent
         user.hasOne(models.parent, {
             foreignKey: 'userId',
-            as: 'parent'
+            as: 'parent',
+            onDelete: 'CASCADE',
         });
 
+        // user - babysitter
         user.hasOne(models.babysitter, {
             foreignKey: 'userId',
-            as: 'babysitter'
+            as: 'babysitter',
+            onDelete: 'CASCADE',
         });
 
+        // user - sittingRequest
         user.hasMany(models.sittingRequest, {
-            foreignKey: 'createdUser',
+            foreignKey: {
+                name: 'createdUser',
+                allowNull: false,
+                unique: true,
+            },
             sourceKey: 'id',
-            as: 'sittingRequests'
+            as: 'sittingRequests',
+            onDelete: 'CASCADE',
         });
     }
 
