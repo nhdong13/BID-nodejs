@@ -54,68 +54,69 @@ export async function insertDatabase() {
                 roleId: 3,
             }
         ]
-    );
+    ).then(() => {
+        // seed parents
+        db.parent.bulkCreate(
+            [
+                {
+                    userId: 1,
+                    childrenNumber: 3,
+                    familyDescription: 'something that only we know',
+                }
+            ]
+        );
 
-    // seed parents
-    db.parent.bulkCreate(
-        [
-            {
-                userId: 1,
-                childrenNumber: 3,
-                familyDescription: 'something that only we know',
-            }
-        ]
-    );
+        // seed babysitters
+        db.babysitter.bulkCreate(
+            [
+                {
+                    userId: 2,
+                    workDate: moment().format(),
+                    workTime: moment().format(),
+                    MinAgeOfChildren: 1,
+                    MaxNumOfChildren: 2,
+                    MaxTravelDistance: 10,
+                },
+                {
+                    userId: 3,
+                    workDate: moment().format(),
+                    workTime: moment().format(),
+                    MinAgeOfChildren: 2,
+                    MaxNumOfChildren: 1,
+                    MaxTravelDistance: 5,
+                }
+            ]
+        );
+    }).then(() => {
+        // seed sittingRequests
+        let date = new Date();
+        date.setUTCHours(13);
+        date.setUTCMinutes(0);
+        db.sittingRequest.bulkCreate(
+            [
+                {
+                    createdUser: 1,
+                    acceptedBabysitter: null,
+                    sittingDate: moment().format(),
+                    startTime: moment().set({ 'hour': 13, 'minute': 0, 'second': 0 }).format('hh:mm:ss'),
+                    endTime: moment().set({ 'hour': 17, 'minute': 0, 'second': 0 }).format('hh:mm:ss'),
+                    sittingAddress: '123 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
+                    status: 'PENDING',
+                },
+            ]
+        );
 
-    // seed babysitters
-    db.babysitter.bulkCreate(
-        [
-            {
-                userId: 2,
-                workDate: moment().format(),
-                workTime: moment().format(),
-                MinAgeOfChildren: 1,
-                MaxNumOfChildren: 2,
-                MaxTravelDistance: 10, 
-            },
-            {
-                userId: 3,
-                workDate: moment().format(),
-                workTime: moment().format(),
-                MinAgeOfChildren: 2,
-                MaxNumOfChildren: 1,
-                MaxTravelDistance: 5, 
-            }
-        ]
-    );
+        // seed invitation
+        db.invitation.bulkCreate(
+            [
+                {
+                    sittingRequestId: 1,
+                    sender: 1,
+                    receiver: 2,
+                    status: 'PENDING'
+                },
+            ]
+        );
+    });
 
-    // seed sittingRequests
-    let date = new Date();
-    date.setUTCHours(13);
-    date.setUTCMinutes(0);
-    db.sittingRequest.bulkCreate(
-        [
-            {
-                createdUser: 1,
-                acceptedBabysitter: null,
-                sittingDate: moment().format(),
-                startTime: moment().set({'hour': 13, 'minute': 0, 'second': 0}).format('hh:mm:ss'),
-                endTime: moment().set({'hour': 17, 'minute': 0, 'second': 0}).format('hh:mm:ss'),
-                sittingAddress: '123 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
-                status: 'PENDING',
-            },
-        ]
-    );
-
-    // seed invitation
-    db.invitation.bulkCreate(
-        [
-            {
-                sittingRequestId: 1,
-                sender: 1,
-                receiver: 2,
-                status: 'PENDING'
-            },
-        ]
-    );
 }
