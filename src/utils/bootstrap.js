@@ -104,19 +104,18 @@ export async function insertDatabase() {
                     status: 'PENDING',
                 },
             ]
-        );
-
-        // seed invitation
-        db.invitation.bulkCreate(
-            [
-                {
-                    sittingRequestId: 1,
-                    sender: 1,
-                    receiver: 2,
-                    status: 'PENDING'
-                },
-            ]
-        );
+        ).then(() => {
+            // seed invitation
+            db.invitation.bulkCreate(
+                [
+                    {
+                        sittingRequestId: 1,
+                        sender: 1,
+                        receiver: 2,
+                        status: 'PENDING'
+                    },
+                ]
+            );
+        });
     });
-
 }
