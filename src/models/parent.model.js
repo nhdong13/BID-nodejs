@@ -15,16 +15,16 @@ export default function (sequelize, DataTypes) {
                 allowNull: true,
             },
         }, {
-            timestamps: true,
-        }
+        timestamps: true,
+    }
     );
 
     parent.associate = function (models) {
-        parent.belongsTo(models.user, {
-            foreignKey: 'userId',
-            as: 'user',
-            onDelete: 'CASCADE',
-        }, );
+        // parent.belongsTo(models.user, {
+        //     foreignKey: 'userId',
+        //     as: 'user',
+        //     onDelete: 'CASCADE',
+        // });
     }
 
     return parent;

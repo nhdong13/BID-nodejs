@@ -35,6 +35,11 @@ export default function (sequelize, DataTypes) {
             as: 'parent'
         });
 
+        user.hasOne(models.babysitter, {
+            foreignKey: 'userId',
+            as: 'babysitter'
+        });
+
         user.hasMany(models.sittingRequest, {
             foreignKey: 'createdUser',
             sourceKey: 'id',
