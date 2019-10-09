@@ -55,6 +55,28 @@ export default function (sequelize, DataTypes) {
             as: 'sittingRequests',
             onDelete: 'CASCADE',
         });
+
+        // user - invitation
+        user.hasMany(models.invitation, {
+            foreignKey: {
+                name: 'receiver',
+                allowNull: false,
+                unique: false,
+            },
+            sourceKey: 'id',
+            as: 'invitations',
+        });
+
+        // user - transaction
+        user.hasMany(models.transaction, {
+            foreignKey: {
+                name: 'userId',
+                allowNull: false,
+                unique: false,
+            },
+            sourceKey: 'id',
+            as: 'transactions',
+        });
     }
 
     return user;

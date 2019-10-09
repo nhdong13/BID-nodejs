@@ -37,13 +37,22 @@ export default function (sequelize, DataTypes) {
         //     sourceKey: 'id',
         //     as: 'user'
         // });
-        babysitter.hasMany(models.invitation, {
+        // babysitter.hasMany(models.invitation, {
+        //     foreignKey: {
+        //         name: 'receiver',
+        //         allowNull: false
+        //     },
+        //     sourceKey: 'userId',
+        //     as: 'invitation',
+        // });
+
+        babysitter.hasMany(models.wishlist, {
             foreignKey: {
-                name: 'receiver',
+                name: 'sittertId',
                 allowNull: false
             },
-            sourceKey: 'userId',
-            as: 'invitation',
+            as: 'wishlists',
+            onDelete: 'CASCADE',
         });
     }
 

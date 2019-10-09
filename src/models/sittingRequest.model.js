@@ -33,11 +33,41 @@ export default function (sequelize, DataTypes) {
     );
 
     sittingRequest.associate = function (models) {
+        // request - invitation
         sittingRequest.hasMany(models.invitation, {
-            foreignKey: 'sittingRequestId',
-            sourceKey: 'id'
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
         });
-        sittingRequest.hasMany(models.transaction);
+
+        // request - transaction
+        sittingRequest.hasMany(models.transaction, {
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+        });
+
+        // request - report
+        sittingRequest.hasMany(models.report, {
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+        });
+
+        // request - feedback
+        sittingRequest.hasMany(models.feedback, {
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+        });
     }
 
     return sittingRequest;
