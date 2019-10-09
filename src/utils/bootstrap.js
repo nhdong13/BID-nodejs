@@ -88,7 +88,7 @@ export async function insertDatabase() {
             ]
         );
     }).then(() => {
-        // seed sittingRequests
+        // seed requests
         let date = new Date();
         date.setUTCHours(13);
         date.setUTCMinutes(0);
@@ -109,7 +109,7 @@ export async function insertDatabase() {
             db.invitation.bulkCreate(
                 [
                     {
-                        sittingRequestId: 1,
+                        requestId: 1,
                         sender: 1,
                         receiver: 2,
                         status: 'PENDING'

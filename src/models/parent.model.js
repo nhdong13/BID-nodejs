@@ -15,16 +15,37 @@ export default function (sequelize, DataTypes) {
                 allowNull: true,
             },
         }, {
-        timestamps: true,
-    }
+            timestamps: true,
+        }
     );
 
     parent.associate = function (models) {
-        // parent.belongsTo(models.user, {
-        //     foreignKey: 'userId',
-        //     as: 'user',
-        //     onDelete: 'CASCADE',
-        // });
+        parent.hasMany(models.circle, {
+            foreignKey: {
+                name: 'ownerId',
+                allowNull: false,
+            },
+            as: 'ownedCircles',
+            onDelete: 'CASCADE',
+        });
+
+        parent.hasMany(models.circle, {
+            foreignKey: {
+                name: 'friendId',
+                allowNull: false,
+            },
+            as: 'joinedCircles',
+            onDelete: 'CASCADE',
+        });
+
+        parent.hasMany(models.wishlist, {
+            foreignKey: {
+                name: 'parentId',
+                allowNull: false,
+            },
+            as: 'wishlists',
+            onDelete: 'CASCADE',
+        });
     }
 
     return parent;

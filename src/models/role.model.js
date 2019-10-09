@@ -5,12 +5,20 @@ export default function (sequelize, DataTypes) {
             roleName: {
                 type: DataTypes.STRING,
                 unique: true,
+                allowNull: false,
             },
         }
     );
 
     role.associate = function (models) {
-        role.hasMany(models.user);
+        // role - user
+        role.hasMany(models.user, {
+            foreignKey: {
+                name: 'roleId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+        });
     }
 
     return role;

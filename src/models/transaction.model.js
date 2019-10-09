@@ -2,16 +2,12 @@ export default function (sequelize, DataTypes) {
     const transaction = sequelize.define(
         "transaction", // Model Name
         {
-            sender: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            receiver: {
+            userId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
             type: {
-                type: DataTypes.ENUM('DEPOSIT', 'WITHDRAW'),
+                type: DataTypes.ENUM('CHARGE', 'PAY'),
                 allowNull: false
             },
             description: {
