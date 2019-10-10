@@ -6,6 +6,10 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
+            childrenNumber: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
             sittingDate: {
                 type: DataTypes.DATE,
                 allowNull: false,

@@ -71,19 +71,21 @@ export async function insertDatabase() {
             [
                 {
                     userId: 2,
-                    workDate: moment().format(),
-                    workTime: moment().format(),
-                    MinAgeOfChildren: 1,
-                    MaxNumOfChildren: 2,
-                    MaxTravelDistance: 10,
+                    weeklySchedule: 'MON,TUE,WED',
+                    daytime: '08-11',
+                    evening: null,
+                    minAgeOfChildren: 1,
+                    maxNumOfChildren: 2,
+                    maxTravelDistance: 10,
                 },
                 {
                     userId: 3,
-                    workDate: moment().format(),
-                    workTime: moment().format(),
-                    MinAgeOfChildren: 2,
-                    MaxNumOfChildren: 1,
-                    MaxTravelDistance: 5,
+                    weeklySchedule: 'SAT,SUN',
+                    daytime: '07-11',
+                    evening: '18-21',
+                    minAgeOfChildren: 2,
+                    maxNumOfChildren: 1,
+                    maxTravelDistance: 5,
                 }
             ]
         );
@@ -97,6 +99,7 @@ export async function insertDatabase() {
                 {
                     createdUser: 1,
                     acceptedBabysitter: null,
+                    childrenNumber: 2,
                     sittingDate: moment().format(),
                     startTime: moment().set({ 'hour': 13, 'minute': 0, 'second': 0 }).format('hh:mm:ss'),
                     endTime: moment().set({ 'hour': 17, 'minute': 0, 'second': 0 }).format('hh:mm:ss'),
