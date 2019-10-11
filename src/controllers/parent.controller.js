@@ -1,7 +1,5 @@
 import models from "@models";
-import {
-    hashPassword
-} from "@utils/hash";
+import { hashPassword } from "@utils/hash";
 
 const list = async (req, res, next) => {
     const listParents = await models.parent.findAll();
@@ -19,14 +17,13 @@ const getParentRequest = async (req, res, next) => {
             include: [{
                 model: models.babysitter,
                 as: 'babysitter',
-                
+
             }, {
                 model: models.sittingRequest,
             }],
         });
         res.send(request);
     } catch (error) {
-        console.log(error);
         res.status(400);
         res.send(error);
     }
@@ -34,13 +31,31 @@ const getParentRequest = async (req, res, next) => {
 };
 
 const create = async (req, res) => {
-    const newItem = req.body;
+    const userData = req.body;
+    const newUser = {
+        phoneNumber: userData.phoneNumber,
+        email: userData.email,
+        password: userData.password,
+        nickname: userData.nickname,
+        address: userData.address,
+        roleId: userData.roleId,
+    };
+
 
     try {
-        // Hash password
-        newItem.password = await hashPassword(newItem.password);
+        // Create user first
+        newUser.password = await await hashPassword(newUser.password)
 
-        const newParent = await models.parent.create(newItem);
+        const newParent = await models.user.create(newUser).then(async res => {
+            const newItem = {
+                userId: res.id,
+                childrenNumber: userData.childrenNumber,
+                familyDescription: userData.familyDescription,
+            }
+
+            const newParent = await models.parent.create(newItem);
+            return newParent;
+        });
         res.send(newParent);
     } catch (err) {
         res.status(400);

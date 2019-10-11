@@ -5,12 +5,13 @@ import { verifyJWT } from "@utils/jwt";
 
 export function jwtAuthentication(req, res, next) {
     const token = getToken(req);
-    console.log(token)
 
     try {
         const payload = verifyJWT(token);
         const { data } = payload;
-        req.userID = data.id;
+        console.log(data);
+        req.userId = data.id;
+        req.roleId = data.roleId
         next();
     } catch (err) {
         res.status(401);
