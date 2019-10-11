@@ -1,5 +1,6 @@
 import models from "@models";
 import { matching } from "@utils/matchingService";
+import { recommendToParent } from "@utils/recommendService";
 
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
@@ -45,7 +46,26 @@ const listMatchedBabysitter = async (req, res, next) => {
             }
         });
         const matchedList = await matching(request);
+        console.log(matchedList);
         res.send(matchedList);
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }   
+}
+
+// recommend babysitter
+const recommendBabysitter = async (req, res, next) => {
+    const id = req.body.id;
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id
+            }
+        });
+        const recommendList = await recommendToParent(request);
+        res.send(recommendList);
     } catch (err) {
         console.log(err);
         res.status(400);
@@ -126,4 +146,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { listByParentId, listByParentAndStatus, listMatchedBabysitter, create, read, update, destroy };
+export default { listByParentId, listByParentAndStatus, listMatchedBabysitter, recommendBabysitter, create, read, update, destroy };

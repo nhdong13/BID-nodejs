@@ -50,7 +50,7 @@ function dateInRange(date, range) {
     let flag = false;
 
     let weekDay = getDayOfWeek(date);
-    
+
     let bsitterWorkDate = getWeekRange(range);
 
     bsitterWorkDate.forEach(element => {
