@@ -5,22 +5,20 @@ const MAX_TRAVEL_DISTANCE = 10;
 // matching parent's sitting request with available babysitter
 export async function matching(sittingRequest) {
     let babysitters = await searchForBabysitter(sittingRequest.address);
-    console.log(babysitters);
     let matchedList = matchingCriteria(sittingRequest, babysitters);
 
     return matchedList;
 }
 
 // search for every babysitters in 10km travel distance from parent
-async function searchForBabysitter(address){
+async function searchForBabysitter(address) {
     let list = await models.babysitter.findAll();
 
     return list;
 }
 
 // matching with criteria
-function matchingCriteria(request, babysitters){
-    console.log("/nHere we go");
+function matchingCriteria(request, babysitters) {
     let matchedList = [];
 
     babysitters.forEach(bsitter => {
@@ -28,12 +26,18 @@ function matchingCriteria(request, babysitters){
         if (request.childrenNumber > bsitter.maxNumOfChildren) {
             return;
         }
+        //check minimum age of childer
+        if(request.minAgeOfChildren < bsitter.minAgeOfChildren) {
+            return;
+        }
         // check date
-        if (dateInRange(request.sittingDate, bsitter.weeklySchedule)) {
+        if (!dateInRange(request.sittingDate, bsitter.weeklySchedule)) {
             return;
         }
         // check time
-        
+        if (!checkSittingTime(request.startTime, request.endTime, bsitter.daytime, bsitter.evening)) {
+            return;
+        }
         // add matched
         matchedList.push(bsitter);
     });
@@ -46,7 +50,7 @@ function dateInRange(date, range) {
     let flag = false;
 
     let weekDay = getDayOfWeek(date);
-
+    
     let bsitterWorkDate = getWeekRange(range);
 
     bsitterWorkDate.forEach(element => {
@@ -67,6 +71,9 @@ function getDayOfWeek(date) {
 
 // get array of days of the week of a babysitter schedule
 function getWeekRange(range) {
+    if (range == null) {
+        return null;
+    }
     let arr = [];
 
     arr = range.split(',');
@@ -74,7 +81,48 @@ function getWeekRange(range) {
     return arr;
 }
 
-//
-function checkSittingTime(startTime, endTime, daytime, evening) {
-    
+// check if the request time and babysitter vailable is matched
+function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
+    let flag = false;
+    let daytime = getAvailableTime(bDaytime);
+    let evening = getAvailableTime(bEvening);
+
+    if (timeIsInRange(startTime, daytime)) {
+        if (timeIsInRange(endTime, daytime)) {
+            flag = true;
+        } else if (timeIsInRange(endTime, evening)) {
+            flag = true;
+        }
+    } else if (timeIsInRange(startTime, evening)) {
+        if (timeIsInRange(endTime, evening)) {
+            flag = true;
+        }
+    }
+
+    return flag;
+}
+
+// convert babysitter available time into an array, should only contain 2 element
+function getAvailableTime(time) {
+    if (time == null) {
+        return null;
+    }
+    let arr = [];
+
+    arr = time.split('-');
+
+    return arr;
+}
+
+// check if time in range 
+function timeIsInRange(time, range) {
+    if (range == null) {
+        return false;
+    }
+
+    if (time >= range[0] && time <= range[1]) {
+        return true;
+    }
+
+    return false;
 }

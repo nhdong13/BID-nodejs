@@ -45,7 +45,6 @@ const listMatchedBabysitter = async (req, res, next) => {
             }
         });
         const matchedList = await matching(request);
-        console.log(matchedList)
         res.send(matchedList);
     } catch (err) {
         console.log(err);
