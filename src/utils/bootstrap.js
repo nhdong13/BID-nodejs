@@ -34,7 +34,7 @@ export async function insertDatabase() {
                 email: 'cute@gmail.com',
                 password: await hashPassword('12341234'),
                 nickname: 'cutephomaique',
-                address: '123 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
+                address: '529 Lê Đức Thọ, Phường 16, Gò Vấp, Hồ Chí Minh, Vietnam',
                 roleId: 2,
             },
             {
@@ -42,7 +42,7 @@ export async function insertDatabase() {
                 email: 'tho@gmail.com',
                 password: await hashPassword('12341234'),
                 nickname: 'thobaytmau',
-                address: '321 heaven Q12, TP Ho Chi Minh, Viet Nam',
+                address: '702/66 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh, Vietnam',
                 roleId: 3,
             },
             {
@@ -124,16 +124,13 @@ export async function insertDatabase() {
         );
     }).then(() => {
         // seed requests
-        let date = new Date();
-        date.setUTCHours(13);
-        date.setUTCMinutes(0);
         db.sittingRequest.bulkCreate(
             [{
                 createdUser: 1,
                 acceptedBabysitter: null,
                 childrenNumber: 2,
                 minAgeOfChildren: 1,
-                sittingDate: moment().format(),
+                sittingDate: moment().set({'year': 2019, 'month': 9, 'date': 11}),
                 startTime: moment().set({
                     'hour': 13,
                     'minute': 0,
@@ -151,7 +148,7 @@ export async function insertDatabase() {
                 acceptedBabysitter: 2,
                 childrenNumber: 2,
                 minAgeOfChildren: 1,
-                sittingDate: moment().set({'year': 2019, 'month': 8, 'day': 27}),
+                sittingDate: moment().set({'year': 2019, 'month': 8, 'date': 27}),
                 startTime: moment().set({
                     'hour': 9,
                     'minute': 0,
