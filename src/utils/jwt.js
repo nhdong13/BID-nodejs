@@ -1,9 +1,12 @@
 import jwt from "jsonwebtoken";
 
-export function createJWT(id) {
+export function createJWT(id, roleId) {
     return jwt.sign(
         {
-            data: id
+            data: {
+                id: id,
+                roleId: roleId,
+            }
         },
         "fuckthisshit",
         { expiresIn: "24h" }

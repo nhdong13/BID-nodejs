@@ -15,9 +15,8 @@ const login = async (req, res) => {
             const isValid = await comparePassword(password, user.password);
 
             if (isValid) {
-                const token = createJWT(user.id);
-
-                res.send({ token });
+                const token = createJWT(user.id, user.roleId);
+                res.send({ token, roleId: user.roleId });
             } else {
                 res.status(400);
                 res.send();

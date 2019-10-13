@@ -1,9 +1,15 @@
 import models from "@models";
 import { hashPassword } from "@utils/hash";
 
-const list = async (req, res, next) => {
-    const listUsers = await models.user.findAll();
-    res.send(listUsers);
+const list = async (req, res) => {
+    const role = req.roleId;
+    if (role === 2) {
+        const listUsers = await models.user.findAll();
+        res.send(listUsers);
+    } else {
+        res.status(401);
+        res.send({ message: 'Unauthorized' });
+    }
 };
 
 const create = async (req, res) => {

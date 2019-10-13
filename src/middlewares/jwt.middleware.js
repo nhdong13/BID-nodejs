@@ -1,12 +1,16 @@
 import { verifyJWT } from "@utils/jwt";
 
+// Format of token 
+// Authorization: Bearer <access_token>
+
 export function jwtAuthentication(req, res, next) {
     const token = getToken(req);
 
     try {
         const payload = verifyJWT(token);
         const { data } = payload;
-        req.userID = data;
+        req.userId = data.id;
+        req.roleId = data.roleId;
         next();
     } catch (err) {
         res.status(401);
