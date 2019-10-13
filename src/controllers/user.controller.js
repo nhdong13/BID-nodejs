@@ -1,7 +1,7 @@
 import models from "@models";
 import { hashPassword } from "@utils/hash";
 
-const list = async (req, res, next) => {
+const list = async (req, res) => {
     const role = req.roleId;
     if (role === 2) {
         const listUsers = await models.user.findAll();

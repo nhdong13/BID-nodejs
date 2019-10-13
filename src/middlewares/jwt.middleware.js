@@ -9,9 +9,8 @@ export function jwtAuthentication(req, res, next) {
     try {
         const payload = verifyJWT(token);
         const { data } = payload;
-        console.log(data);
         req.userId = data.id;
-        req.roleId = data.roleId
+        req.roleId = data.roleId;
         next();
     } catch (err) {
         res.status(401);
