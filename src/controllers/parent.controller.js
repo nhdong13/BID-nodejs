@@ -7,20 +7,18 @@ const list = async (req, res, next) => {
 };
 
 const getParentRequest = async (req, res, next) => {
-    const sittingReqId = req.body.id;
+    const parentId = req.body.id;
 
     try {
-        const request = await models.invitation.findAll({
+        const request = await models.sittingRequest.findAll({
             where: {
-                id: 1,
+                createdUser: parentId,
             },
-            include: [{
-                model: models.babysitter,
-                as: 'babysitter',
+            // include: [{
+            //     model: models.babysitter,
+            //     as: 'babysitter',
 
-            }, {
-                model: models.sittingRequest,
-            }],
+            // }],
         });
         res.send(request);
     } catch (error) {
@@ -40,7 +38,6 @@ const create = async (req, res) => {
         address: userData.address,
         roleId: userData.roleId,
     };
-
 
     try {
         // Create user first
