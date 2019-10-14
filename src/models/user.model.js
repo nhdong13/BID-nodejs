@@ -49,7 +49,6 @@ export default function (sequelize, DataTypes) {
             foreignKey: {
                 name: 'createdUser',
                 allowNull: false,
-                unique: true,
             },
             sourceKey: 'id',
             as: 'sittingRequests',
