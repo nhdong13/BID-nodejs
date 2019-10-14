@@ -67,7 +67,7 @@ export async function recommendToParent(request, listMatched) {
     // filter out babysitter with total score <= 0
     listWithTotal = listWithTotal.filter(x => x.total > 0);
 
-    // sort the list decending
+    // sort the list descending
     listWithTotal = listWithTotal.sort(function (a, b) {
         return a.total < b.total;
     });

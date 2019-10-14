@@ -33,26 +33,28 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
+            averageRating: {
+                type: DataTypes.FLOAT,
+                allowNull: true
+            },
+            totalFeedback: {
+                type: DataTypes.INTEGER,
+                allowNull: true
+            },
         }, {
             timestamps: true,
         }
     );
 
     babysitter.associate = function (models) {
+        // user - babysitter
         babysitter.belongsTo(models.user, {
             foreignKey: 'userId',
             sourceKey: 'id',
             as: 'user'
         });
-        // babysitter.hasMany(models.invitation, {
-        //     foreignKey: {
-        //         name: 'receiver',
-        //         allowNull: false
-        //     },
-        //     sourceKey: 'userId',
-        //     as: 'invitation',
-        // });
 
+        // babysitter - wishlist
         babysitter.hasMany(models.wishlist, {
             foreignKey: {
                 name: 'sittertId',
