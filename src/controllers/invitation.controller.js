@@ -32,9 +32,17 @@ const read = async (req, res) => {
 
     try {
         const invitation = await models.invitation.findOne({
-            // where: {
-            //     id
-            // },
+            where: {
+                id
+            },
+            include: [{
+                model: models.sittingRequest,
+                as: 'sittingRequest',
+                include: [{
+                    model: models.user,
+                    as: 'user'
+                }]
+            }]
             // include: [{
             //     model: models.babysitter,
             //     as: 'babysitter'
