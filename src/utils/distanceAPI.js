@@ -1,5 +1,5 @@
 const KEY = 'AIzaSyAfJXD-_rBUHX5L8W1BwJSNqMXKhZgGVj4';
-const API = 'http://maps.googleapis.com/maps/api/distancematrix/';
+const API = 'https://maps.googleapis.com/maps/api/distancematrix/';
 const OUPUTFORMAT = 'json';
 const fetch = require("node-fetch");
 
