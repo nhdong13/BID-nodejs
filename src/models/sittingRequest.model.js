@@ -68,6 +68,15 @@ export default function (sequelize, DataTypes) {
             },
             sourceKey: 'id',
         });
+
+        sittingRequest.belongsTo(models.user, {
+            foreignKey: {
+                name: 'createdUser'
+            },
+            sourceKey: 'id',
+            as: 'user',
+        });
+        
     }
 
     return sittingRequest;

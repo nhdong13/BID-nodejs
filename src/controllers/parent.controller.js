@@ -44,7 +44,7 @@ const read = async (req, res) => {
     try {
         const parent = await models.parent.findOne({
             where: {
-                id
+                userId: id
             }
         });
         if (parent) {
