@@ -39,11 +39,11 @@ export default function (sequelize, DataTypes) {
     );
 
     babysitter.associate = function (models) {
-        // babysitter.belongsTo(models.user, {
-        //     foreignKey: 'userId',
-        //     sourceKey: 'id',
-        //     as: 'user'
-        // });
+        babysitter.belongsTo(models.user, {
+            foreignKey: 'userId',
+            sourceKey: 'id',
+            as: 'user'
+        });
         // babysitter.hasMany(models.invitation, {
         //     foreignKey: {
         //         name: 'receiver',

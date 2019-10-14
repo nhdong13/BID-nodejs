@@ -1,4 +1,4 @@
-import models from '@models/'
+import models from "@models/";
 
 const MAX_TRAVEL_DISTANCE = 10;
 
@@ -12,7 +12,12 @@ export async function matching(sittingRequest) {
 
 // search for every babysitters in 10km travel distance from parent
 async function searchForBabysitter(address) {
-    let list = await models.babysitter.findAll();
+    let list = await models.babysitter.findAll({
+        include: [{
+            model: models.user,
+            as: 'user',
+        }]
+    });
 
     return list;
 }
@@ -27,7 +32,7 @@ function matchingCriteria(request, babysitters) {
             return;
         }
         //check minimum age of childer
-        if(request.minAgeOfChildren < bsitter.minAgeOfChildren) {
+        if (request.minAgeOfChildren < bsitter.minAgeOfChildren) {
             return;
         }
         // check date
@@ -35,7 +40,14 @@ function matchingCriteria(request, babysitters) {
             return;
         }
         // check time
-        if (!checkSittingTime(request.startTime, request.endTime, bsitter.daytime, bsitter.evening)) {
+        if (
+            !checkSittingTime(
+                request.startTime,
+                request.endTime,
+                bsitter.daytime,
+                bsitter.evening
+            )
+        ) {
             return;
         }
         // add matched
@@ -66,7 +78,9 @@ function dateInRange(date, range) {
 // get day of the week of a date
 function getDayOfWeek(date) {
     var dayOfWeek = new Date(date).getDay();
-    return isNaN(dayOfWeek) ? null : ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][dayOfWeek];
+    return isNaN(dayOfWeek)
+        ? null
+        : ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][dayOfWeek];
 }
 
 // get array of days of the week of a babysitter schedule
@@ -76,7 +90,7 @@ function getWeekRange(range) {
     }
     let arr = [];
 
-    arr = range.split(',');
+    arr = range.split(",");
 
     return arr;
 }
@@ -109,12 +123,12 @@ function getAvailableTime(time) {
     }
     let arr = [];
 
-    arr = time.split('-');
+    arr = time.split("-");
 
     return arr;
 }
 
-// check if time in range 
+// check if time in range
 function timeIsInRange(time, range) {
     if (range == null) {
         return false;

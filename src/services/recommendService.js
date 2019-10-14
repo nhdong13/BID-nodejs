@@ -2,7 +2,7 @@ import seq from 'sequelize'
 import models from '@models/';
 import {
     matching
-} from '@utils/matchingService';
+} from '@services/matchingService';
 
 import {
     callAPI
@@ -13,8 +13,7 @@ const CIRCLE_WEIGHTED = 0.5;
 const RATING_WEIGHTED = 0.4;
 const DISTANCE_WEIGHTED = 0.1;
 
-export async function recommendToParent(request) {
-    let listMatched = await matching(request);
+export async function recommendToParent(request, listMatched) {
     let recommendList = [];
 
     // let res = await callAPI(request.sittingAddress, listMatched[1].address);
@@ -65,12 +64,22 @@ export async function recommendToParent(request) {
     // calculate babysitter's total score
     listWithTotal = await calScore(listWithCircle, listWithRating, listWithDistance, listWithTotal);
 
-    recommendList = listWithTotal;
-    console.log(recommendList);
-    recommendList.sort(function (a, b) {
-        return a.total - b.total;
-    });
+    // filter out babysitter with total score <= 0
+    listWithTotal = listWithTotal.filter(x => x.total > 0);
 
+    // sort the list decending
+    listWithTotal = listWithTotal.sort(function (a, b) {
+        return a.total < b.total;
+    });
+    
+    // push to recommendList
+    listWithTotal.forEach(el => {
+        let found = listMatched.find(x => x.userId == el.id);
+
+        if (found) {
+            recommendList.push(found);
+        }
+    });
 
     return recommendList;
 }
@@ -104,7 +113,6 @@ async function calScore(listWithCircle, listWithRating, listWithDistance, listWi
             el.total += (d.distanceW * DISTANCE_WEIGHTED);
         }
     });
-    console.log(listWithTotal);
     return await listWithTotal;
 }
 
