@@ -6,28 +6,6 @@ const list = async (req, res, next) => {
     res.send(listParents);
 };
 
-const getParentRequest = async (req, res, next) => {
-    const parentId = req.body.id;
-
-    try {
-        const request = await models.sittingRequest.findAll({
-            where: {
-                createdUser: parentId,
-            },
-            // include: [{
-            //     model: models.babysitter,
-            //     as: 'babysitter',
-
-            // }],
-        });
-        res.send(request);
-    } catch (error) {
-        res.status(400);
-        res.send(error);
-    }
-
-};
-
 const create = async (req, res) => {
     const userData = req.body;
     const newUser = {
@@ -119,7 +97,6 @@ const destroy = async (req, res) => {
 
 export default {
     list,
-    getParentRequest,
     create,
     read,
     update,
