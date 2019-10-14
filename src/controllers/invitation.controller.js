@@ -27,7 +27,7 @@ const create = async (req, res) => {
     }
 };
 
-const read = async (req, res) => {
+const getInvitations = async (req, res) => {
     const id = req.params.id;
 
     try {
@@ -55,10 +55,10 @@ const read = async (req, res) => {
             // }]
         });
         if (invitation) {
-            res.status(201);
+            res.status(200);
             res.send(invitation);
         } else {
-            res.status(404);
+            res.status(204);
             res.send();
         }
     } catch (err) {
@@ -100,4 +100,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { list, create, read, update, destroy };
+export default { list, create, getInvitations, update, destroy };
