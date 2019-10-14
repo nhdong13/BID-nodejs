@@ -4,14 +4,12 @@ import userController from "./user.controller";
 const list = async (req, res, next) => {
   var invitations = await models.invitation.findAll({
     include: [{
-        model: models.babysitter,
-        as: 'babysitter'
-    }, {
-        model: models.parent,
-        as: 'parent'
-    }, {
         model: models.sittingRequest,
-        as: 'sittingRequest'
+        as: 'sittingRequest',
+        include: [{
+            model: models.user,
+            as: 'user'
+        }]
     }]
   });
   res.send(invitations);
@@ -34,19 +32,19 @@ const read = async (req, res) => {
 
     try {
         const invitation = await models.invitation.findOne({
-            where: {
-                id
-            },
-            include: [{
-                model: models.babysitter,
-                as: 'babysitter'
-            }, {
-                model: models.parent,
-                as: 'parent'
-            }, {
-                model: models.sittingRequest,
-                as: 'sittingRequest'
-            }]
+            // where: {
+            //     id
+            // },
+            // include: [{
+            //     model: models.babysitter,
+            //     as: 'babysitter'
+            // }, {
+            //     model: models.parent,
+            //     as: 'parent'
+            // }, {
+            //     model: models.sittingRequest,
+            //     as: 'sittingRequest'
+            // }]
         });
         if (invitation) {
             res.status(201);
