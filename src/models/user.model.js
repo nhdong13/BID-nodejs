@@ -60,7 +60,6 @@ export default function (sequelize, DataTypes) {
             foreignKey: {
                 name: 'receiver',
                 allowNull: false,
-                unique: false,
             },
             sourceKey: 'id',
             as: 'invitations',
@@ -71,7 +70,6 @@ export default function (sequelize, DataTypes) {
             foreignKey: {
                 name: 'userId',
                 allowNull: false,
-                unique: false,
             },
             sourceKey: 'id',
             as: 'transactions',

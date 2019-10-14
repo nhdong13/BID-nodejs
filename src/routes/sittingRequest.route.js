@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.route("/listParent").post(controller.listByParentId);
 router.route("/listStatus").get(controller.listByParentAndStatus);
+router.route("/listBabysitter").get(controller.listMatchedBabysitter);
+router.route("/recommend/:id").get(controller.recommendBabysitter);
 router.route("/").post(controller.create);
 router.route("/:id").get(controller.read);
 router.route("/:id").put(controller.update);

@@ -1,4 +1,6 @@
 import models from "@models";
+import { matching } from "@services/matchingService";
+import { recommendToParent } from "@services/recommendService";
 
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
@@ -6,11 +8,11 @@ const listByParentId = async (req, res, next) => {
     try {
         const listSittings = await models.sittingRequest.findAll({
             where: {
-                createdUser: parentId,
+                createdUser: parentId
             }
         });
         res.send(listSittings);
-    } catch(err) {
+    } catch (err) {
         res.status(400);
         res.send(err);
     }
@@ -24,20 +26,73 @@ const listByParentAndStatus = async (req, res, next) => {
         const listSittings = await models.sittingRequest.findAll({
             where: {
                 createdUser: parentId,
-                status: status,
+                status: status
             }
         });
         res.send(listSittings);
     } catch (err) {
         res.status(400);
         res.send(err);
-    }   
-}
+    }
+};
+
+// get a list of matched babysitter of a request
+const listMatchedBabysitter = async (req, res, next) => {
+    const id = req.body.id;
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id
+            }
+        });
+        const matchedList = await matching(request);
+        console.log(matchedList);
+        s;
+        res.send(matchedList);
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
+// recommend babysitter
+const recommendBabysitter = async (req, res, next) => {
+    const requestId = req.params.id;
+    let listMatched = [];
+    let recommendList = [];
+
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id: requestId
+            }
+        });
+
+        if (request != null && request != undefined) {
+            listMatched = await matching(request);
+        }
+        if (listMatched != null && listMatched != undefined) {
+            recommendList = await recommendToParent(request, listMatched);
+        }
+
+        res.send({
+            matchedCount: listMatched.length,
+            listMatched,
+            recommendCount: recommendList.length,
+            recommendList
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
 
 const create = async (req, res) => {
     let newItem = req.body;
     // initial status is PENDING
-    newItem.status = 'PENDING';
+    newItem.status = "PENDING";
 
     try {
         const newSittingReq = await models.sittingRequest.create(newItem);
@@ -107,4 +162,13 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { listByParentId, listByParentAndStatus, create, read, update, destroy };
+export default {
+    listByParentId,
+    listByParentAndStatus,
+    listMatchedBabysitter,
+    recommendBabysitter,
+    create,
+    read,
+    update,
+    destroy
+};

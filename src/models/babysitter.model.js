@@ -6,25 +6,40 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
             },
-            workDate: {
+            // available date in a week MON-SUN ex: "MON,TUE,FRI"
+            weeklySchedule: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
-            workTime: {
+            // available time in the daytime 05 - 17 ex: "hh-hh"
+            daytime: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            MinAgeOfChildren: {
+            // available time in the evening 17 - 05 ex: "hh-hh"
+            evening: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
+            minAgeOfChildren: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            MaxNumOfChildren: {
+            maxNumOfChildren: {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            MaxTravelDistance: {
+            maxTravelDistance: {
                 type: DataTypes.INTEGER,
                 allowNull: false
+            },
+            averageRating: {
+                type: DataTypes.FLOAT,
+                allowNull: true
+            },
+            totalFeedback: {
+                type: DataTypes.INTEGER,
+                allowNull: true
             },
         }, {
             timestamps: true,
@@ -32,20 +47,14 @@ export default function (sequelize, DataTypes) {
     );
 
     babysitter.associate = function (models) {
-        // babysitter.belongsTo(models.user, {
-        //     foreignKey: 'userId',
-        //     sourceKey: 'id',
-        //     as: 'user'
-        // });
-        // babysitter.hasMany(models.invitation, {
-        //     foreignKey: {
-        //         name: 'receiver',
-        //         allowNull: false
-        //     },
-        //     sourceKey: 'userId',
-        //     as: 'invitation',
-        // });
+        // user - babysitter
+        babysitter.belongsTo(models.user, {
+            foreignKey: 'userId',
+            sourceKey: 'id',
+            as: 'user'
+        });
 
+        // babysitter - wishlist
         babysitter.hasMany(models.wishlist, {
             foreignKey: {
                 name: 'sittertId',

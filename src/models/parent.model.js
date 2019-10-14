@@ -6,10 +6,6 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
             },
-            childrenNumber: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
             familyDescription: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -20,6 +16,7 @@ export default function (sequelize, DataTypes) {
     );
 
     parent.associate = function (models) {
+        // parent - circle
         parent.hasMany(models.circle, {
             foreignKey: {
                 name: 'ownerId',
@@ -29,6 +26,7 @@ export default function (sequelize, DataTypes) {
             onDelete: 'CASCADE',
         });
 
+        // parent - circle
         parent.hasMany(models.circle, {
             foreignKey: {
                 name: 'friendId',
@@ -38,12 +36,23 @@ export default function (sequelize, DataTypes) {
             onDelete: 'CASCADE',
         });
 
+        // parent - wishlist
         parent.hasMany(models.wishlist, {
             foreignKey: {
                 name: 'parentId',
                 allowNull: false,
             },
             as: 'wishlists',
+            onDelete: 'CASCADE',
+        });
+
+        // parent - children
+        parent.hasMany(models.children, {
+            foreignKey: {
+                name: 'parentId',
+                allowNull: false,
+            },
+            as: 'children',
             onDelete: 'CASCADE',
         });
     }

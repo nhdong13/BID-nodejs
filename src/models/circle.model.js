@@ -2,10 +2,7 @@ export default function (sequelize, DataTypes) {
     return sequelize.define(
         "circle", // Model Name
         {
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false
-            },
+            // this is a reference table with only foreign key from parent
         },
         {
             timestamps: true,
