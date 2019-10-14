@@ -55,7 +55,11 @@ const read = async (req, res) => {
         const sittingReq = await models.sittingRequest.findOne({
             where: {
                 id
-            }
+            },
+            include: [{
+                model: models.user,
+                as: 'user'
+            }]
         });
         if (sittingReq) {
             res.status(201);

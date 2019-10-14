@@ -12,25 +12,25 @@ export default function (sequelize, DataTypes) {
     );
 
     invitation.associate = function (models) {
-        // invitation.belongsTo(models.sittingRequest, {
-        //     foreignKey: {
-        //         name: 'sittingRequestId',
-        //         allowNull: false
-        //     },
-        //     sourceKey: 'id',
-        //     as: 'sittingRequest',
-        //     onDelete: 'CASCADE'
-        // });
+        invitation.belongsTo(models.sittingRequest, {
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false
+            },
+            sourceKey: 'id',
+            as: 'sittingRequest',
+            onDelete: 'CASCADE'
+        });
         
-        // invitation.belongsTo(models.babysitter, {
+        // invitation.belongsTo(models.user, {
         //     foreignKey: {
         //         name: 'receiver',
         //         allowNull: false
         //     },
-        //     sourceKey: 'userId',
+        //     sourceKey: 'id',
         //     as: 'babysitter',
         //     onDelete: 'CASCADE'
-        // })
+        // });
     }
 
     return invitation;
