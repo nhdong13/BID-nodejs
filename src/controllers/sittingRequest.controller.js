@@ -114,6 +114,9 @@ const read = async (req, res) => {
             include: [{
                 model: models.user,
                 as: 'user'
+            }, {
+                model: models.user,
+                as: 'bsitter'
             }]
         });
         if (sittingReq) {
