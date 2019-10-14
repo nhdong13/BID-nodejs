@@ -16,7 +16,7 @@ const login = async (req, res) => {
 
             if (isValid) {
                 const token = createJWT(user.id, user.roleId);
-                res.send({ token, roleId: user.roleId });
+                res.send({ token, roleId: user.roleId, userId: user.id });
             } else {
                 res.status(400);
                 res.send();
