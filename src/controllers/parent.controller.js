@@ -6,30 +6,6 @@ const list = async (req, res, next) => {
     res.send(listParents);
 };
 
-const getParentRequest = async (req, res, next) => {
-    const sittingReqId = req.body.id;
-
-    try {
-        const request = await models.invitation.findAll({
-            where: {
-                id: 1,
-            },
-            include: [{
-                model: models.babysitter,
-                as: 'babysitter',
-
-            }, {
-                model: models.sittingRequest,
-            }],
-        });
-        res.send(request);
-    } catch (error) {
-        res.status(400);
-        res.send(error);
-    }
-
-};
-
 const create = async (req, res) => {
     const userData = req.body;
     const newUser = {
@@ -40,7 +16,6 @@ const create = async (req, res) => {
         address: userData.address,
         roleId: userData.roleId,
     };
-
 
     try {
         // Create user first
@@ -122,7 +97,6 @@ const destroy = async (req, res) => {
 
 export default {
     list,
-    getParentRequest,
     create,
     read,
     update,
