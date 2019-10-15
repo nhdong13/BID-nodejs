@@ -31,7 +31,7 @@ export default function (sequelize, DataTypes) {
                 allowNull: false,
             },
             status: {
-                type: DataTypes.ENUM('PENDING', 'CONFIRMED', 'CANCELED', 'ONGOING', 'DONE'),
+                type: DataTypes.ENUM('PENDING', 'CONFIRMED', 'CANCELED', 'ONGOING', 'DONE', 'BS_FINISH'),
                 allowNull: false,
             },
         },
@@ -85,6 +85,13 @@ export default function (sequelize, DataTypes) {
             as: 'user',
         });
         
+        sittingRequest.belongsTo(models.user, {
+            foreignKey: {
+                name: 'acceptedBabysitter'
+            },
+            sourceKey: 'id',
+            as: 'bsitter',
+        });
     }
 
     return sittingRequest;
