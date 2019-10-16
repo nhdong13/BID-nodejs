@@ -374,6 +374,24 @@ export async function insertDatabase() {
                                     sender: el.createdUser,
                                     receiver: 3,
                                     status: "PENDING"
+                                },
+                                {
+                                    requestId: el.id,
+                                    sender: el.createdUser,
+                                    receiver: 4,
+                                    status: "PENDING"
+                                },
+                                {
+                                    requestId: el.id,
+                                    sender: el.createdUser,
+                                    receiver: 5,
+                                    status: "PENDING"
+                                },
+                                {
+                                    requestId: el.id,
+                                    sender: el.createdUser,
+                                    receiver: 6,
+                                    status: "PENDING"
                                 }
                             ]);
                         }
