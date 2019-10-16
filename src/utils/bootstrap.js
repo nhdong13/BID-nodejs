@@ -109,10 +109,20 @@ export async function insertDatabase() {
     users.push(user);
 
     user = {
-        phoneNumber: "0926261325",
-        email: "dong@gmail.com",
+        phoneNumber: "01",
+        email: "dong1@gmail.com",
         password: await hashPassword("12341234"),
-        nickname: "Dong",
+        nickname: "DongPR",
+        address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        roleId: 2
+    };
+    users.push(user);
+
+    user = {
+        phoneNumber: "02",
+        email: "dong2@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "DongBS",
         address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
         roleId: 3
     };
