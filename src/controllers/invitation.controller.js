@@ -43,6 +43,24 @@ const listByRequestAndStatus = async (req, res, next) => {
     res.send(invitations);
 };
 
+const listInvitationBySitterId = async (req, res, next) => {
+    const sitterId = req.body.id;
+    var invitations = await models.invitation.findAll({
+        where: {
+            receiver: sitterId,
+        },
+      include: [{
+          model: models.sittingRequest,
+          as: 'sittingRequest',
+          include: [{
+              model: models.user,
+              as: 'user'
+          }]
+      }]
+    });
+    res.send(invitations);
+  };
+
 const create = async (req, res) => {
     const newItem = req.body;
 
@@ -55,7 +73,7 @@ const create = async (req, res) => {
     }
 };
 
-const getInvitations = async (req, res) => {
+const getInvitation = async (req, res) => {
     const id = req.params.id;
 
     try {
@@ -132,4 +150,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { list, listByRequestAndStatus, create, getInvitations, update, destroy };
+export default { list, create, getInvitation, update, destroy, listInvitationBySitterId,listByRequestAndStatus };

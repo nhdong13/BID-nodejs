@@ -38,6 +38,26 @@ const listByParentAndStatus = async (req, res, next) => {
     }
 };
 
+const listSittingByBabysitterId = async (req, res, next) => {
+    const bsId = req.body.bsId;
+
+    try {
+        const listSittings = await models.sittingRequest.findAll({
+            where: {
+                acceptedBabysitter: bsId
+            },
+            include: [{
+                model: models.user, 
+                as: 'user'
+            }]
+        });
+        res.send(listSittings);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
 // get a list of matched babysitter of a request
 const listMatchedBabysitter = async (req, res, next) => {
     const id = req.body.id;
@@ -223,6 +243,7 @@ export default {
     listByParentId,
     listByParentAndStatus,
     listMatchedBabysitter,
+    listSittingByBabysitterId,
     recommendBabysitter,
     acceptBabysitter,
     create,
