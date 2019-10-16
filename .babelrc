@@ -9,6 +9,8 @@
             }
         ]
     ],
+    "sourceMaps": true,
+    "retainLines": true,
     "plugins": [
         [
             "module-resolver",

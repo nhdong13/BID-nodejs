@@ -20,6 +20,14 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: false
             },
+            gender: {
+                type: DataTypes.ENUM('MALE', 'FEMALE'),
+                allowNull: false,
+            },
+            dateOfBirth: {
+                type: DataTypes.DATEONLY,
+                allowNull: false,
+            },
             address: {
                 type: DataTypes.STRING,
                 allowNull: false

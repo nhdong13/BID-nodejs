@@ -94,16 +94,24 @@ export async function insertDatabase() {
         password: await hashPassword("12341234"),
         nickname: "Pham Hai Duong",
         address: "529 Lê Đức Thọ, Phường 16, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
+        dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
         roleId: 2
     };
     users.push(user);
 
     user = {
-        phoneNumber: "0926261324",
+        phoneNumber: "0903322351",
         email: "phuc@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Phuc",
         address: "529 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
+        dateOfBirth: moment().set({
+            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+            month: Math.floor(Math.random() * 11),
+            date: Math.floor(Math.random() * 28)
+        }),
         roleId: 2
     };
     users.push(user);
@@ -124,6 +132,12 @@ export async function insertDatabase() {
         password: await hashPassword("12341234"),
         nickname: "DongBS",
         address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
+        dateOfBirth: moment().set({
+            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+            month: Math.floor(Math.random() * 11),
+            date: Math.floor(Math.random() * 28)
+        }),
         roleId: 3
     };
     users.push(user);
@@ -134,6 +148,12 @@ export async function insertDatabase() {
         password: await hashPassword("12341234"),
         nickname: "Ky",
         address: "200 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        gender: "FEMALE",
+        dateOfBirth: moment().set({
+            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+            month: Math.floor(Math.random() * 11),
+            date: Math.floor(Math.random() * 28)
+        }),
         roleId: 3
     };
     users.push(user);
@@ -153,6 +173,12 @@ export async function insertDatabase() {
             password: await hashPassword("12341234"),
             nickname: lastName + " " + firstName,
             address: houseNumber + ", " + address,
+            gender: "FEMALE",
+            dateOfBirth: moment().set({
+                year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+                month: Math.floor(Math.random() * 11),
+                date: Math.floor(Math.random() * 28)
+            }),
             roleId: index < 5 ? 2 : 3
         };
 
@@ -203,7 +229,7 @@ export async function insertDatabase() {
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: 4.5,
-                        totalFeedback: Math.floor(Math.random() * 5) + 1,
+                        totalFeedback: Math.floor(Math.random() * 5) + 1
                     };
                 } else if (index < 10) {
                     babysitter = {
