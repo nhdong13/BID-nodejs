@@ -1,4 +1,4 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
     const user = sequelize.define(
         "user", // Model Name
         {
@@ -21,68 +21,71 @@ export default function (sequelize, DataTypes) {
                 allowNull: false
             },
             gender: {
-                type: DataTypes.ENUM('MALE', 'FEMALE'),
+                type: DataTypes.ENUM("MALE", "FEMALE")
                 // allowNull: false,
             },
             dateOfBirth: {
-                type: DataTypes.DATEONLY,
+                type: DataTypes.DATEONLY
                 // allowNull: false,
             },
             address: {
                 type: DataTypes.STRING,
                 allowNull: false
-            },
-        }, {
+            }
+        },
+        {
             timestamps: true,
+            charset: "utf8",
+            collate: "utf8_general_ci"
         }
     );
 
-    user.associate = function (models) {
+    user.associate = function(models) {
         // user - parent
         user.hasOne(models.parent, {
-            foreignKey: 'userId',
-            as: 'parent',
-            onDelete: 'CASCADE',
+            foreignKey: "userId",
+            as: "parent",
+            onDelete: "CASCADE"
         });
 
         // user - babysitter
         user.hasOne(models.babysitter, {
-            foreignKey: 'userId',
-            as: 'babysitter',
-            onDelete: 'CASCADE',
+            foreignKey: "userId",
+            as: "babysitter",
+            onDelete: "CASCADE"
         });
 
         // user - sittingRequest
         user.hasMany(models.sittingRequest, {
             foreignKey: {
-                name: 'createdUser',
-                allowNull: false,
+                name: "createdUser",
+                allowNull: false
             },
-            sourceKey: 'id',
-            as: 'sittingRequests',
-            onDelete: 'CASCADE',
+            sourceKey: "id",
+            as: "sittingRequests",
+            onDelete: "CASCADE"
         });
 
         // user - invitation
         user.hasMany(models.invitation, {
             foreignKey: {
-                name: 'receiver',
-                allowNull: false,
+                name: "receiver",
+                allowNull: false
             },
-            sourceKey: 'id',
-            as: 'invitations',
+            sourceKey: "id",
+            as: "invitations"
         });
 
         // user - transaction
         user.hasMany(models.transaction, {
             foreignKey: {
-                name: 'userId',
-                allowNull: false,
+                name: "userId",
+                allowNull: false
             },
-            sourceKey: 'id',
-            as: 'transactions',
+            sourceKey: "id",
+            as: "transactions"
         });
-    }
+    };
 
     return user;
 }

@@ -1,15 +1,15 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
     const babysitter = sequelize.define(
         "babysitter", // Model Name
         {
             userId: {
                 type: DataTypes.INTEGER,
-                primaryKey: true,
+                primaryKey: true
             },
             // available date in a week MON-SUN ex: "MON,TUE,FRI"
             weeklySchedule: {
                 type: DataTypes.STRING,
-                allowNull: true,
+                allowNull: true
             },
             // available time in the daytime 05 - 17 ex: "hh-hh"
             daytime: {
@@ -40,30 +40,33 @@ export default function (sequelize, DataTypes) {
             totalFeedback: {
                 type: DataTypes.INTEGER,
                 allowNull: true
-            },
-        }, {
+            }
+        },
+        {
             timestamps: true,
+            charset: "utf8",
+            collate: "utf8_general_ci"
         }
     );
 
-    babysitter.associate = function (models) {
+    babysitter.associate = function(models) {
         // user - babysitter
         babysitter.belongsTo(models.user, {
-            foreignKey: 'userId',
-            sourceKey: 'id',
-            as: 'user'
+            foreignKey: "userId",
+            sourceKey: "id",
+            as: "user"
         });
 
         // babysitter - wishlist
         babysitter.hasMany(models.wishlist, {
             foreignKey: {
-                name: 'sittertId',
+                name: "sittertId",
                 allowNull: false
             },
-            as: 'wishlists',
-            onDelete: 'CASCADE',
+            as: "wishlists",
+            onDelete: "CASCADE"
         });
-    }
+    };
 
     return babysitter;
 }

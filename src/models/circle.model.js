@@ -1,4 +1,4 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
     return sequelize.define(
         "circle", // Model Name
         {
@@ -6,6 +6,8 @@ export default function (sequelize, DataTypes) {
         },
         {
             timestamps: true,
+            charset: "utf8",
+            collate: "utf8_general_ci"
         }
     );
 }
