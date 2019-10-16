@@ -32,7 +32,11 @@ const listByRequestAndStatus = async (req, res, next) => {
         include: [
             {
                 model: models.user,
-                as: "babysitter"
+                as: "user",
+                include: [{
+                    model: models.babysitter,
+                    as: 'babysitter'
+                }]
             }
         ]
     });

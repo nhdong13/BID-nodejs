@@ -36,7 +36,7 @@ export default function (sequelize, DataTypes) {
                 allowNull: false
             },
             sourceKey: 'id',
-            as: 'babysitter',
+            as: 'user',
             onDelete: 'CASCADE'
         });
     }
