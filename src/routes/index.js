@@ -13,8 +13,8 @@ router.get("/status", (res) => res.send("Server is up!"));
 
 router.use("/auth", authRoutes);
 router.use("/trackings", trackingRoutes);
-router.use("/users", jwtAuthentication, userRoutes);
-router.use("/sittingRequests", jwtAuthentication, sittingRoutes);
+router.use("/users", userRoutes);
+router.use("/sittingRequests", sittingRoutes);
 router.use("/parents", parentRoutes);
 router.use("/invitations", invitationRoutes);
 
