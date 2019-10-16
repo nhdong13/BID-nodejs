@@ -209,7 +209,7 @@ export async function insertDatabase() {
                     },
                     {
                         ownerId: 1,
-                        friendId: 5
+                        friendId: 6
                     }
                 ]);
             });
