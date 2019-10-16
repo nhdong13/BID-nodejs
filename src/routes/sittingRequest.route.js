@@ -8,6 +8,7 @@ router.route("/listStatus").get(controller.listByParentAndStatus);
 router.route("/listBabysitter").get(controller.listMatchedBabysitter);
 router.route("/bsitterSitting").post(controller.listSittingByBabysitterId);
 router.route("/recommend/:id").get(controller.recommendBabysitter);
+router.route("/acceptBabysitter/:requestId&:sitterId").get(controller.acceptBabysitter);
 router.route("/").post(controller.create);
 router.route("/:id").get(controller.read);
 router.route("/:id").put(controller.update);

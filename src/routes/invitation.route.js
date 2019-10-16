@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.route("/").get(controller.list);
 router.route("/sitterInvitation").post(controller.listInvitationBySitterId);
+router.route("/listByRequestAndStatus/:requestId&:status").get(controller.listByRequestAndStatus);
 router.route("/").post(controller.create);
 router.route("/:id").get(controller.getInvitation);
 router.route("/:id").put(controller.update);

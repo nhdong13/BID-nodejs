@@ -2,17 +2,45 @@ import models from "@models";
 import userController from "./user.controller";
 
 const list = async (req, res, next) => {
-  var invitations = await models.invitation.findAll({
-    include: [{
-        model: models.sittingRequest,
-        as: 'sittingRequest',
-        include: [{
-            model: models.user,
-            as: 'user'
-        }]
-    }]
-  });
-  res.send(invitations);
+    var invitations = await models.invitation.findAll({
+        include: [
+            {
+                model: models.sittingRequest,
+                as: "sittingRequest",
+                include: [
+                    {
+                        model: models.user,
+                        as: "user"
+                    }
+                ]
+            }
+        ]
+    });
+    res.send(invitations);
+};
+
+//
+const listByRequestAndStatus = async (req, res, next) => {
+    const requestId = req.params.requestId;
+    const status = req.params.status;
+
+    var invitations = await models.invitation.findAll({
+        where: {
+            requestId: requestId,
+            status: status
+        },
+        include: [
+            {
+                model: models.user,
+                as: "user",
+                include: [{
+                    model: models.babysitter,
+                    as: 'babysitter'
+                }]
+            }
+        ]
+    });
+    res.send(invitations);
 };
 
 const listInvitationBySitterId = async (req, res, next) => {
@@ -53,14 +81,18 @@ const getInvitation = async (req, res) => {
             where: {
                 id
             },
-            include: [{
-                model: models.sittingRequest,
-                as: 'sittingRequest',
-                include: [{
-                    model: models.user,
-                    as: 'user'
-                }]
-            }]
+            include: [
+                {
+                    model: models.sittingRequest,
+                    as: "sittingRequest",
+                    include: [
+                        {
+                            model: models.user,
+                            as: "user"
+                        }
+                    ]
+                }
+            ]
             // include: [{
             //     model: models.babysitter,
             //     as: 'babysitter'
@@ -118,4 +150,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { list, create, getInvitation, update, destroy, listInvitationBySitterId };
+export default { list, create, getInvitation, update, destroy, listInvitationBySitterId,listByRequestAndStatus };
