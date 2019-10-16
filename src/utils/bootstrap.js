@@ -99,7 +99,7 @@ export async function insertDatabase() {
     users.push(user);
 
     user = {
-        phoneNumber: "0926261324",
+        phoneNumber: "0903322351",
         email: "phuc@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Phuc",
