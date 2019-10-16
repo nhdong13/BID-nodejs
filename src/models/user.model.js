@@ -22,11 +22,11 @@ export default function (sequelize, DataTypes) {
             },
             gender: {
                 type: DataTypes.ENUM('MALE', 'FEMALE'),
-                allowNull: false,
+                // allowNull: false,
             },
             dateOfBirth: {
                 type: DataTypes.DATEONLY,
-                allowNull: false,
+                // allowNull: false,
             },
             address: {
                 type: DataTypes.STRING,

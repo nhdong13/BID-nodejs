@@ -2,6 +2,8 @@ import models from "@models";
 import { matching } from "@services/matchingService";
 import { recommendToParent } from "@services/recommendService";
 
+const Sequelize = require("sequelize");
+
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
 
@@ -28,6 +30,26 @@ const listByParentAndStatus = async (req, res, next) => {
                 createdUser: parentId,
                 status: status
             }
+        });
+        res.send(listSittings);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
+const listSittingByBabysitterId = async (req, res, next) => {
+    const bsId = req.body.bsId;
+
+    try {
+        const listSittings = await models.sittingRequest.findAll({
+            where: {
+                acceptedBabysitter: bsId
+            },
+            include: [{
+                model: models.user, 
+                as: 'user'
+            }]
         });
         res.send(listSittings);
     } catch (err) {
@@ -89,6 +111,55 @@ const recommendBabysitter = async (req, res, next) => {
     }
 };
 
+//
+const acceptBabysitter = async (req, res, next) => {
+    const requestId = req.params.requestId;
+    const sitterId = req.params.sitterId;
+
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id: requestId
+            }
+        });
+
+        // update sitting request
+        await models.sittingRequest
+            .update(
+                { status: "CONFIRMED",
+                 acceptedBabysitter: sitterId 
+                },
+                {
+                    where: {
+                        id: requestId
+                    }
+                }
+            )
+            .then(async function(res) {
+                // then update other invitation status
+                let selector = {
+                    where: {
+                        requestId: requestId,
+                        receiver: {
+                            [Sequelize.Op.ne]: sitterId
+                        }
+                    }
+                };
+                let a = await models.invitation.update(
+                    {
+                        status: "EXPIRED"
+                    },
+                    selector
+                );
+            });
+        res.send();
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const create = async (req, res) => {
     let newItem = req.body;
     // initial status is PENDING
@@ -111,13 +182,16 @@ const read = async (req, res) => {
             where: {
                 id
             },
-            include: [{
-                model: models.user,
-                as: 'user'
-            }, {
-                model: models.user,
-                as: 'bsitter'
-            }]
+            include: [
+                {
+                    model: models.user,
+                    as: "user"
+                },
+                {
+                    model: models.user,
+                    as: "bsitter"
+                }
+            ]
         });
         if (sittingReq) {
             res.status(201);
@@ -169,7 +243,9 @@ export default {
     listByParentId,
     listByParentAndStatus,
     listMatchedBabysitter,
+    listSittingByBabysitterId,
     recommendBabysitter,
+    acceptBabysitter,
     create,
     read,
     update,

@@ -3,7 +3,7 @@ export default function (sequelize, DataTypes) {
         "invitation", // Model Name
         {
             status: {
-                type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'DENIED'),
+                type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'DENIED', 'EXPIRED'),
                 allowNull: false,
             },
             requestId: {
@@ -36,7 +36,7 @@ export default function (sequelize, DataTypes) {
                 allowNull: false
             },
             sourceKey: 'id',
-            as: 'babysitter',
+            as: 'user',
             onDelete: 'CASCADE'
         });
     }
