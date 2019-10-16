@@ -6,6 +6,14 @@ export default function (sequelize, DataTypes) {
                 type: DataTypes.ENUM('PENDING', 'ACCEPTED', 'DENIED'),
                 allowNull: false,
             },
+            requestId: {
+                type: DataTypes.INTEGER,
+                unique: 'compositeIndex',
+            },
+            receiver: {
+                type: DataTypes.INTEGER,
+                unique: 'compositeIndex',
+            }
         }, {
             timestamps: true,
         }
@@ -22,15 +30,15 @@ export default function (sequelize, DataTypes) {
             onDelete: 'CASCADE'
         });
         
-        // invitation.belongsTo(models.user, {
-        //     foreignKey: {
-        //         name: 'receiver',
-        //         allowNull: false
-        //     },
-        //     sourceKey: 'id',
-        //     as: 'babysitter',
-        //     onDelete: 'CASCADE'
-        // });
+        invitation.belongsTo(models.user, {
+            foreignKey: {
+                name: 'receiver',
+                allowNull: false
+            },
+            sourceKey: 'id',
+            as: 'babysitter',
+            onDelete: 'CASCADE'
+        });
     }
 
     return invitation;
