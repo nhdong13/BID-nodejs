@@ -1,13 +1,13 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
     const transaction = sequelize.define(
         "transaction", // Model Name
         {
             userId: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: false
             },
             type: {
-                type: DataTypes.ENUM('CHARGE', 'PAY'),
+                type: DataTypes.ENUM("CHARGE", "PAY"),
                 allowNull: false
             },
             description: {
@@ -17,16 +17,16 @@ export default function (sequelize, DataTypes) {
             amount: {
                 type: DataTypes.FLOAT,
                 allowNull: true
-            },
+            }
         },
         {
             timestamps: true,
+            charset: "utf8",
+            collate: "utf8_general_ci"
         }
     );
 
-    transaction.associate = function (models) {
-
-    }
+    transaction.associate = function(models) {};
 
     return transaction;
 }

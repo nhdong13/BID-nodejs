@@ -1,23 +1,24 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
     const feedback = sequelize.define(
         "feedback", // Model Name
         {
             rating: {
                 type: DataTypes.INTEGER,
-                allowNull: true,
+                allowNull: true
             },
             description: {
                 type: DataTypes.STRING,
                 allowNull: true
-            },
-        }, {
+            }
+        },
+        {
             timestamps: true,
+            charset: "utf8",
+            collate: "utf8_general_ci"
         }
     );
 
-    feedback.associate = function (models) {
-        
-    }
+    feedback.associate = function(models) {};
 
     return feedback;
 }
