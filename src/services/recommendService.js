@@ -1,8 +1,8 @@
 import seq from "sequelize";
 import models from "@models/";
 import { matching } from "@services/matchingService";
-
 import { callAPI } from "@utils/distanceAPI";
+import { asyncForEach } from '@utils/common'
 
 // CONSTANTS WEIGHTED MULTIPLIER (total = 1)
 const CIRCLE_WEIGHTED = 0.5;
@@ -12,8 +12,6 @@ const M = 5;
 
 export async function recommendToParent(request, listMatched) {
     let recommendList = [];
-
-    // let res = await callAPI(request.sittingAddress, listMatched[1].address);
 
     // init a list of matched babysitters's id and their circle weighted
     let listWithCircle = listMatched.map(x => {
@@ -39,7 +37,8 @@ export async function recommendToParent(request, listMatched) {
     let listWithDistance = listMatched.map(x => {
         let temp = {
             id: x.userId,
-            distanceW: 0
+            distanceW: 0,
+            distance: x.distance
         };
 
         return temp;
@@ -59,7 +58,7 @@ export async function recommendToParent(request, listMatched) {
     // calculate babysitter's rating weighted
     listWithRating = await calRating(listWithRating);
     // calculate babysitter's distance weighted
-    listWithDistance = await calDistance(request.createdUser, listWithDistance);
+    listWithDistance = await calDistance(listWithDistance);
     // calculate babysitter's total score
     listWithTotal = await calScore(
         listWithCircle,
@@ -172,16 +171,17 @@ async function calRating(listWithRating) {
 }
 
 // calculate the weight of distance
-function calDistance(parentId, listWithDistance) {
+async function calDistance(listWithDistance) {
+    await asyncForEach(listWithDistance, async el => {
+        let scoreDistance = 10 - el.distance; 
+        let score = scoreDistance * 10;
+        el.distanceW = score;
+    });
+
     return listWithDistance;
 }
 
-// use if you want a forEach function with async and await
-async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-    }
-}
+
 
 // (v/(v+M) * r) + (M/(M+v) * C)
 // v is the number of feedback for the babysitter;

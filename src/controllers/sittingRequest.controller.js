@@ -46,10 +46,12 @@ const listSittingByBabysitterId = async (req, res, next) => {
             where: {
                 acceptedBabysitter: bsId
             },
-            include: [{
-                model: models.user, 
-                as: 'user'
-            }]
+            include: [
+                {
+                    model: models.user,
+                    as: "user"
+                }
+            ]
         });
         res.send(listSittings);
     } catch (err) {
@@ -126,9 +128,7 @@ const acceptBabysitter = async (req, res, next) => {
         // update sitting request
         await models.sittingRequest
             .update(
-                { status: "CONFIRMED",
-                 acceptedBabysitter: sitterId 
-                },
+                { status: "CONFIRMED", acceptedBabysitter: sitterId },
                 {
                     where: {
                         id: requestId

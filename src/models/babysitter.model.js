@@ -40,7 +40,8 @@ export default function(sequelize, DataTypes) {
             totalFeedback: {
                 type: DataTypes.INTEGER,
                 allowNull: true
-            }
+            },
+            distance: DataTypes.VIRTUAL
         },
         {
             timestamps: true,
