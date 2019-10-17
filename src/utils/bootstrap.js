@@ -48,46 +48,7 @@ export async function insertDatabase() {
     // seed users
     let users = [];
 
-    // users.push([{
-    //         phoneNumber: '0903322351',
-    //         email: 'cute@gmail.com',
-    //         password: await hashPassword('12341234'),
-    //         nickname: 'cutephomaique',
-    //         address: '529 Lê Đức Thọ, Phường 16, Gò Vấp, Hồ Chí Minh, Vietnam',
-    //         roleId: 2,
-    //     },
-    //     {
-    //         phoneNumber: '0978199199',
-    //         email: 'tho@gmail.com',
-    //         password: await hashPassword('12341234'),
-    //         nickname: 'thobaytmau',
-    //         address: '702/66 Lê Đức Thọ, Gò Vấp, Hồ Chí Minh, Vietnam',
-    //         roleId: 3,
-    //     },
-    //     {
-    //         phoneNumber: '097111111111',
-    //         email: 'kytom@gmail.com',
-    //         password: await hashPassword('12341234'),
-    //         nickname: 'kydaica',
-    //         address: '321 livepool, Brexit',
-    //         roleId: 3,
-    //     },
-    //     {
-    //         phoneNumber: '0903322352',
-    //         email: 'parent2@gmail.com',
-    //         password: await hashPassword('12341234'),
-    //         nickname: 'friendOfParent1',
-    //         address: '124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
-    //         roleId: 2,
-    //     }, {
-    //         phoneNumber: '0978199198',
-    //         email: 'sitter3@gmail.com',
-    //         password: await hashPassword('12341234'),
-    //         nickname: 'ahuhu',
-    //         address: 'Go Vap, TP Ho Chi Minh, Viet Nam',
-    //         roleId: 3,
-    //     },
-    // ]);
+    //
     let user = {
         phoneNumber: "0326261307",
         email: "phduongse@gmail.com",
@@ -100,6 +61,7 @@ export async function insertDatabase() {
     };
     users.push(user);
 
+    //
     user = {
         phoneNumber: "0903322351",
         email: "phuc@gmail.com",
@@ -116,6 +78,7 @@ export async function insertDatabase() {
     };
     users.push(user);
 
+    //
     user = {
         phoneNumber: "01",
         email: "dong1@gmail.com",
@@ -126,6 +89,7 @@ export async function insertDatabase() {
     };
     users.push(user);
 
+    //
     user = {
         phoneNumber: "02",
         email: "dong2@gmail.com",
@@ -142,6 +106,7 @@ export async function insertDatabase() {
     };
     users.push(user);
 
+    //
     user = {
         phoneNumber: "0926261326",
         email: "ky@gmail.com",
@@ -158,6 +123,7 @@ export async function insertDatabase() {
     };
     users.push(user);
 
+    //
     for (let index = 0; index < 20; index++) {
         let firstName =
             listName[Math.floor(Math.random() * (listName.length - 1))];
@@ -201,15 +167,20 @@ export async function insertDatabase() {
             });
 
             db.parent.bulkCreate(parents).then(res => {
+                let parents = res;
                 // seed circle
                 db.circle.bulkCreate([
                     {
-                        ownerId: 1,
-                        friendId: 2
+                        ownerId: res[0].userId,
+                        friendId: res[1].userId
                     },
                     {
-                        ownerId: 1,
-                        friendId: 6
+                        ownerId: res[0].userId,
+                        friendId: res[2].userId
+                    },
+                    {
+                        ownerId: res[0].userId,
+                        friendId: res[3].userId
                     }
                 ]);
             });
@@ -222,14 +193,14 @@ export async function insertDatabase() {
                 if (index < 5) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,TUE,WED,FRI",
+                        weeklySchedule: "MON,TUE,WED,THU,FRI,SAT,SUN",
                         daytime: "08-17",
                         evening: "17-20",
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 4.5,
-                        totalFeedback: Math.floor(Math.random() * 5) + 1
+                        averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
+                        totalFeedback: Math.floor(Math.random() * 20) + 1,
                     };
                 } else if (index < 10) {
                     babysitter = {
@@ -239,7 +210,9 @@ export async function insertDatabase() {
                         evening: "17-20",
                         minAgeOfChildren: 2,
                         maxNumOfChildren: 1,
-                        maxTravelDistance: 5
+                        maxTravelDistance: 5,
+                        averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
+                        totalFeedback: Math.floor(Math.random() * 20) + 1,
                     };
                 } else {
                     babysitter = {
@@ -249,7 +222,9 @@ export async function insertDatabase() {
                         evening: "18-20",
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 1,
-                        maxTravelDistance: 5
+                        maxTravelDistance: 5,
+                        averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
+                        totalFeedback: Math.floor(Math.random() * 20) + 1,
                     };
                 }
 
