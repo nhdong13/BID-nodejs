@@ -48,7 +48,7 @@ export async function insertDatabase() {
     // seed users
     let users = [];
 
-    //
+    // parent
     let user = {
         phoneNumber: "01",
         email: "phduongse@gmail.com",
@@ -61,7 +61,7 @@ export async function insertDatabase() {
     };
     users.push(user);
 
-    //
+    // parent
     user = {
         phoneNumber: "02",
         email: "phuc@gmail.com",
@@ -78,18 +78,18 @@ export async function insertDatabase() {
     };
     users.push(user);
 
-    //
+    // parent
     user = {
         phoneNumber: "03",
         email: "dong3@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "DongPR",
-        address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        address: "102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
         roleId: 2
     };
     users.push(user);
 
-    //
+    // sitter
     user = {
         phoneNumber: "04",
         email: "dong4@gmail.com",
@@ -106,12 +106,29 @@ export async function insertDatabase() {
     };
     users.push(user);
 
-    //
+    // sitter
     user = {
         phoneNumber: "05",
         email: "ky@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Ky",
+        address: "150 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "FEMALE",
+        dateOfBirth: moment().set({
+            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+            month: Math.floor(Math.random() * 11),
+            date: Math.floor(Math.random() * 28)
+        }),
+        roleId: 3
+    };
+    users.push(user);
+
+    // sitter
+    user = {
+        phoneNumber: "06",
+        email: "duong@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "Duong",
         address: "100 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "FEMALE",
         dateOfBirth: moment().set({
@@ -124,32 +141,32 @@ export async function insertDatabase() {
     users.push(user);
 
     //
-    for (let index = 0; index < 20; index++) {
-        let firstName =
-            listName[Math.floor(Math.random() * (listName.length - 1))];
-        let lastName =
-            listName[Math.floor(Math.random() * (listName.length - 1))];
-        let address =
-            listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
-        let houseNumber = Math.floor(Math.random() * 200);
+    // for (let index = 0; index < 20; index++) {
+    //     let firstName =
+    //         listName[Math.floor(Math.random() * (listName.length - 1))];
+    //     let lastName =
+    //         listName[Math.floor(Math.random() * (listName.length - 1))];
+    //     let address =
+    //         listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
+    //     let houseNumber = Math.floor(Math.random() * 200);
 
-        let user = {
-            phoneNumber: "09" + (Math.floor(Math.random() * 100000000) + 1),
-            email: lastName + firstName + index + "@gmail.com",
-            password: await hashPassword("12341234"),
-            nickname: lastName + " " + firstName,
-            address: houseNumber + ", " + address,
-            gender: "FEMALE",
-            dateOfBirth: moment().set({
-                year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-                month: Math.floor(Math.random() * 11),
-                date: Math.floor(Math.random() * 28)
-            }),
-            roleId: index < 5 ? 2 : 3
-        };
+    //     let user = {
+    //         phoneNumber: "09" + (Math.floor(Math.random() * 100000000) + 1),
+    //         email: lastName + firstName + index + "@gmail.com",
+    //         password: await hashPassword("12341234"),
+    //         nickname: lastName + " " + firstName,
+    //         address: houseNumber + ", " + address,
+    //         gender: "FEMALE",
+    //         dateOfBirth: moment().set({
+    //             year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+    //             month: Math.floor(Math.random() * 11),
+    //             date: Math.floor(Math.random() * 28)
+    //         }),
+    //         roleId: index < 5 ? 2 : 3
+    //     };
 
-        users.push(user);
-    }
+    //     users.push(user);
+    // }
 
     db.user
         .bulkCreate(users)
@@ -190,10 +207,10 @@ export async function insertDatabase() {
             let babysitters = [];
             userBabysitters.forEach(function(el, index) {
                 let babysitter = {};
-                if (index < 5) {
+                if (index < 1) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,TUE,WED,THU,FRI,SAT,SUN",
+                        weeklySchedule: "MON,TUE,WED,THU,FRI",
                         daytime: "08-17",
                         evening: "17-20",
                         minAgeOfChildren: 1,
@@ -202,29 +219,29 @@ export async function insertDatabase() {
                         averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
                         totalFeedback: Math.floor(Math.random() * 20) + 1,
                     };
-                } else if (index < 10) {
+                } else if (index < 2) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,TUE,WED,THU,FRI",
+                        weeklySchedule: "MON,WED,FRI",
                         daytime: "08-11",
                         evening: "17-20",
                         minAgeOfChildren: 2,
                         maxNumOfChildren: 1,
                         maxTravelDistance: 5,
                         averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
-                        totalFeedback: Math.floor(Math.random() * 20) + 1,
+                        totalFeedback: Math.floor(Math.random() * 2) + 1,
                     };
                 } else {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "TUE,THU,SAT",
-                        daytime: "08-10",
-                        evening: "18-20",
+                        weeklySchedule: "TUE,THU,SAT,SUN",
+                        daytime: "08-17",
+                        evening: "17-22",
                         minAgeOfChildren: 1,
-                        maxNumOfChildren: 1,
-                        maxTravelDistance: 5,
+                        maxNumOfChildren: 2,
+                        maxTravelDistance: 10,
                         averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
-                        totalFeedback: Math.floor(Math.random() * 20) + 1,
+                        totalFeedback: Math.floor(Math.random() * 2) + 1,
                     };
                 }
 

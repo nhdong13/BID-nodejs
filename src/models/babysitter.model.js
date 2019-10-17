@@ -41,7 +41,8 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: true
             },
-            distance: DataTypes.VIRTUAL
+            distance: DataTypes.VIRTUAL,
+            isInvited: DataTypes.VIRTUAL,
         },
         {
             timestamps: true,
