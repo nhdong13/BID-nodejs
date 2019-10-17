@@ -37,7 +37,8 @@ export async function recommendToParent(request, listMatched) {
     let listWithDistance = listMatched.map(x => {
         let temp = {
             id: x.userId,
-            distanceW: 0
+            distanceW: 0,
+            distance: x.distance
         };
 
         return temp;
@@ -57,7 +58,7 @@ export async function recommendToParent(request, listMatched) {
     // calculate babysitter's rating weighted
     listWithRating = await calRating(listWithRating);
     // calculate babysitter's distance weighted
-    listWithDistance = await calDistance(request.createdUser, listWithDistance);
+    listWithDistance = await calDistance(listWithDistance);
     // calculate babysitter's total score
     listWithTotal = await calScore(
         listWithCircle,
@@ -170,7 +171,13 @@ async function calRating(listWithRating) {
 }
 
 // calculate the weight of distance
-function calDistance(parentId, listWithDistance) {
+async function calDistance(listWithDistance) {
+    await asyncForEach(listWithDistance, async el => {
+        let scoreDistance = 10 - el.distance; 
+        let score = scoreDistance * 10;
+        el.distanceW = score;
+    });
+
     return listWithDistance;
 }
 
