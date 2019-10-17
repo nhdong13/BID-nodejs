@@ -50,7 +50,7 @@ export async function insertDatabase() {
 
     //
     let user = {
-        phoneNumber: "0326261307",
+        phoneNumber: "01",
         email: "phduongse@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Pham Hai Duong",
@@ -63,7 +63,7 @@ export async function insertDatabase() {
 
     //
     user = {
-        phoneNumber: "0903322351",
+        phoneNumber: "02",
         email: "phuc@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Phuc",
@@ -80,8 +80,8 @@ export async function insertDatabase() {
 
     //
     user = {
-        phoneNumber: "01",
-        email: "dong1@gmail.com",
+        phoneNumber: "03",
+        email: "dong3@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "DongPR",
         address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
@@ -91,8 +91,8 @@ export async function insertDatabase() {
 
     //
     user = {
-        phoneNumber: "02",
-        email: "dong2@gmail.com",
+        phoneNumber: "04",
+        email: "dong4@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "DongBS",
         address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
@@ -108,7 +108,7 @@ export async function insertDatabase() {
 
     //
     user = {
-        phoneNumber: "0926261326",
+        phoneNumber: "05",
         email: "ky@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Ky",
