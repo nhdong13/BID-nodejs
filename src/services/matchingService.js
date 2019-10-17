@@ -1,25 +1,61 @@
 import models from "@models/";
+import { callAPI } from "@utils/distanceAPI";
+import { asyncForEach } from "@utils/common";
 
 const MAX_TRAVEL_DISTANCE = 10;
+const KEY = "AIzaSyAdyl3LLS1O2wBG5ALz8ETkJ8YphC7ogsk";
+var distance = require("google-distance-matrix");
+var glo = 0;
+
+const googleMaps = require("@google/maps");
 
 // matching parent's sitting request with available babysitter
 export async function matching(sittingRequest) {
-    let babysitters = await searchForBabysitter(sittingRequest.address);
+    let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
+    let r = await listDistance(babysitters);
     let matchedList = matchingCriteria(sittingRequest, babysitters);
-
     return matchedList;
 }
 
-// search for every babysitters in 10km travel distance from parent
-async function searchForBabysitter(address) {
+// search for every babysitters in 'MAX_TRAVEL_DISTANCE' travel distance from parent
+async function searchForBabysitter(sittingAddress) {
     let list = await models.babysitter.findAll({
-        include: [{
-            model: models.user,
-            as: 'user',
-        }]
+        include: [
+            {
+                model: models.user,
+                as: "user"
+            }
+        ]
+    });
+
+    await asyncForEach(list, async el => {
+        let distance = await getDistance(sittingAddress, el.user.address);
+        if (distance < 10) {
+            el.distance = distance;
+            list.push(el);
+        }
     });
 
     return list;
+}
+
+async function listDistance(babysitters) {
+    
+}
+
+async function getDistance(address1, address2) {
+    let mapsClient = googleMaps.createClient({ 
+        key: KEY, 
+        Promise: Promise 
+    });
+
+    let distances = await mapsClient.distanceMatrix({
+        origins: [address1],
+        destinations: [address2],
+        mode: 'driving'
+    }).asPromise();
+
+    return distances.json.rows[0].elements[0].distance.text;
 }
 
 // matching with criteria

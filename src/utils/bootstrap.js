@@ -112,7 +112,7 @@ export async function insertDatabase() {
         email: "ky@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Ky",
-        address: "200 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        address: "100 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "FEMALE",
         dateOfBirth: moment().set({
             year: Math.floor(Math.random() * (2000 - 1980)) + 1980,

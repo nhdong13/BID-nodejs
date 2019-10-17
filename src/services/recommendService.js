@@ -1,8 +1,8 @@
 import seq from "sequelize";
 import models from "@models/";
 import { matching } from "@services/matchingService";
-
 import { callAPI } from "@utils/distanceAPI";
+import { asyncForEach } from '@utils/common'
 
 // CONSTANTS WEIGHTED MULTIPLIER (total = 1)
 const CIRCLE_WEIGHTED = 0.5;
@@ -12,8 +12,6 @@ const M = 5;
 
 export async function recommendToParent(request, listMatched) {
     let recommendList = [];
-
-    // let res = await callAPI(request.sittingAddress, listMatched[1].address);
 
     // init a list of matched babysitters's id and their circle weighted
     let listWithCircle = listMatched.map(x => {
@@ -176,12 +174,7 @@ function calDistance(parentId, listWithDistance) {
     return listWithDistance;
 }
 
-// use if you want a forEach function with async and await
-async function asyncForEach(array, callback) {
-    for (let index = 0; index < array.length; index++) {
-        await callback(array[index], index, array);
-    }
-}
+
 
 // (v/(v+M) * r) + (M/(M+v) * C)
 // v is the number of feedback for the babysitter;
