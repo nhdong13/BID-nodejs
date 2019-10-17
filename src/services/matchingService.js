@@ -27,32 +27,41 @@ async function searchForBabysitter(sittingAddress) {
         ]
     });
 
-    for (let index = 0; index < list.length; index++) {
-        let element = list[index];
+    console.time("get_distance_api");
+    const promises = list.map(async el => {
+        // x.x km
+        let distance = await getDistance(sittingAddress, el.user.address);
 
-        let distance = await getDistance(sittingAddress, element.user.address);
-        let temp = distance.split(' ');
+        // x.x
+        let temp = distance.split(" ");
+        
         distance = temp[0];
         if (distance < 10) {
-            element.distance = distance;
-            result.push(element);
+            el.distance = distance;
+            result.push(el);
         }
-    }
+    });
+    await Promise.all(promises);
+
+    console.timeEnd("get_distance_api");
 
     return result;
 }
 
+// get the distance between 2 address 
 async function getDistance(address1, address2) {
-    let mapsClient = googleMaps.createClient({ 
-        key: KEY, 
-        Promise: Promise 
+    let mapsClient = googleMaps.createClient({
+        key: KEY,
+        Promise: Promise
     });
 
-    let distances = await mapsClient.distanceMatrix({
-        origins: [address1],
-        destinations: [address2],
-        mode: 'driving'
-    }).asPromise();
+    let distances = await mapsClient
+        .distanceMatrix({
+            origins: [address1],
+            destinations: [address2],
+            mode: "driving"
+        })
+        .asPromise();
 
     return distances.json.rows[0].elements[0].distance.text;
 }
@@ -60,25 +69,42 @@ async function getDistance(address1, address2) {
 // matching with criteria
 function matchingCriteria(request, babysitters) {
     let matchedList = [];
-    console.log('------------------------Matching with criteria------------------------');
-    console.log('Number of search: ' + babysitters.length);
+    console.log(
+        "------------------------Matching with criteria------------------------"
+    );
+    console.log("Number of search: " + babysitters.length);
     babysitters.forEach(bsitter => {
         // check children number
         if (request.childrenNumber > bsitter.maxNumOfChildren) {
-            console.log('CHILDREN NUMBER NOT MATCHED');
-            console.log('request: ' + request.childrenNumber + '| bsitter: ' + bsitter.maxNumOfChildren);
+            console.log("CHILDREN NUMBER NOT MATCHED");
+            console.log(
+                "request: " +
+                    request.childrenNumber +
+                    "| bsitter: " +
+                    bsitter.maxNumOfChildren
+            );
             return;
         }
         //check minimum age of childer
         if (request.minAgeOfChildren < bsitter.minAgeOfChildren) {
-            console.log('MIN AGE NOT MATCHED');
-            console.log('request: ' + request.minAgeOfChildren + '| bsitter: ' + bsitter.minAgeOfChildren);
+            console.log("MIN AGE NOT MATCHED");
+            console.log(
+                "request: " +
+                    request.minAgeOfChildren +
+                    "| bsitter: " +
+                    bsitter.minAgeOfChildren
+            );
             return;
         }
         // check date
         if (!dateInRange(request.sittingDate, bsitter.weeklySchedule)) {
-            console.log('SITTING DATE NOT MATCHED');
-            console.log('request: ' + request.sittingDate + '| bsitter: ' + bsitter.weeklySchedule);
+            console.log("SITTING DATE NOT MATCHED");
+            console.log(
+                "request: " +
+                    request.sittingDate +
+                    "| bsitter: " +
+                    bsitter.weeklySchedule
+            );
             return;
         }
         // check time
@@ -90,22 +116,24 @@ function matchingCriteria(request, babysitters) {
                 bsitter.evening
             )
         ) {
-            console.log('SITTING TIME NOT MATCHED');
-            console.log('request: ');
-            console.log('--- start time: ' + request.startTime);
-            console.log('--- end time: ' + request.endTime);
-            console.log('bsitter: ');
-            console.log('--- daytime: ' + bsitter.daytime);
-            console.log('--- evening: ' + bsitter.evening);
+            console.log("SITTING TIME NOT MATCHED");
+            console.log("request: ");
+            console.log("--- start time: " + request.startTime);
+            console.log("--- end time: " + request.endTime);
+            console.log("bsitter: ");
+            console.log("--- daytime: " + bsitter.daytime);
+            console.log("--- evening: " + bsitter.evening);
             return;
         }
-        
+
         // add matched
         matchedList.push(bsitter);
     });
 
-    console.log('------------------------DONE MATCHING------------------------');
-    console.log('Matched: ' + matchedList.length);
+    console.log(
+        "------------------------DONE MATCHING------------------------"
+    );
+    console.log("Matched: " + matchedList.length);
     return matchedList;
 }
 
