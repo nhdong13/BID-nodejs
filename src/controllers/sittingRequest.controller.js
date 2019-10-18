@@ -99,6 +99,13 @@ const recommendBabysitter = async (req, res, next) => {
         if (listMatched != null && listMatched != undefined) {
             recommendList = await recommendToParent(request, listMatched);
         }
+        if (recommendList.length > 0) {
+            listMatched = listMatched.filter(el => {
+                let found = recommendList.find(x => x.userId == el.userId);
+                if (found != undefined && found != null) return true;
+                return false;
+            });
+        }
 
         res.send({
             matchedCount: listMatched.length,

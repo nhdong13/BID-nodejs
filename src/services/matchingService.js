@@ -12,6 +12,9 @@ const googleMaps = require("@google/maps");
 export async function matching(sittingRequest) {
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
     let matchedList = matchingCriteria(sittingRequest, babysitters);
+    console.time("checkSent");
+    matchedList = checkIfSentInvite(sittingRequest, matchedList);
+    console.timeEnd("checkSent");
     return matchedList;
 }
 
@@ -42,10 +45,33 @@ async function searchForBabysitter(sittingAddress) {
         }
     });
     await Promise.all(promises);
-
     console.timeEnd("get_distance_api");
 
-    return result;
+    if (result.length > 0){
+        return result;
+    }
+
+    return list;
+}
+
+async function checkIfSentInvite(sittingRequest, babysitters) {
+    
+    const promises = babysitters.map(async el => {
+        let found = await models.invitation.findOne({
+            where: {
+                requestId: sittingRequest.id,
+                receiver: el.userId
+            }
+        });
+
+        if (found) {
+            el.isInvited = true;
+        }
+    });
+    await Promise.all(promises);
+
+    return babysitters;
+    
 }
 
 // get the distance between 2 address 

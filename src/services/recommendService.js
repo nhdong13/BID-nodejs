@@ -8,8 +8,10 @@ import { asyncForEach } from '@utils/common'
 const CIRCLE_WEIGHTED = 0.5;
 const RATING_WEIGHTED = 0.4;
 const DISTANCE_WEIGHTED = 0.1;
+// minimum required feedback for rating weighted
 const M = 5;
 
+// recommend to parent
 export async function recommendToParent(request, listMatched) {
     let recommendList = [];
 
@@ -68,7 +70,7 @@ export async function recommendToParent(request, listMatched) {
     );
 
     // filter out babysitter with total score <= 0
-    listWithTotal = listWithTotal.filter(x => x.total > 0);
+    listWithTotal = listWithTotal.filter(x => x.total > 10);
 
     // sort the list descending
     listWithTotal = listWithTotal.sort(function(a, b) {
@@ -125,13 +127,16 @@ async function calScore(listWithCircle, listWithRating, listWithDistance, listWi
 async function calCircle(parentId, listWithCircle) {
     let circle = [];
 
+    // find all parents in this parent's circle
     circle = await models.circle.findAll({
         where: {
             ownerId: parentId
         }
     });
 
+    // 
     await asyncForEach(circle, async el => {
+        // sitting-requests of parents in the circle
         let srq = await models.sittingRequest.findAll({
             // attributes: [[seq.fn('DISTINCT', seq.col('acceptedBabysitter')), 'bId']],
             where: {
@@ -149,7 +154,9 @@ async function calCircle(parentId, listWithCircle) {
             let found = bsit.includes(b.id);
 
             if (found) {
-                b.circleW += 10;
+                if (b.circleW < 100) {
+                    b.circleW += 100;
+                }
             }
 
             return b;
@@ -185,16 +192,19 @@ async function calDistance(listWithDistance) {
 
 // (v/(v+M) * r) + (M/(M+v) * C)
 // v is the number of feedback for the babysitter;
-// m is the minimum votes required to be listed in the chart;
+// M is the minimum votes required to be listed in the chart;
 // R is the average rating of the babysitter;
 // C is the mean rating across the whole report;
 // reference: https://www.datacamp.com/community/tutorials/recommender-systems-python?utm_source=adwords_ppc&utm_campaignid=1455363063&utm_adgroupid=65083631748&utm_device=m&utm_keyword=&utm_matchtype=b&utm_network=g&utm_adpostion=1t1&utm_creative=332602034358&utm_targetid=aud-517318242147:dsa-473406569915&utm_loc_interest_ms=&utm_loc_physical_ms=1028581&gclid=CjwKCAjw2qHsBRAGEiwAMbPoDNQfPEHKIX-J2DC5HoNN_oD7bWBEgXU_Forvnm3x4VWLy2FbZmNGFhoCV9cQAvD_BwE
 async function weightedRating(C, babysitter) {
     let v = babysitter.totalFeedback;
+    if (v < M) {
+        return 0;
+    }
     let r = babysitter.averageRating;
 
     let wR = (v/(v + M) * r) + (M/(M + v) * C);
-    let result = Math.round(wR * 10); 
+    let result = Math.round(wR * 20); 
 
     return result;
 }

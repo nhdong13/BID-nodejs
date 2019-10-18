@@ -7,7 +7,8 @@ export default function(sequelize, DataTypes) {
                     "PENDING",
                     "ACCEPTED",
                     "DENIED",
-                    "EXPIRED"
+                    "EXPIRED",
+                    "CONFIRMED"
                 ),
                 allowNull: false
             },
