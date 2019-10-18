@@ -60,7 +60,7 @@ export async function recommendToParent(request, listMatched) {
     // calculate babysitter's rating weighted
     listWithRating = await calRating(listWithRating);
     // calculate babysitter's distance weighted
-    listWithDistance = await calDistance(listWithDistance);
+    // listWithDistance = await calDistance(listWithDistance);
     // calculate babysitter's total score
     listWithTotal = await calScore(
         listWithCircle,
