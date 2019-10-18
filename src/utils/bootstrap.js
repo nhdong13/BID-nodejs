@@ -54,7 +54,7 @@ export async function insertDatabase() {
         email: "phduongse@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Pham Hai Duong",
-        address: "529 Lê Đức Thọ, Phường 16, Gò Vấp, Hồ Chí Minh, Vietnam",
+        address: "222 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
         roleId: 2
@@ -95,7 +95,7 @@ export async function insertDatabase() {
         email: "dong4@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "DongBS",
-        address: "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        address: "90 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({
             year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
@@ -140,33 +140,49 @@ export async function insertDatabase() {
     };
     users.push(user);
 
+    // sitter
+    user = {
+        phoneNumber: "07",
+        email: "Khanh@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "MR.Khanh",
+        address: "200 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
+        dateOfBirth: moment().set({
+            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+            month: Math.floor(Math.random() * 11),
+            date: Math.floor(Math.random() * 28)
+        }),
+        roleId: 2
+    };
+    users.push(user);
     //
-    // for (let index = 0; index < 20; index++) {
-    //     let firstName =
-    //         listName[Math.floor(Math.random() * (listName.length - 1))];
-    //     let lastName =
-    //         listName[Math.floor(Math.random() * (listName.length - 1))];
-    //     let address =
-    //         listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
-    //     let houseNumber = Math.floor(Math.random() * 200);
+    for (let index = 0; index < 5; index++) {
+        let firstName =
+            listName[Math.floor(Math.random() * (listName.length - 1))];
+        let lastName =
+            listName[Math.floor(Math.random() * (listName.length - 1))];
+        let address =
+            listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
+        let houseNumber = Math.floor(Math.random() * 200);
 
-    //     let user = {
-    //         phoneNumber: "09" + (Math.floor(Math.random() * 100000000) + 1),
-    //         email: lastName + firstName + index + "@gmail.com",
-    //         password: await hashPassword("12341234"),
-    //         nickname: lastName + " " + firstName,
-    //         address: houseNumber + ", " + address,
-    //         gender: "FEMALE",
-    //         dateOfBirth: moment().set({
-    //             year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-    //             month: Math.floor(Math.random() * 11),
-    //             date: Math.floor(Math.random() * 28)
-    //         }),
-    //         roleId: index < 5 ? 2 : 3
-    //     };
+        let user = {
+            phoneNumber: index + 5,
+            email: lastName + firstName + index + "@gmail.com",
+            password: await hashPassword("12341234"),
+            nickname: lastName + " " + firstName,
+            address: houseNumber + ", " + address,
+            gender: index%2 ? "FEMALE": 'MALE',
+            dateOfBirth: moment().set({
+                year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+                month: Math.floor(Math.random() * 11),
+                date: Math.floor(Math.random() * 28)
+            }),
+            roleId: 3
+        };
 
-    //     users.push(user);
-    // }
+        users.push(user);
+    }
 
     db.user
         .bulkCreate(users)
@@ -195,10 +211,6 @@ export async function insertDatabase() {
                         ownerId: res[0].userId,
                         friendId: res[2].userId
                     },
-                    {
-                        ownerId: res[0].userId,
-                        friendId: res[3].userId
-                    }
                 ]);
             });
 
