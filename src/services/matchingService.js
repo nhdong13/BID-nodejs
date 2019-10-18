@@ -3,7 +3,7 @@ import { callAPI } from "@utils/distanceAPI";
 import { asyncForEach } from "@utils/common";
 
 const MAX_TRAVEL_DISTANCE = 10;
-const KEY = "AIzaSyAdyl3LLS1O2wBG5ALz8ETkJ8YphC7ogsk";
+const KEY = "AIzaSyBSIZ2W3I0zmH-nKCF2gKhXVN-c1807LMo";
 var distance = require("google-distance-matrix");
 
 const googleMaps = require("@google/maps");
@@ -12,6 +12,9 @@ const googleMaps = require("@google/maps");
 export async function matching(sittingRequest) {
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
     let matchedList = matchingCriteria(sittingRequest, babysitters);
+    console.time("checkSent");
+    matchedList = checkIfSentInvite(sittingRequest, matchedList);
+    console.timeEnd("checkSent");
     return matchedList;
 }
 
@@ -28,24 +31,47 @@ async function searchForBabysitter(sittingAddress) {
     });
 
     console.time("get_distance_api");
-    const promises = list.map(async el => {
-        // x.x km
-        let distance = await getDistance(sittingAddress, el.user.address);
+    // const promises = list.map(async el => {
+    //     // x.x km
+    //     let distance = await getDistance(sittingAddress, el.user.address);
 
-        // x.x
-        let temp = distance.split(" ");
+    //     // x.x
+    //     let temp = distance.split(" ");
         
-        distance = temp[0];
-        if (distance < 10) {
-            el.distance = distance;
-            result.push(el);
+    //     distance = temp[0];
+    //     if (distance < 10) {
+    //         el.distance = distance;
+    //         result.push(el);
+    //     }
+    // });
+    // await Promise.all(promises);
+    console.timeEnd("get_distance_api");
+
+    if (result.length > 0){
+        return result;
+    }
+
+    return list;
+}
+
+async function checkIfSentInvite(sittingRequest, babysitters) {
+    
+    const promises = babysitters.map(async el => {
+        let found = await models.invitation.findOne({
+            where: {
+                requestId: sittingRequest.id,
+                receiver: el.userId
+            }
+        });
+
+        if (found) {
+            el.isInvited = true;
         }
     });
     await Promise.all(promises);
 
-    console.timeEnd("get_distance_api");
-
-    return result;
+    return babysitters;
+    
 }
 
 // get the distance between 2 address 
