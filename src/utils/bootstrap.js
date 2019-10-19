@@ -231,22 +231,22 @@ export async function insertDatabase() {
                         averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
                         totalFeedback: Math.floor(Math.random() * 20) + 1,
                     };
-                } else if (index < 2) {
+                } else if (index < 3) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,WED,FRI",
-                        daytime: "08-11",
+                        weeklySchedule: "MON,TUE,WED,THU,FRI",
+                        daytime: "08-17",
                         evening: "17-20",
-                        minAgeOfChildren: 2,
-                        maxNumOfChildren: 1,
-                        maxTravelDistance: 5,
+                        minAgeOfChildren: 1,
+                        maxNumOfChildren: 2,
+                        maxTravelDistance: 10,
                         averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
-                        totalFeedback: Math.floor(Math.random() * 2) + 1,
+                        totalFeedback: Math.floor(Math.random() * 20) + 1,
                     };
                 } else {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "TUE,THU,SAT,SUN",
+                        weeklySchedule: "MON,TUE,WED,THU,FRI",
                         daytime: "08-17",
                         evening: "17-22",
                         minAgeOfChildren: 1,
