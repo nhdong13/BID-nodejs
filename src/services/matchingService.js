@@ -8,13 +8,23 @@ var distance = require("google-distance-matrix");
 
 const googleMaps = require("@google/maps");
 
-// matching parent's sitting request with available babysitter
+
+/**
+ * matching parent's sitting request with available babysitter
+ * @param  {} sittingRequest
+ * @return {} matchedList 
+ */
 export async function matching(sittingRequest) {
+    // find any babysitter in 1 km travel distance of the sitting address
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
+    
+    // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = matchingCriteria(sittingRequest, babysitters);
-    console.time("checkSent");
-    matchedList = checkIfSentInvite(sittingRequest, matchedList);
-    console.timeEnd("checkSent");
+
+    console.time("checkSent"); // 
+    matchedList = await checkIfSentInvite(sittingRequest, matchedList);
+    console.timeEnd("checkSent"); // evaluate the estimate time checkIfSentInvite function needed to run
+
     return matchedList;
 }
 
@@ -31,20 +41,7 @@ async function searchForBabysitter(sittingAddress) {
     });
 
     console.time("get_distance_api");
-    // const promises = list.map(async el => {
-    //     // x.x km
-    //     let distance = await getDistance(sittingAddress, el.user.address);
-
-    //     // x.x
-    //     let temp = distance.split(" ");
-        
-    //     distance = temp[0];
-    //     if (distance < 10) {
-    //         el.distance = distance;
-    //         result.push(el);
-    //     }
-    // });
-    // await Promise.all(promises);
+    result = await randomizeDistance(list);
     console.timeEnd("get_distance_api");
 
     if (result.length > 0){
@@ -54,18 +51,57 @@ async function searchForBabysitter(sittingAddress) {
     return list;
 }
 
+async function getBabysitterDistance(listOfSitter) {
+    let result = [];
+
+    const promises = listOfSitter.map(async sitter => {
+        // x.x km
+        let distance = await getDistance(sittingAddress, sitter.user.address);
+
+        // x.x
+        let temp = distance.split(" ");
+        
+        distance = temp[0];
+        if (distance < 1) {
+            sitter.distance = distance;
+            result.push(sitter);
+        }
+    });
+    await Promise.all(promises);
+
+    return result;
+}
+
+// random distance 
+async function randomizeDistance(listOfSitter) {
+    let result = [];
+
+    const promises = listOfSitter.map(async sitter => {
+        // x.x
+        let distance = await parseFloat((sitter.userId/10)).toFixed(1);
+
+        if (distance < 1) {
+            sitter.distance = distance;
+            result.push(sitter);
+        }
+    });
+    await Promise.all(promises);
+
+    return result;
+}
+
+// check if matched babysitters is sent with an invitation
 async function checkIfSentInvite(sittingRequest, babysitters) {
-    
-    const promises = babysitters.map(async el => {
+    const promises = babysitters.map(async sitter => {
         let found = await models.invitation.findOne({
             where: {
                 requestId: sittingRequest.id,
-                receiver: el.userId
+                receiver: sitter.userId
             }
         });
 
         if (found) {
-            el.isInvited = true;
+            sitter.isInvited = true;
         }
     });
     await Promise.all(promises);
@@ -77,14 +113,14 @@ async function checkIfSentInvite(sittingRequest, babysitters) {
 // get the distance between 2 address 
 async function getDistance(address1, address2) {
     let mapsClient = googleMaps.createClient({
-        key: KEY,
-        Promise: Promise
+        key: KEY, // api key
+        Promise: Promise // enable promise request
     });
 
     let distances = await mapsClient
         .distanceMatrix({
-            origins: [address1],
-            destinations: [address2],
+            origins: [address1], // start address
+            destinations: [address2], // destination address
             mode: "driving"
         })
         .asPromise();
