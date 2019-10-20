@@ -263,24 +263,24 @@ export async function insertDatabase() {
                         userId: el.id,
                         weeklySchedule: "MON,TUE,WED,THU,FRI",
                         daytime: "08-17",
-                        evening: "17-20",
+                        evening: "17-21",
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: randomFloat(3, 5, 1),
-                        totalFeedback: randomInt(5, 20)
+                        totalFeedback: randomInt(1, 4)
                     };
                 } else {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,TUE,WED,THU,FRI",
+                        weeklySchedule: "TUE,THU,SAT",
                         daytime: "08-17",
                         evening: "17-22",
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: randomFloat(3, 5, 1),
-                        totalFeedback: randomInt(5, 20)
+                        totalFeedback: randomInt(1, 4)
                     };
                 }
 
@@ -460,4 +460,6 @@ export async function insertDatabase() {
         .catch(err => {
             console.log(err);
         });
+
+    console.log("Finish insert to database.");
 }

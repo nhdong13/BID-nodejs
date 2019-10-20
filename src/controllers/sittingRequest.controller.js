@@ -93,12 +93,16 @@ const recommendBabysitter = async (req, res, next) => {
             }
         });
 
+        console.time('--matching')
         if (request != null && request != undefined) {
             listMatched = await matching(request);
         }
+        console.timeEnd('--matching')
+        console.time('--recommend')
         if (listMatched != null && listMatched != undefined) {
             recommendList = await recommendToParent(request, listMatched);
         }
+        console.timeEnd('--recommend')
         console.time('--remove duplicate');
         if (recommendList.length > 0) {
             recommendList.forEach(recommendSitter => {
