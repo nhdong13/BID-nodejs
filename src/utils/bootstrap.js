@@ -1,6 +1,7 @@
 import models from "@models";
 import moment from "moment";
 import { hashPassword } from "@utils/hash";
+import { randomInt, randomFloat } from "@utils/common";
 
 export async function insertDatabase() {
     const db = models.sequelize.models;
@@ -23,31 +24,10 @@ export async function insertDatabase() {
         }
     ]);
 
-    let listName = [
-        "Dũng",
-        "Tuấn",
-        "Minh",
-        "Tú",
-        "Thái",
-        "Khoa",
-        "Long",
-        "Hưng",
-        "Phong",
-        "Kiên",
-        "Thanh",
-        "Thắng",
-        "Bình",
-        "Trung",
-        "Quân"
-    ];
-    let listAddress = [
-        "Lê Đức Thọ, Gò Vấp, Hồ Chí Minh, Vietnam",
-        "Tô Ký, Quận 12, Hồ Chí Minh, Vietnam"
-    ];
-
     // seed users
     let users = [];
 
+    //#region seed parents here
     // parent
     let user = {
         phoneNumber: "01",
@@ -70,9 +50,9 @@ export async function insertDatabase() {
         address: "529 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({
-            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-            month: Math.floor(Math.random() * 11),
-            date: Math.floor(Math.random() * 28)
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28)
         }),
         roleId: 2
     };
@@ -85,10 +65,35 @@ export async function insertDatabase() {
         password: await hashPassword("12341234"),
         nickname: "DongPR",
         address: "102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
+        dateOfBirth: moment().set({
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28)
+        }),
         roleId: 2
     };
     users.push(user);
 
+    // Mr Khanh
+    user = {
+        phoneNumber: "07",
+        email: "Khanh@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "MR.Khanh",
+        address: "200 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
+        dateOfBirth: moment().set({
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28)
+        }),
+        roleId: 2
+    };
+    users.push(user);
+    //#endregion
+
+    //#region seed babysitter here
     // sitter
     user = {
         phoneNumber: "04",
@@ -98,9 +103,9 @@ export async function insertDatabase() {
         address: "90 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({
-            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-            month: Math.floor(Math.random() * 11),
-            date: Math.floor(Math.random() * 28)
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28)
         }),
         roleId: 3
     };
@@ -115,9 +120,9 @@ export async function insertDatabase() {
         address: "150 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "FEMALE",
         dateOfBirth: moment().set({
-            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-            month: Math.floor(Math.random() * 11),
-            date: Math.floor(Math.random() * 28)
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28)
         }),
         roleId: 3
     };
@@ -132,91 +137,113 @@ export async function insertDatabase() {
         address: "100 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "FEMALE",
         dateOfBirth: moment().set({
-            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-            month: Math.floor(Math.random() * 11),
-            date: Math.floor(Math.random() * 28)
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28)
         }),
         roleId: 3
     };
     users.push(user);
+    //#endregion
 
-    // sitter
-    user = {
-        phoneNumber: "07",
-        email: "Khanh@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "MR.Khanh",
-        address: "200 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
-        gender: "MALE",
-        dateOfBirth: moment().set({
-            year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-            month: Math.floor(Math.random() * 11),
-            date: Math.floor(Math.random() * 28)
-        }),
-        roleId: 2
-    };
-    users.push(user);
+    //#region seed random user here
+    let listName = [
+        "Dũng",
+        "Tuấn",
+        "Minh",
+        "Tú",
+        "Thái",
+        "Khoa",
+        "Long",
+        "Hưng",
+        "Phong",
+        "Kiên",
+        "Thanh",
+        "Thắng",
+        "Bình",
+        "Trung",
+        "Quân"
+    ];
+    let listAddress = [
+        "Lê Đức Thọ, Gò Vấp, Hồ Chí Minh, Vietnam",
+        "Tô Ký, Quận 12, Hồ Chí Minh, Vietnam"
+    ];
+
     //
-    for (let index = 0; index < 5; index++) {
-        let firstName =
-            listName[Math.floor(Math.random() * (listName.length - 1))];
-        let lastName =
-            listName[Math.floor(Math.random() * (listName.length - 1))];
-        let address =
-            listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
-        let houseNumber = Math.floor(Math.random() * 200);
+    // for (let index = 0; index < 5; index++) {
+    //     let firstName =
+    //         listName[Math.floor(Math.random() * (listName.length - 1))];
+    //     let lastName =
+    //         listName[Math.floor(Math.random() * (listName.length - 1))];
+    //     let address =
+    //         listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
+    //     let houseNumber = Math.floor(Math.random() * 200);
 
-        let user = {
-            phoneNumber: index + 5,
-            email: lastName + firstName + index + "@gmail.com",
-            password: await hashPassword("12341234"),
-            nickname: lastName + " " + firstName,
-            address: houseNumber + ", " + address,
-            gender: index%2 ? "FEMALE": 'MALE',
-            dateOfBirth: moment().set({
-                year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-                month: Math.floor(Math.random() * 11),
-                date: Math.floor(Math.random() * 28)
-            }),
-            roleId: 3
-        };
+    //     let user = {
+    //         phoneNumber: index + 5,
+    //         email: lastName + firstName + index + "@gmail.com",
+    //         password: await hashPassword("12341234"),
+    //         nickname: lastName + " " + firstName,
+    //         address: houseNumber + ", " + address,
+    //         gender: index%2 ? "FEMALE": 'MALE',
+    //         dateOfBirth: moment().set({
+    //             year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
+    //             month: Math.floor(Math.random() * 11),
+    //             date: Math.floor(Math.random() * 28)
+    //         }),
+    //         roleId: 3
+    //     };
 
-        users.push(user);
-    }
+    //     users.push(user);
+    // }
+    //#endregion
 
+    // start seeding users
     db.user
         .bulkCreate(users)
-        .then(res => {
-            // seed parents
-            let userParents = res.filter(x => x.roleId == 2);
+        // after creating users
+        .then(result => {
+            //#region seed parent based on user and seed circle of parent
+            // get parents from the result of creating user
+            let userParents = result.filter(user => user.roleId == 2);
             let parents = [];
+
+            // seed parent data here
             userParents.forEach(el => {
                 let parent = {
                     userId: el.id,
                     childrenNumber: 3,
                     familyDescription: ""
                 };
-                parents.push(parent);
+                parents.push(parent); // push to array parents
             });
 
-            db.parent.bulkCreate(parents).then(res => {
-                let parents = res;
-                // seed circle
-                db.circle.bulkCreate([
-                    {
-                        ownerId: res[0].userId,
-                        friendId: res[1].userId
-                    },
-                    {
-                        ownerId: res[0].userId,
-                        friendId: res[2].userId
-                    },
-                ]);
-            });
+            // create the parents
+            db.parent
+                .bulkCreate(parents)
+                // after creating parents -> seed circles
+                .then(result => {
+                    //#region seed circles
+                    let parents = result;
+                    // seed circle
+                    db.circle.bulkCreate([
+                        {
+                            ownerId: result[0].userId, // parent[0]
+                            friendId: result[1].userId // is friend with parent[1]
+                        },
+                        {
+                            ownerId: result[0].userId, // parent[0]
+                            friendId: result[2].userId // is friend with parent[2]
+                        }
+                    ]);
+                    //#endregion
+                });
+            //#endregion
 
-            // seed babysitters
-            let userBabysitters = res.filter(x => x.roleId == 3);
+            //#region seed babysitters
+            let userBabysitters = result.filter(user => user.roleId == 3);
             let babysitters = [];
+
             userBabysitters.forEach(function(el, index) {
                 let babysitter = {};
                 if (index < 1) {
@@ -228,10 +255,10 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
-                        totalFeedback: Math.floor(Math.random() * 20) + 1,
+                        averageRating: randomFloat(3, 5, 1),
+                        totalFeedback: randomInt(5, 20)
                     };
-                } else if (index < 3) {
+                } else if (index < 2) {
                     babysitter = {
                         userId: el.id,
                         weeklySchedule: "MON,TUE,WED,THU,FRI",
@@ -240,8 +267,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
-                        totalFeedback: Math.floor(Math.random() * 20) + 1,
+                        averageRating: randomFloat(3, 5, 1),
+                        totalFeedback: randomInt(5, 20)
                     };
                 } else {
                     babysitter = {
@@ -252,17 +279,18 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: Math.round((Math.random() * (5 - 3) + 3) * 10) / 10,
-                        totalFeedback: Math.floor(Math.random() * 2) + 1,
+                        averageRating: randomFloat(3, 5, 1),
+                        totalFeedback: randomInt(5, 20)
                     };
                 }
 
                 babysitters.push(babysitter);
             });
             db.babysitter.bulkCreate(babysitters);
+            //#endregion
         })
         .then(() => {
-            // seed requests
+            //#region seed requests
             db.sittingRequest
                 .bulkCreate([
                     {
@@ -377,10 +405,11 @@ export async function insertDatabase() {
                             "124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam",
                         status: "DONE"
                     }
+                    //#endregion
                 ])
-                .then(res => {
-                    // seed invitation
-                    res.forEach(el => {
+                .then(result => {
+                    //#region seed invitations
+                    result.forEach(el => {
                         if (el.status === "PENDING") {
                             db.invitation.bulkCreate([
                                 {
@@ -409,7 +438,9 @@ export async function insertDatabase() {
                                 }
                             ]);
                         }
+                        //#endregion
 
+                        //#region feedbacks
                         if (el.status === "DONE") {
                             // seed feedback
                             db.feedback.bulkCreate([
@@ -419,6 +450,7 @@ export async function insertDatabase() {
                                 }
                             ]);
                         }
+                        //#endregion
                     });
                 })
                 .catch(err => {
