@@ -16,39 +16,39 @@ export async function recommendToParent(request, listMatched) {
     let recommendList = [];
 
     // init a list of matched babysitters's id and their circle weighted
-    let listWithCircle = listMatched.map(x => {
+    let listWithCircle = listMatched.map(sitter => {
         let temp = {
-            id: x.userId,
+            id: sitter.userId,
             circleW: 0
         };
 
         return temp;
     });
     // init a list of matched babysitters's id and their rating weighted
-    let listWithRating = listMatched.map(x => {
+    let listWithRating = listMatched.map(sitter => {
         let temp = {
-            id: x.userId,
+            id: sitter.userId,
             ratingW: 0,
-            averageRating: x.averageRating,
-            totalFeedback: x.totalFeedback,
+            averageRating: sitter.averageRating,
+            totalFeedback: sitter.totalFeedback,
         };
 
         return temp;
     });
     // init a list of matched babysitters's id and their distance weighted
-    let listWithDistance = listMatched.map(x => {
+    let listWithDistance = listMatched.map(sitter => {
         let temp = {
-            id: x.userId,
+            id: sitter.userId,
             distanceW: 0,
-            distance: x.distance
+            distance: sitter.distance
         };
 
         return temp;
     });
     // init a list of matched babysitters's id and their total score for recommendation
-    let listWithTotal = listMatched.map(x => {
+    let listWithTotal = listMatched.map(sitter => {
         let temp = {
-            id: x.userId,
+            id: sitter.userId,
             total: 0
         };
 
@@ -60,7 +60,7 @@ export async function recommendToParent(request, listMatched) {
     // calculate babysitter's rating weighted
     listWithRating = await calRating(listWithRating);
     // calculate babysitter's distance weighted
-    // listWithDistance = await calDistance(listWithDistance);
+    listWithDistance = await calDistance(listWithDistance);
     // calculate babysitter's total score
     listWithTotal = await calScore(
         listWithCircle,
@@ -69,8 +69,8 @@ export async function recommendToParent(request, listMatched) {
         listWithTotal
     );
 
-    // filter out babysitter with total score <= 0
-    listWithTotal = listWithTotal.filter(x => x.total > 10);
+    // filter out babysitter with total score <= 10
+    listWithTotal = listWithTotal.filter(sitter => sitter.total > 10);
 
     // sort the list descending
     listWithTotal = listWithTotal.sort(function(a, b) {
@@ -79,7 +79,7 @@ export async function recommendToParent(request, listMatched) {
 
     // push to recommendList
     listWithTotal.forEach(el => {
-        let found = listMatched.find(x => x.userId == el.id);
+        let found = listMatched.find(sitter => sitter.userId == el.id);
 
         if (found) {
             recommendList.push(found);
@@ -93,16 +93,16 @@ export async function recommendToParent(request, listMatched) {
 async function calScore(listWithCircle, listWithRating, listWithDistance, listWithTotal) {
     listWithTotal.forEach(el => {
         //
-        let c = listWithCircle.find(x => {
-            return x.id == el.id;
+        let c = listWithCircle.find(sitter => {
+            return sitter.id == el.id;
         });
         //
-        let r = listWithRating.find(x => {
-            return x.id == el.id;
+        let r = listWithRating.find(sitter => {
+            return sitter.id == el.id;
         });
         //
-        let d = listWithDistance.find(x => {
-            return x.id == el.id;
+        let d = listWithDistance.find(sitter => {
+            return sitter.id == el.id;
         });
 
         //
@@ -144,8 +144,8 @@ async function calCircle(parentId, listWithCircle) {
             }
         });
 
-        let bsit = srq.map(x => {
-            return x.acceptedBabysitter;
+        let bsit = srq.map(sitter => {
+            return sitter.acceptedBabysitter;
         });
 
         // calculate score for each matched babysitter of the requested parent
