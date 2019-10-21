@@ -21,7 +21,7 @@ export async function matching(sittingRequest) {
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
-    matchedList = await getBabysitterDistance(sittingRequest.sittingAddress, matchedList);
+    matchedList = await randomizeDistance(matchedList);
 
     console.time("checkSent"); // 
     matchedList = await checkIfSentInvite(sittingRequest, matchedList);
