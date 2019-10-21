@@ -34,7 +34,18 @@ const read = async (req, res) => {
         const user = await models.user.findOne({
             where: {
                 id
-            }
+            },
+            include:[{
+                model: models.parent,
+                as: 'parent',
+                include: [{
+                    model: models.children,
+                    as: 'children',
+                }]
+            },{
+                model: models.babysitter,
+                as: 'babysitter',
+            }]
         });
         if (user) {
             res.status(201);
