@@ -1,5 +1,6 @@
+
 export default function(sequelize, DataTypes) {
-    return sequelize.define(
+    const circle = sequelize.define(
         "circle", // Model Name
         {
             // this is a reference table with only foreign key from parent
@@ -10,4 +11,20 @@ export default function(sequelize, DataTypes) {
             collate: "utf8_general_ci"
         }
     );
+
+    circle.associate = function(models) {
+        circle.belongsTo(models.parent, {
+            foreignKey: "ownerId",
+            sourceKey: "userId",
+            as: "owner"
+        });
+
+        circle.belongsTo(models.parent, {
+            foreignKey: "friendId",
+            sourceKey: "userId",
+            as: "friend"
+        });
+    }
+
+    return circle;
 }

@@ -93,18 +93,22 @@ const recommendBabysitter = async (req, res, next) => {
             },
         });
 
+        console.time('--matching');
         if (request != null && request != undefined) {
             listMatched = await matching(request);
         }
+        console.timeEnd('--matching');
+        console.time('--recommend');
         if (listMatched != null && listMatched != undefined) {
             recommendList = await recommendToParent(request, listMatched);
         }
+        console.timeEnd('--recommend');
         console.time('--remove duplicate');
         if (recommendList.length > 0) {
             recommendList.forEach((recommendSitter) => {
                 listMatched = listMatched.filter(
                     (matchedSitter) =>
-                        !(matchedSitter.userId == recommendSitter.userId)
+                        !(matchedSitter.userId == recommendSitter.userId),
                 );
             });
         }
@@ -142,7 +146,7 @@ const acceptBabysitter = async (req, res, next) => {
                     where: {
                         id: requestId,
                     },
-                }
+                },
             )
             .then(async function(res) {
                 // then update other invitation status
@@ -158,10 +162,80 @@ const acceptBabysitter = async (req, res, next) => {
                     {
                         status: 'EXPIRED',
                     },
-                    selector
+                    selector,
                 );
             });
         res.send();
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
+const startSittingRequest = async (req, res, next) => {
+    const requestId = req.params.requestId;
+    const sitterId = req.params.sitterId;
+
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id: requestId,
+                acceptedBabysitter: sitterId,
+            },
+        });
+
+        if (
+            (request != undefined) & (request != null) &&
+            request.status == 'CONFIRMED'
+        ) {
+            // update sitting request
+            request = await models.sittingRequest.update(
+                { status: 'ONGOING' },
+                {
+                    where: {
+                        id: requestId,
+                    },
+                },
+            );
+        }
+
+        res.send(request);
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
+const doneSittingRequest = async (req, res, next) => {
+    const requestId = req.params.requestId;
+    const sitterId = req.params.sitterId;
+
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id: requestId,
+                acceptedBabysitter: sitterId,
+            },
+        });
+
+        if (
+            (request != undefined) & (request != null) &&
+            request.status == 'ONGOING'
+        ) {
+            // update sitting request
+            request = await models.sittingRequest.update(
+                { status: 'DONE' },
+                {
+                    where: {
+                        id: requestId,
+                    },
+                },
+            );
+        }
+
+        res.send(request);
     } catch (err) {
         console.log(err);
         res.status(400);
@@ -255,6 +329,8 @@ export default {
     listSittingByBabysitterId,
     recommendBabysitter,
     acceptBabysitter,
+    startSittingRequest,
+    doneSittingRequest,
     create,
     read,
     update,
