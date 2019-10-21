@@ -34,7 +34,7 @@ export async function insertDatabase() {
         email: "phduongse@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Pham Hai Duong",
-        address: "222 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        address: "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
         roleId: 2
@@ -81,7 +81,7 @@ export async function insertDatabase() {
         email: "Khanh@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "MR.Khanh",
-        address: "200 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        address: "682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -100,7 +100,7 @@ export async function insertDatabase() {
         email: "dong4@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "DongBS",
-        address: "90 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        address: "684 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -117,7 +117,7 @@ export async function insertDatabase() {
         email: "ky@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Ky",
-        address: "150 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        address: "181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "FEMALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -134,7 +134,7 @@ export async function insertDatabase() {
         email: "duong@gmail.com",
         password: await hashPassword("12341234"),
         nickname: "Duong",
-        address: "100 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam",
+        address: "690 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "FEMALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -318,7 +318,7 @@ export async function insertDatabase() {
                             })
                             .format("HH:mm:ss"),
                         sittingAddress:
-                            "529 Lê Đức Thọ, Phường 16, Gò Vấp, Hồ Chí Minh, Vietnam",
+                            "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
                         status: "PENDING"
                     },
                     {
