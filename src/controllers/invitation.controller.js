@@ -126,12 +126,6 @@ const getInvitation = async (req, res) => {
             {
               model: models.user,
               as: 'user',
-              include: [
-                {
-                  model: models.tracking,
-                  where: { userId: models.user.col('id') },
-                },
-              ],
             },
           ],
         },
