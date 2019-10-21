@@ -3,13 +3,17 @@ export default function(sequelize, DataTypes) {
         "children", // Model Name
         {
             name: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.STRING,
                 allowNull: true
             },
             age: {
                 type: DataTypes.INTEGER,
                 allowNull: false
-            }
+            },
+            image: {
+                type: DataTypes.TEXT,
+                allowNull: true
+            },
         },
         {
             timestamps: true,

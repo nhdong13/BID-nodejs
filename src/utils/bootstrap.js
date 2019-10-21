@@ -1,27 +1,28 @@
-import models from "@models";
-import moment from "moment";
-import { hashPassword } from "@utils/hash";
-import { randomInt, randomFloat } from "@utils/common";
+import models from '@models';
+import moment from 'moment';
+import { hashPassword } from '@utils/hash';
+import { randomInt, randomFloat } from '@utils/common';
+import Images from '@utils/image'
 
 export async function insertDatabase() {
     const db = models.sequelize.models;
-    console.log("inserting records to databse....");
+    console.log('inserting records to databse....');
     // muon insert bang nao thi db.ten_model cua bang do ex: db.circle, db.parent
 
     // seed roles
     db.role.bulkCreate([
         {
-            roleName: "admin"
+            roleName: 'admin',
         },
         {
-            roleName: "parent"
+            roleName: 'parent',
         },
         {
-            roleName: "babysitter"
+            roleName: 'babysitter',
         },
         {
-            roleName: "staff"
-        }
+            roleName: 'staff',
+        },
     ]);
 
     // seed users
@@ -37,41 +38,41 @@ export async function insertDatabase() {
         address: "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
         gender: "MALE",
         dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
-        roleId: 2
+        roleId: 2,
     };
     users.push(user);
 
     // parent
     user = {
-        phoneNumber: "02",
-        email: "phuc@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "Phuc",
-        address: "529 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
-        gender: "MALE",
+        phoneNumber: '02',
+        email: 'phuc@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'Phuc',
+        address: '529 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
+        gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
-            date: randomInt(1, 28)
+            date: randomInt(1, 28),
         }),
-        roleId: 2
+        roleId: 2,
     };
     users.push(user);
 
     // parent
     user = {
-        phoneNumber: "03",
-        email: "dong3@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "DongPR",
-        address: "102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
-        gender: "MALE",
+        phoneNumber: '03',
+        email: 'dong3@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'DongPR',
+        address: '102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
+        gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
-            date: randomInt(1, 28)
+            date: randomInt(1, 28),
         }),
-        roleId: 2
+        roleId: 2,
     };
     users.push(user);
 
@@ -86,9 +87,9 @@ export async function insertDatabase() {
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
-            date: randomInt(1, 28)
+            date: randomInt(1, 28),
         }),
-        roleId: 2
+        roleId: 2,
     };
     users.push(user);
     //#endregion
@@ -105,9 +106,9 @@ export async function insertDatabase() {
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
-            date: randomInt(1, 28)
+            date: randomInt(1, 28),
         }),
-        roleId: 3
+        roleId: 3,
     };
     users.push(user);
 
@@ -122,9 +123,9 @@ export async function insertDatabase() {
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
-            date: randomInt(1, 28)
+            date: randomInt(1, 28),
         }),
-        roleId: 3
+        roleId: 3,
     };
     users.push(user);
 
@@ -139,34 +140,34 @@ export async function insertDatabase() {
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
-            date: randomInt(1, 28)
+            date: randomInt(1, 28),
         }),
-        roleId: 3
+        roleId: 3,
     };
     users.push(user);
     //#endregion
 
     //#region seed random user here
     let listName = [
-        "Dũng",
-        "Tuấn",
-        "Minh",
-        "Tú",
-        "Thái",
-        "Khoa",
-        "Long",
-        "Hưng",
-        "Phong",
-        "Kiên",
-        "Thanh",
-        "Thắng",
-        "Bình",
-        "Trung",
-        "Quân"
+        'Dũng',
+        'Tuấn',
+        'Minh',
+        'Tú',
+        'Thái',
+        'Khoa',
+        'Long',
+        'Hưng',
+        'Phong',
+        'Kiên',
+        'Thanh',
+        'Thắng',
+        'Bình',
+        'Trung',
+        'Quân',
     ];
     let listAddress = [
-        "Lê Đức Thọ, Gò Vấp, Hồ Chí Minh, Vietnam",
-        "Tô Ký, Quận 12, Hồ Chí Minh, Vietnam"
+        'Lê Đức Thọ, Gò Vấp, Hồ Chí Minh, Vietnam',
+        'Tô Ký, Quận 12, Hồ Chí Minh, Vietnam',
     ];
 
     //
@@ -202,18 +203,18 @@ export async function insertDatabase() {
     db.user
         .bulkCreate(users)
         // after creating users
-        .then(result => {
+        .then((result) => {
             //#region seed parent based on user and seed circle of parent
             // get parents from the result of creating user
-            let userParents = result.filter(user => user.roleId == 2);
+            let userParents = result.filter((user) => user.roleId == 2);
             let parents = [];
 
             // seed parent data here
-            userParents.forEach(el => {
+            userParents.forEach((el) => {
                 let parent = {
                     userId: el.id,
                     childrenNumber: 3,
-                    familyDescription: ""
+                    familyDescription: '',
                 };
                 parents.push(parent); // push to array parents
             });
@@ -222,26 +223,54 @@ export async function insertDatabase() {
             db.parent
                 .bulkCreate(parents)
                 // after creating parents -> seed circles
-                .then(result => {
+                .then((result) => {
                     //#region seed circles
                     let parents = result;
                     // seed circle
                     db.circle.bulkCreate([
                         {
                             ownerId: result[0].userId, // parent[0]
-                            friendId: result[1].userId // is friend with parent[1]
+                            friendId: result[1].userId, // is friend with parent[1]
                         },
                         {
                             ownerId: result[0].userId, // parent[0]
-                            friendId: result[2].userId // is friend with parent[2]
-                        }
+                            friendId: result[2].userId, // is friend with parent[2]
+                        },
                     ]);
                     //#endregion
+                    //seed children
+                    let image = new Images();
+                    db.children.bulkCreate([
+                        {
+                            name: 'child 1',
+                            age: 1,
+                            parentId: 4,
+                            image: image.img1,
+                        },
+                        {
+                            name: 'child 2',
+                            age: 1,
+                            parentId: 4,
+                            image: image.img2,
+                        },
+                        {
+                            name: 'child 3',
+                            age: 1,
+                            parentId: 4,
+                            image: image.img3,
+                        },
+                        {
+                            name: 'child 4',
+                            age: 1,
+                            parentId: 3,
+                            image: image.img4,
+                        },
+                    ]);
                 });
             //#endregion
 
             //#region seed babysitters
-            let userBabysitters = result.filter(user => user.roleId == 3);
+            let userBabysitters = result.filter((user) => user.roleId == 3);
             let babysitters = [];
 
             userBabysitters.forEach(function(el, index) {
@@ -249,38 +278,38 @@ export async function insertDatabase() {
                 if (index < 1) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,TUE,WED,THU,FRI",
-                        daytime: "08-17",
-                        evening: "17-20",
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI',
+                        daytime: '08-17',
+                        evening: '17-20',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: 4.5,
-                        totalFeedback: 20
+                        totalFeedback: 20,
                     };
                 } else if (index < 2) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "MON,TUE,WED,THU,FRI",
-                        daytime: "08-17",
-                        evening: "17-21",
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI',
+                        daytime: '08-17',
+                        evening: '17-21',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: 5,
-                        totalFeedback: 1
+                        totalFeedback: 1,
                     };
                 } else {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: "TUE,THU,SAT",
-                        daytime: "08-17",
-                        evening: "17-22",
+                        weeklySchedule: 'TUE,THU,SAT',
+                        daytime: '08-17',
+                        evening: '17-22',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: 4,
-                        totalFeedback: 1
+                        totalFeedback: 1,
                     };
                 }
 
@@ -301,22 +330,22 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 9,
-                            date: 11
+                            date: 11,
                         }),
                         startTime: moment()
                             .set({
                                 hour: 13,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
                                 hour: 17,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         sittingAddress:
                             "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
                         status: "PENDING"
@@ -329,25 +358,25 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 8,
-                            date: 26
+                            date: 26,
                         }),
                         startTime: moment()
                             .set({
                                 hour: 9,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
                                 hour: 12,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         sittingAddress:
-                            "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
-                        status: "DONE"
+                            '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
+                        status: 'DONE',
                     },
                     {
                         createdUser: 2,
@@ -357,25 +386,25 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 8,
-                            date: 26
+                            date: 26,
                         }),
                         startTime: moment()
                             .set({
                                 hour: 9,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
                                 hour: 12,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         sittingAddress:
-                            "100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam",
-                        status: "DONE"
+                            '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
+                        status: 'DONE',
                     },
                     {
                         createdUser: 5,
@@ -385,81 +414,78 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 8,
-                            date: 25
+                            date: 25,
                         }),
                         startTime: moment()
                             .set({
                                 hour: 9,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
                                 hour: 12,
                                 minute: 0,
-                                second: 0
+                                second: 0,
                             })
-                            .format("HH:mm:ss"),
+                            .format('HH:mm:ss'),
                         sittingAddress:
-                            "124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam",
-                        status: "DONE"
-                    }
+                            '124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
+                        status: 'DONE',
+                    },
                     //#endregion
                 ])
-                .then(result => {
+                .then((result) => {
                     //#region seed invitations
-                    result.forEach(el => {
-                        if (el.status === "PENDING") {
+                    result.forEach((el) => {
+                        if (el.status === 'PENDING') {
                             db.invitation.bulkCreate([
                                 {
                                     requestId: el.id,
                                     sender: el.createdUser,
                                     receiver: 3,
-                                    status: "PENDING"
+                                    status: 'PENDING',
                                 },
                                 {
                                     requestId: el.id,
                                     sender: el.createdUser,
                                     receiver: 4,
-                                    status: "PENDING"
+                                    status: 'PENDING',
                                 },
                                 {
                                     requestId: el.id,
                                     sender: el.createdUser,
                                     receiver: 5,
-                                    status: "PENDING"
+                                    status: 'PENDING',
                                 },
                                 {
                                     requestId: el.id,
                                     sender: el.createdUser,
                                     receiver: 6,
-                                    status: "PENDING"
-                                }
+                                    status: 'PENDING',
+                                },
                             ]);
                         }
                         //#endregion
 
                         //#region feedbacks
-                        if (el.status === "DONE") {
+                        if (el.status === 'DONE') {
                             // seed feedback
                             db.feedback.bulkCreate([
                                 {
                                     requestId: el.id,
-                                    rating: 4
-                                }
+                                    rating: 4,
+                                },
                             ]);
                         }
                         //#endregion
                     });
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.log(err);
                 });
-        })
-        .catch(err => {
-            console.log(err);
-        });
 
-    console.log("Finish insert to database.");
+            console.log('Finish insert to database.');
+        });
 }
