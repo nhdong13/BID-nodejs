@@ -31,12 +31,12 @@ export async function insertDatabase() {
     //#region seed parents here
     // parent
     let user = {
-        phoneNumber: '01',
-        email: 'phduongse@gmail.com',
-        password: await hashPassword('12341234'),
-        nickname: 'Pham Hai Duong',
-        address: '222 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam',
-        gender: 'MALE',
+        phoneNumber: "01",
+        email: "phduongse@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "Pham Hai Duong",
+        address: "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
         dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
         roleId: 2,
     };
@@ -78,12 +78,12 @@ export async function insertDatabase() {
 
     // Mr Khanh
     user = {
-        phoneNumber: '07',
-        email: 'Khanh@gmail.com',
-        password: await hashPassword('12341234'),
-        nickname: 'MR.Khanh',
-        address: '200 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam',
-        gender: 'MALE',
+        phoneNumber: "07",
+        email: "Khanh@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "MR.Khanh",
+        address: "682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -97,12 +97,12 @@ export async function insertDatabase() {
     //#region seed babysitter here
     // sitter
     user = {
-        phoneNumber: '04',
-        email: 'dong4@gmail.com',
-        password: await hashPassword('12341234'),
-        nickname: 'DongBS',
-        address: '90 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam',
-        gender: 'MALE',
+        phoneNumber: "04",
+        email: "dong4@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "DongBS",
+        address: "684 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "MALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -114,12 +114,12 @@ export async function insertDatabase() {
 
     // sitter
     user = {
-        phoneNumber: '05',
-        email: 'ky@gmail.com',
-        password: await hashPassword('12341234'),
-        nickname: 'Ky',
-        address: '150 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam',
-        gender: 'FEMALE',
+        phoneNumber: "05",
+        email: "ky@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "Ky",
+        address: "181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "FEMALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -131,12 +131,12 @@ export async function insertDatabase() {
 
     // sitter
     user = {
-        phoneNumber: '06',
-        email: 'duong@gmail.com',
-        password: await hashPassword('12341234'),
-        nickname: 'Duong',
-        address: '100 Quang Trung, Phường 10, Gò Vấp, Hồ Chí Minh, Vietnam',
-        gender: 'FEMALE',
+        phoneNumber: "06",
+        email: "duong@gmail.com",
+        password: await hashPassword("12341234"),
+        nickname: "Duong",
+        address: "690 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
+        gender: "FEMALE",
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -347,8 +347,8 @@ export async function insertDatabase() {
                             })
                             .format('HH:mm:ss'),
                         sittingAddress:
-                            '529 Lê Đức Thọ, Phường 16, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'PENDING',
+                            "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
+                        status: "PENDING"
                     },
                     {
                         createdUser: 2,

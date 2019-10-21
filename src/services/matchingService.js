@@ -3,7 +3,7 @@ import { callAPI } from "@utils/distanceAPI";
 import { asyncForEach } from "@utils/common";
 
 const MAX_TRAVEL_DISTANCE = 10;
-const KEY = "AIzaSyBSIZ2W3I0zmH-nKCF2gKhXVN-c1807LMo";
+const KEY = "AIzaSyC8IlI2BReTv7lnWEQyp5Ca-argo7D1eVA";
 var distance = require("google-distance-matrix");
 
 const googleMaps = require("@google/maps");
@@ -19,7 +19,9 @@ export async function matching(sittingRequest) {
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
     
     // compare each babysitter in the above list against matching criteria and return the matched list
-    let matchedList = matchingCriteria(sittingRequest, babysitters);
+    let matchedList = await matchingCriteria(sittingRequest, babysitters);
+
+    matchedList = await getBabysitterDistance(sittingRequest.sittingAddress, matchedList);
 
     console.time("checkSent"); // 
     matchedList = await checkIfSentInvite(sittingRequest, matchedList);
@@ -30,7 +32,6 @@ export async function matching(sittingRequest) {
 
 // search for every babysitters in 'MAX_TRAVEL_DISTANCE' travel distance from parent
 async function searchForBabysitter(sittingAddress) {
-    let result = [];
     let list = await models.babysitter.findAll({
         include: [
             {
@@ -40,18 +41,10 @@ async function searchForBabysitter(sittingAddress) {
         ]
     });
 
-    console.time("get_distance_api");
-    result = await randomizeDistance(list);
-    console.timeEnd("get_distance_api");
-
-    if (result.length > 0){
-        return result;
-    }
-
     return list;
 }
 
-async function getBabysitterDistance(listOfSitter) {
+async function getBabysitterDistance(sittingAddress, listOfSitter) {
     let result = [];
 
     const promises = listOfSitter.map(async sitter => {
@@ -62,7 +55,7 @@ async function getBabysitterDistance(listOfSitter) {
         let temp = distance.split(" ");
         
         distance = temp[0];
-        if (distance < 1) {
+        if (distance < 5) {
             sitter.distance = distance;
             result.push(sitter);
         }
@@ -121,7 +114,7 @@ async function getDistance(address1, address2) {
         .distanceMatrix({
             origins: [address1], // start address
             destinations: [address2], // destination address
-            mode: "driving"
+            mode: "walking"
         })
         .asPromise();
 
@@ -129,7 +122,7 @@ async function getDistance(address1, address2) {
 }
 
 // matching with criteria
-function matchingCriteria(request, babysitters) {
+async function matchingCriteria(request, babysitters) {
     let matchedList = [];
     console.log(
         "------------------------Matching with criteria------------------------"
