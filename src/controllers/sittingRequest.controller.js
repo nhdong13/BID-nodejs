@@ -1,8 +1,8 @@
-import models from "@models";
-import { matching } from "@services/matchingService";
-import { recommendToParent } from "@services/recommendService";
+import models from '@models';
+import { matching } from '@services/matchingService';
+import { recommendToParent } from '@services/recommendService';
 
-const Sequelize = require("sequelize");
+const Sequelize = require('sequelize');
 
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
@@ -10,8 +10,8 @@ const listByParentId = async (req, res, next) => {
     try {
         const listSittings = await models.sittingRequest.findAll({
             where: {
-                createdUser: parentId
-            }
+                createdUser: parentId,
+            },
         });
         res.send(listSittings);
     } catch (err) {
@@ -28,8 +28,8 @@ const listByParentAndStatus = async (req, res, next) => {
         const listSittings = await models.sittingRequest.findAll({
             where: {
                 createdUser: parentId,
-                status: status
-            }
+                status: status,
+            },
         });
         res.send(listSittings);
     } catch (err) {
@@ -44,14 +44,14 @@ const listSittingByBabysitterId = async (req, res, next) => {
     try {
         const listSittings = await models.sittingRequest.findAll({
             where: {
-                acceptedBabysitter: bsId
+                acceptedBabysitter: bsId,
             },
             include: [
                 {
                     model: models.user,
-                    as: "user"
-                }
-            ]
+                    as: 'user',
+                },
+            ],
         });
         res.send(listSittings);
     } catch (err) {
@@ -66,8 +66,8 @@ const listMatchedBabysitter = async (req, res, next) => {
     try {
         const request = await models.sittingRequest.findOne({
             where: {
-                id
-            }
+                id,
+            },
         });
         const matchedList = await matching(request);
         console.log(matchedList);
@@ -89,24 +89,27 @@ const recommendBabysitter = async (req, res, next) => {
     try {
         const request = await models.sittingRequest.findOne({
             where: {
-                id: requestId
-            }
+                id: requestId,
+            },
         });
 
-        console.time('--matching')
+        console.time('--matching');
         if (request != null && request != undefined) {
             listMatched = await matching(request);
         }
-        console.timeEnd('--matching')
-        console.time('--recommend')
+        console.timeEnd('--matching');
+        console.time('--recommend');
         if (listMatched != null && listMatched != undefined) {
             recommendList = await recommendToParent(request, listMatched);
         }
-        console.timeEnd('--recommend')
+        console.timeEnd('--recommend');
         console.time('--remove duplicate');
         if (recommendList.length > 0) {
-            recommendList.forEach(recommendSitter => {
-                listMatched = listMatched.filter(matchedSitter => !(matchedSitter.userId == recommendSitter.userId));
+            recommendList.forEach((recommendSitter) => {
+                listMatched = listMatched.filter(
+                    (matchedSitter) =>
+                        !(matchedSitter.userId == recommendSitter.userId),
+                );
             });
         }
         console.timeEnd('--remove duplicate');
@@ -114,7 +117,7 @@ const recommendBabysitter = async (req, res, next) => {
             matchedCount: listMatched.length,
             listMatched,
             recommendCount: recommendList.length,
-            recommendList
+            recommendList,
         });
     } catch (err) {
         console.log(err);
@@ -131,19 +134,19 @@ const acceptBabysitter = async (req, res, next) => {
     try {
         const request = await models.sittingRequest.findOne({
             where: {
-                id: requestId
-            }
+                id: requestId,
+            },
         });
 
         // update sitting request
         await models.sittingRequest
             .update(
-                { status: "CONFIRMED", acceptedBabysitter: sitterId },
+                { status: 'CONFIRMED', acceptedBabysitter: sitterId },
                 {
                     where: {
-                        id: requestId
-                    }
-                }
+                        id: requestId,
+                    },
+                },
             )
             .then(async function(res) {
                 // then update other invitation status
@@ -151,15 +154,15 @@ const acceptBabysitter = async (req, res, next) => {
                     where: {
                         requestId: requestId,
                         receiver: {
-                            [Sequelize.Op.ne]: sitterId
-                        }
-                    }
+                            [Sequelize.Op.ne]: sitterId,
+                        },
+                    },
                 };
                 let a = await models.invitation.update(
                     {
-                        status: "EXPIRED"
+                        status: 'EXPIRED',
                     },
-                    selector
+                    selector,
                 );
             });
         res.send();
@@ -170,10 +173,80 @@ const acceptBabysitter = async (req, res, next) => {
     }
 };
 
+const startSittingRequest = async (req, res, next) => {
+    const requestId = req.params.requestId;
+    const sitterId = req.params.sitterId;
+
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id: requestId,
+                acceptedBabysitter: sitterId,
+            },
+        });
+
+        if (
+            (request != undefined) & (request != null) &&
+            request.status == 'CONFIRMED'
+        ) {
+            // update sitting request
+            request = await models.sittingRequest.update(
+                { status: 'ONGOING' },
+                {
+                    where: {
+                        id: requestId,
+                    },
+                },
+            );
+        }
+
+        res.send(request);
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
+const doneSittingRequest = async (req, res, next) => {
+    const requestId = req.params.requestId;
+    const sitterId = req.params.sitterId;
+
+    try {
+        const request = await models.sittingRequest.findOne({
+            where: {
+                id: requestId,
+                acceptedBabysitter: sitterId,
+            },
+        });
+
+        if (
+            (request != undefined) & (request != null) &&
+            request.status == 'ONGOING'
+        ) {
+            // update sitting request
+            request = await models.sittingRequest.update(
+                { status: 'DONE' },
+                {
+                    where: {
+                        id: requestId,
+                    },
+                },
+            );
+        }
+
+        res.send(request);
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const create = async (req, res) => {
     let newItem = req.body;
     // initial status is PENDING
-    newItem.status = "PENDING";
+    newItem.status = 'PENDING';
 
     try {
         const newSittingReq = await models.sittingRequest.create(newItem);
@@ -190,18 +263,18 @@ const read = async (req, res) => {
     try {
         const sittingReq = await models.sittingRequest.findOne({
             where: {
-                id
+                id,
             },
             include: [
                 {
                     model: models.user,
-                    as: "user"
+                    as: 'user',
                 },
                 {
                     model: models.user,
-                    as: "bsitter"
-                }
-            ]
+                    as: 'bsitter',
+                },
+            ],
         });
         if (sittingReq) {
             res.status(201);
@@ -223,7 +296,7 @@ const update = async (req, res) => {
 
     try {
         await models.sittingRequest.update(updatingSittingReq, {
-            where: { id }
+            where: { id },
         });
         res.send();
     } catch (err) {
@@ -238,8 +311,8 @@ const destroy = async (req, res) => {
     try {
         await models.sittingRequest.destroy({
             where: {
-                id
-            }
+                id,
+            },
         });
         res.status(204);
         res.send();
@@ -256,8 +329,10 @@ export default {
     listSittingByBabysitterId,
     recommendBabysitter,
     acceptBabysitter,
+    startSittingRequest,
+    doneSittingRequest,
     create,
     read,
     update,
-    destroy
+    destroy,
 };
