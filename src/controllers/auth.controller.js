@@ -1,14 +1,14 @@
-import models from "@models";
-import { createJWT } from "@utils/jwt";
-import { comparePassword } from "@utils/hash";
+import models from '@models';
+import { createJWT } from '@utils/jwt';
+import { comparePassword } from '@utils/hash';
 
 const login = async (req, res) => {
     const { phoneNumber, password } = req.body;
     try {
         const user = await models.user.findOne({
             where: {
-                phoneNumber
-            }
+                phoneNumber,
+            },
         });
 
         if (user) {
