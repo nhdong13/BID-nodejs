@@ -19,6 +19,12 @@ export default function(sequelize, DataTypes) {
     );
 
     parent.associate = function(models) {
+        // user - parent
+        parent.belongsTo(models.user, {
+            foreignKey: "userId",
+            sourceKey: "id",
+            as: "user"
+        });
         // parent - circle
         parent.hasMany(models.circle, {
             foreignKey: {
