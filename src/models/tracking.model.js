@@ -2,9 +2,10 @@ export default function(sequelize, DataTypes) {
     return sequelize.define(
         "tracking", // Model Name
         {
-            userAgent: {
-                type: DataTypes.STRING,
-                allowNull: false
+            userId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+                unique: true
             },
             token: {
                 type: DataTypes.STRING,
