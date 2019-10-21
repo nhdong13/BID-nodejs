@@ -255,8 +255,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: randomFloat(3, 5, 1),
-                        totalFeedback: randomInt(5, 20)
+                        averageRating: 4.5,
+                        totalFeedback: 20
                     };
                 } else if (index < 2) {
                     babysitter = {
@@ -267,8 +267,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: randomFloat(3, 5, 1),
-                        totalFeedback: randomInt(1, 4)
+                        averageRating: 5,
+                        totalFeedback: 1
                     };
                 } else {
                     babysitter = {
@@ -279,8 +279,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: randomFloat(3, 5, 1),
-                        totalFeedback: randomInt(1, 4)
+                        averageRating: 4,
+                        totalFeedback: 1
                     };
                 }
 
