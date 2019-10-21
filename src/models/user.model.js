@@ -85,6 +85,14 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id",
             as: "transactions"
         });
+        user.hasOne(models.tracking, {
+            foreignKey: {
+                name: "userId",
+                allowNull: false
+            },
+            sourceKey: "id",
+            as: "tracking"
+        })
     };
 
     return user;
