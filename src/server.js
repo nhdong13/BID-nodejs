@@ -41,13 +41,13 @@ async function main() {
         app.use(cors(corsOptions));
 
         // Middlewares
-        app.use(morgan('tiny'));
+        app.use(morgan('dev'));
 
         // Init roues
         app.use('/api/v1', routes);
 
-        app.listen(3000, function() {
-            console.log('App is listening on port 3000!');
+        app.listen(5000, function() {
+            console.log('App is listening on port 5000!');
         });
     } catch (error) {
         console.error(error);
