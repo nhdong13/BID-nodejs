@@ -19,7 +19,7 @@ const create = async (req, res) => {
 
     try {
         // Create user first
-        newUser.password = await await hashPassword(newUser.password)
+        newUser.password = await hashPassword(newUser.password)
 
         const newParent = await models.user.create(newUser).then(async res => {
             const newItem = {
