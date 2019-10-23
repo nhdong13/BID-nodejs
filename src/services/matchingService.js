@@ -21,7 +21,7 @@ export async function matching(sittingRequest) {
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
-    matchedList = await getBabysitterDistance(sittingRequest.sittingAddress, matchedList);
+    matchedList = await randomizeDistance(sittingRequest.sittingAddress, matchedList);
 
     console.time("checkSent"); // 
     matchedList = await checkIfSentInvite(sittingRequest, matchedList);
@@ -66,7 +66,7 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
 }
 
 // random distance 
-async function randomizeDistance(listOfSitter) {
+async function randomizeDistance(sittingAddress, listOfSitter) {
     let result = [];
 
     const promises = listOfSitter.map(async sitter => {
