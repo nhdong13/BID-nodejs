@@ -12,6 +12,7 @@ router.route("/acceptBabysitter/:requestId&:sitterId").get(controller.acceptBaby
 router.route("/startSittingRequest/:requestId&:sitterId").get(controller.startSittingRequest);
 router.route("/doneSittingRequest/:requestId&:sitterId").get(controller.doneSittingRequest);
 router.route("/").post(controller.create);
+router.route("/").get(controller.list);
 router.route("/:id").get(controller.read);
 router.route("/:id").put(controller.update);
 router.route("/:id").delete(controller.destroy);

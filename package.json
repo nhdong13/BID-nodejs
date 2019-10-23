@@ -8,6 +8,7 @@
     "dependencies": {
         "@google/maps": "^1.0.1",
         "authy": "^1.4.0",
+        "axios": "^0.19.0",
         "bcryptjs": "^2.4.3",
         "body-parser": "^1.19.0",
         "compression": "^1.7.4",
@@ -21,6 +22,7 @@
         "morgan": "^1.9.1",
         "mysql2": "^1.6.5",
         "node-fetch": "^2.6.0",
+        "qs": "^6.9.0",
         "sequelize": "^5.8.4"
     },
     "scripts": {

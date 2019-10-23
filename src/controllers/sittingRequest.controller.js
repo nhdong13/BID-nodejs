@@ -4,6 +4,16 @@ import { recommendToParent } from '@services/recommendService';
 
 const Sequelize = require('sequelize');
 
+const list = async (req, res, next) => {
+    try {
+        const listSittings = await models.sittingRequest.findAll({});
+        res.send(listSittings);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
 
@@ -331,6 +341,7 @@ export default {
     acceptBabysitter,
     startSittingRequest,
     doneSittingRequest,
+    list,
     create,
     read,
     update,
