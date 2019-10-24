@@ -3,8 +3,20 @@ import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages } from '@utils/notificationMessages';
+import { testSocketIo } from '@utils/socketIo';
 
 const Sequelize = require('sequelize');
+
+const list = async (req, res, next) => {
+    try {
+        const listSittings = await models.sittingRequest.findAll({});
+        testSocketIo();
+        res.send(listSittings);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
 
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
@@ -201,6 +213,20 @@ const acceptBabysitter = async (req, res, next) => {
                     },
                     selector,
                 );
+
+                //
+                selector = {
+                    where: {
+                        requestId: requestId,
+                        receiver: sitterId,
+                    },
+                };
+                await models.invitation.update(
+                    {
+                        status: 'CONFIRMED',
+                    },
+                    selector,
+                );
             });
         res.send();
     } catch (err) {
@@ -367,6 +393,7 @@ export default {
     acceptBabysitter,
     startSittingRequest,
     doneSittingRequest,
+    list,
     create,
     read,
     update,

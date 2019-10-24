@@ -77,26 +77,16 @@ const create = async (req, res) => {
         const newInvitation = await models.invitation
             .create(newItem)
             .then(async (res) => {
-                const invitations = await models.invitation.findOne({
+                const tracking = await models.tracking.findOne({
                     where: {
                         id: res.id,
                     },
-                    include: [
-                        {
-                            model: models.user,
-                            as: 'user',
-                            include: [
-                                {
-                                    model: models.tracking,
-                                    as: 'tracking',
-                                },
-                            ],
-                        },
-                    ],
                 });
+                console.log('PHUC: create -> invitations.user', tracking.token);
+
                 const notification = {
                     id: res.id,
-                    pushToken: invitations.user.tracking.token,
+                    pushToken: tracking.token,
                     message: invitationMessages.parentSendInvitation,
                 };
                 console.log(
@@ -109,6 +99,7 @@ const create = async (req, res) => {
     } catch (err) {
         res.status(400);
         res.send(err);
+        console.log('PHUC: create -> err', err);
     }
 };
 
@@ -169,11 +160,13 @@ const update = async (req, res) => {
                             include: [
                                 {
                                     model: models.user,
-									as: 'user',
-									include: [{
-										model: models.tracking,
-										as: 'tracking',
-									}]
+                                    as: 'user',
+                                    include: [
+                                        {
+                                            model: models.tracking,
+                                            as: 'tracking',
+                                        },
+                                    ],
                                 },
                             ],
                         },
