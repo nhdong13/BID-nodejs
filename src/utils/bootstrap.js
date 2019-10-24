@@ -510,4 +510,18 @@ export async function insertDatabase() {
                 .format('HH:mm:ss'),
         },
     ]);
+    for (var i=20; i<30;i++){
+        db.configuration.bulkCreate([
+            {
+                price: 150,
+                date: moment().set({ year: 2019, month: 9, date: i }),
+                startTime: moment()
+                    .set({ hour: 17, minute: 0, second: 0 })
+                    .format('HH:mm:ss'),
+                endTime: moment()
+                    .set({ hour: 18, minute: 0, second: 0 })
+                    .format('HH:mm:ss'),
+            },
+        ]);
+    }
 }
