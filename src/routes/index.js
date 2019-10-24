@@ -7,6 +7,7 @@ import parentRoutes from '@routes/parent.route';
 import babysitterRoutes from '@routes/babysitter.route';
 import invitationRoutes from '@routes/invitation.route';
 import circleRoutes from '@routes/circle.route';
+import configurationRoutes from '@routes/configuration.route';
 import { jwtAuthentication } from '../middlewares/jwt.middleware';
 
 const router = express.Router();
@@ -21,5 +22,6 @@ router.use('/parents', parentRoutes);
 router.use('/babysitters', babysitterRoutes);
 router.use('/circles', circleRoutes);
 router.use('/invitations', invitationRoutes);
+router.use('/configuration', configurationRoutes);
 
 export default router;

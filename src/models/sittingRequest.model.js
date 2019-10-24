@@ -30,6 +30,9 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: false
             },
+            totalPrice: {
+                type: DataTypes.INTEGER,
+            },
             status: {
                 type: DataTypes.ENUM(
                     "PENDING",
