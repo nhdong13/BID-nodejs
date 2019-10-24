@@ -43,7 +43,9 @@ export default function(sequelize, DataTypes) {
                     "BS_FINISH"
                 ),
                 allowNull: false
-            }
+            },
+            canCheckIn: DataTypes.VIRTUAL,
+            canCheckOut: DataTypes.VIRTUAL,
         },
         {
             timestamps: true,

@@ -1,7 +1,5 @@
 import seq from "sequelize";
 import models from "@models/";
-import { matching } from "@services/matchingService";
-import { callAPI } from "@utils/distanceAPI";
 import { asyncForEach } from '@utils/common'
 
 // CONSTANTS WEIGHTED MULTIPLIER (total = 1)

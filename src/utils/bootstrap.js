@@ -265,6 +265,12 @@ export async function insertDatabase() {
                             parentId: 3,
                             image: image.img4,
                         },
+                        {
+                            name: 'Con Dương',
+                            age: 1,
+                            parentId: 1,
+                            image: image.img4,
+                        },
                     ]);
                 });
             //#endregion
