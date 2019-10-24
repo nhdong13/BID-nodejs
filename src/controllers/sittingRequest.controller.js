@@ -164,6 +164,20 @@ const acceptBabysitter = async (req, res, next) => {
                     },
                     selector,
                 );
+
+                //
+                selector = {
+                    where: {
+                        requestId: requestId,
+                        receiver: sitterId,
+                    },
+                };
+                await models.invitation.update(
+                    {
+                        status: 'CONFIRMED',
+                    },
+                    selector,
+                );
             });
         res.send();
     } catch (err) {
