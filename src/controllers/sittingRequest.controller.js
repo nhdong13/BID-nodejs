@@ -4,6 +4,7 @@ import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
+import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
 
 const Sequelize = require('sequelize');
 
@@ -157,7 +158,7 @@ const acceptBabysitter = async (req, res, next) => {
                 },
             )
             .then(async function(res) {
-                // update the accepted babysitter's invitation status to CONFIRMED 
+                // update the accepted babysitter's invitation status to CONFIRMED
                 let selector = {
                     where: {
                         requestId: requestId,
@@ -175,7 +176,7 @@ const acceptBabysitter = async (req, res, next) => {
                 const invitation = await models.invitation.findOne({
                     where: {
                         requestId: requestId,
-                        receiver: sitterId
+                        receiver: sitterId,
                     },
                     include: [
                         {
@@ -338,7 +339,17 @@ const read = async (req, res) => {
                 },
             ],
         });
+
         if (sittingReq) {
+            // check if this request can check in or check out or not
+            const canCheckIn = checkCheckInStatus(sittingReq);
+            console.log("Duong: read -> canCheckIn", canCheckIn)
+            const canCheckOut = checkCheckOutStatus(sittingReq);
+            console.log("Duong: read -> canCheckOut", canCheckOut)
+
+            sittingReq.canCheckIn = canCheckIn;
+            sittingReq.canCheckOut = canCheckOut;
+
             res.status(201);
             res.send(sittingReq);
         } else {
