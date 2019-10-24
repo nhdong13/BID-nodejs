@@ -49,7 +49,9 @@ async function main() {
 
         const qr = io.of('/api/v1/qr').on('connection', (socket) => {
             socket.on('qrscanning', (data) => {
-                socket.emit('qrTrigger', { qr: data.qr });
+                console.log('PHUC: main -> data', data);
+
+                qr.emit('qrTrigger', { qr: data });
             });
         });
 

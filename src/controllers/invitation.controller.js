@@ -79,7 +79,7 @@ const create = async (req, res) => {
             .then(async (res) => {
                 const tracking = await models.tracking.findOne({
                     where: {
-                        id: res.id,
+                        userId: newItem.receiver,
                     },
                 });
                 console.log('PHUC: create -> invitations.user', tracking.token);
