@@ -2,7 +2,7 @@ import models from '@models';
 import moment from 'moment';
 import { hashPassword } from '@utils/hash';
 import { randomInt, randomFloat } from '@utils/common';
-import Images from '@utils/image'
+import Images from '@utils/image';
 
 export async function insertDatabase() {
     const db = models.sequelize.models;
@@ -31,12 +31,12 @@ export async function insertDatabase() {
     //#region seed parents here
     // parent
     let user = {
-        phoneNumber: "01",
-        email: "phduongse@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "Pham Hai Duong",
-        address: "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
-        gender: "MALE",
+        phoneNumber: '01',
+        email: 'phduongse@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'Pham Hai Duong',
+        address: '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'MALE',
         dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
         roleId: 2,
     };
@@ -78,12 +78,12 @@ export async function insertDatabase() {
 
     // Mr Khanh
     user = {
-        phoneNumber: "07",
-        email: "Khanh@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "MR.Khanh",
-        address: "682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam",
-        gender: "MALE",
+        phoneNumber: '07',
+        email: 'Khanh@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'MR.Khanh',
+        address: '682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -97,12 +97,12 @@ export async function insertDatabase() {
     //#region seed babysitter here
     // sitter
     user = {
-        phoneNumber: "04",
-        email: "dong4@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "DongBS",
-        address: "684 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
-        gender: "MALE",
+        phoneNumber: '04',
+        email: 'dong4@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'DongBS',
+        address: '684 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -114,12 +114,12 @@ export async function insertDatabase() {
 
     // sitter
     user = {
-        phoneNumber: "05",
-        email: "ky@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "Ky",
-        address: "181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam",
-        gender: "FEMALE",
+        phoneNumber: '05',
+        email: 'ky@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'Ky',
+        address: '181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'FEMALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -131,12 +131,12 @@ export async function insertDatabase() {
 
     // sitter
     user = {
-        phoneNumber: "06",
-        email: "duong@gmail.com",
-        password: await hashPassword("12341234"),
-        nickname: "Duong",
-        address: "690 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
-        gender: "FEMALE",
+        phoneNumber: '06',
+        email: 'duong@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'Duong',
+        address: '690 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'FEMALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -347,8 +347,8 @@ export async function insertDatabase() {
                             })
                             .format('HH:mm:ss'),
                         sittingAddress:
-                            "589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam",
-                        status: "PENDING"
+                            '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+                        status: 'PENDING',
                     },
                     {
                         createdUser: 2,
@@ -488,4 +488,20 @@ export async function insertDatabase() {
 
             console.log('Finish insert to database.');
         });
+    db.configuration.bulkCreate([
+        {
+            price: 100,
+            description: 'Base',
+        },
+        {
+            price: 150,
+            date: moment().set({ year: 2019, month: 9, date: 24 }),
+            startTime: moment()
+                .set({ hour: 17, minute: 0, second: 0 })
+                .format('HH:mm:ss'),
+            endTime: moment()
+                .set({ hour: 18, minute: 0, second: 0 })
+                .format('HH:mm:ss'),
+        },
+    ]);
 }
