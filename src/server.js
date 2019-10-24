@@ -1,4 +1,3 @@
-import express from 'express';
 import compression from 'compression';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -9,7 +8,9 @@ import models from '@models';
 import { checkEnvLoaded } from '@utils/env';
 import { insertDatabase } from '@utils/bootstrap';
 
-const app = express();
+const app = require('express')();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
 async function main() {
     try {
@@ -46,8 +47,18 @@ async function main() {
         // Init roues
         app.use('/api/v1', routes);
 
-        app.listen(5000, function() {
-            console.log('App is listening on port 5000!');
+        const qr = io.of('/api/v1/qr').on('connection', (socket) => {
+            socket.on('qrscanning', (data) => {
+                socket.emit('qrTrigger', { qr: data.qr });
+            });
+        });
+
+        // app.listen(5000, function() {
+        //     console.log('App is listening on port 5000!');
+        // });
+
+        server.listen(5000, () => {
+            console.log('App is running at port 5000');
         });
     } catch (error) {
         console.error(error);

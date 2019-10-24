@@ -1,12 +1,14 @@
 import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
+import { testSocketIo } from '@utils/socketIo';
 
 const Sequelize = require('sequelize');
 
 const list = async (req, res, next) => {
     try {
         const listSittings = await models.sittingRequest.findAll({});
+        testSocketIo();
         res.send(listSittings);
     } catch (err) {
         res.status(400);
