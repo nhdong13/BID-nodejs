@@ -1,6 +1,4 @@
 import models from "@models/";
-import { callAPI } from "@utils/distanceAPI";
-import { asyncForEach } from "@utils/common";
 
 const MAX_TRAVEL_DISTANCE = 10;
 const KEY = "AIzaSyC8IlI2BReTv7lnWEQyp5Ca-argo7D1eVA";
@@ -235,11 +233,25 @@ function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
     let flag = false;
     let daytime = getAvailableTime(bDaytime);
     let evening = getAvailableTime(bEvening);
+    let combine = null;
 
+    // if daytime end equal evening time start then combine work time to daytime start and evening end
+    if (daytime[1] == evening[0]) {
+        combine = [daytime[0], evening[1]];
+    }
+
+    // check for combine time if it not null
+    if (combine != undefined && combine != null) {
+        if (timeIsInRange(startTime, combine)) {
+            if (timeIsInRange(endTime, combine)) {
+                flag = true;
+            }
+        }
+    }
+
+    // check for daytime or evening time
     if (timeIsInRange(startTime, daytime)) {
         if (timeIsInRange(endTime, daytime)) {
-            flag = true;
-        } else if (timeIsInRange(endTime, evening)) {
             flag = true;
         }
     } else if (timeIsInRange(startTime, evening)) {
