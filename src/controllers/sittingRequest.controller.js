@@ -1,6 +1,8 @@
 import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
+import { sendSingleMessage } from '@utils/pushNotification';
+import { invitationMessages } from '@utils/notificationMessages';
 
 const Sequelize = require('sequelize');
 
@@ -93,17 +95,12 @@ const recommendBabysitter = async (req, res, next) => {
             },
         });
 
-        console.time('--matching');
         if (request != null && request != undefined) {
             listMatched = await matching(request);
         }
-        console.timeEnd('--matching');
-        console.time('--recommend');
         if (listMatched != null && listMatched != undefined) {
             recommendList = await recommendToParent(request, listMatched);
         }
-        console.timeEnd('--recommend');
-        console.time('--remove duplicate');
         if (recommendList.length > 0) {
             recommendList.forEach((recommendSitter) => {
                 listMatched = listMatched.filter(
@@ -112,7 +109,7 @@ const recommendBabysitter = async (req, res, next) => {
                 );
             });
         }
-        console.timeEnd('--remove duplicate');
+
         res.send({
             matchedCount: listMatched.length,
             listMatched,
@@ -120,7 +117,6 @@ const recommendBabysitter = async (req, res, next) => {
             recommendList,
         });
     } catch (err) {
-        console.log(err);
         res.status(400);
         res.send(err);
     }
@@ -149,8 +145,49 @@ const acceptBabysitter = async (req, res, next) => {
                 },
             )
             .then(async function(res) {
-                // then update other invitation status
+                // update the accepted babysitter's invitation status to CONFIRMED 
                 let selector = {
+                    where: {
+                        requestId: requestId,
+                        receiver: sitterId,
+                    },
+                };
+                await models.invitation.update(
+                    {
+                        status: 'CONFIRMED',
+                    },
+                    selector,
+                );
+
+                // notify the accepted babysitter
+                const invitation = await models.invitation.findOne({
+                    where: {
+                        requestId: requestId,
+                        receiver: sitterId
+                    },
+                    include: [
+                        {
+                            model: models.user,
+                            as: 'user',
+                            include: [
+                                {
+                                    model: models.tracking,
+                                    as: 'tracking',
+                                },
+                            ],
+                        },
+                    ],
+                });
+                const notification = {
+                    id: invitation.id,
+                    pushToken: invitation.user.tracking.token,
+                    message: invitationMessages.parentAcceptedBabysitter,
+                };
+
+                sendSingleMessage(notification);
+
+                // then update other babysitter's invitation status to EXPIRED
+                selector = {
                     where: {
                         requestId: requestId,
                         receiver: {
@@ -158,7 +195,7 @@ const acceptBabysitter = async (req, res, next) => {
                         },
                     },
                 };
-                let a = await models.invitation.update(
+                await models.invitation.update(
                     {
                         status: 'EXPIRED',
                     },
@@ -167,7 +204,6 @@ const acceptBabysitter = async (req, res, next) => {
             });
         res.send();
     } catch (err) {
-        console.log(err);
         res.status(400);
         res.send(err);
     }

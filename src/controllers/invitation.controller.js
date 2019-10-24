@@ -79,7 +79,7 @@ const create = async (req, res) => {
             .then(async (res) => {
                 const invitations = await models.invitation.findOne({
                     where: {
-                        requestId: newItem.requestId,
+                        id: res.id,
                     },
                     include: [
                         {
@@ -148,10 +148,8 @@ const getInvitation = async (req, res) => {
 
 const update = async (req, res) => {
     const id = req.params.id;
-    console.log("Duong: update -> id", id)
 
     let updatingInvitation = req.body;
-    console.log('Duong: update -> updatingInvitation', updatingInvitation);
 
     try {
         updatingInvitation = await models.invitation
@@ -159,7 +157,6 @@ const update = async (req, res) => {
                 where: { id },
             })
             .then(async (result) => {
-                console.log('Duong: update -> result', result);
 
                 const invitation = await models.invitation.findOne({
                     where: {
@@ -182,14 +179,13 @@ const update = async (req, res) => {
                         },
                     ],
                 });
-                console.log('Duong: update -> invitations', invitation);
 
+                // notify the parent with the request
                 const notification = {
                     pushToken: invitation.sittingRequest.user.tracking.token,
                     message: invitationMessages.babysitterAccepted,
                     id: invitation.requestId,
                 };
-                console.log('Duong: update -> notification', notification);
 
                 sendSingleMessage(notification);
             });
