@@ -19,6 +19,27 @@ const list = async (req, res, next) => {
     }
 };
 
+const listForWeb = async (req, res, next) => {
+    try {
+        const listSittings = await models.sittingRequest.findAll({
+            include: [{
+                model: models.user,
+                as: 'user',
+                attributes: ['nickname']
+            },{
+                model: models.user,
+                as: 'bsitter',
+                attributes: ['nickname']
+            }],
+        });
+        testSocketIo();
+        res.send(listSittings);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
 
@@ -409,4 +430,5 @@ export default {
     read,
     update,
     destroy,
+    listForWeb,
 };
