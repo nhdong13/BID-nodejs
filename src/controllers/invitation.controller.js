@@ -4,7 +4,6 @@ import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages } from '@utils/notificationMessages';
 
 const list = async (req, res, next) => {
-    console.log('PHUC: list -> invitations', invitations.user.tracking.token);
     var invitations = await models.invitation.findAll({
         include: [
             {
