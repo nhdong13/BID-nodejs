@@ -1,6 +1,4 @@
 import models from "@models/";
-import { callAPI } from "@utils/distanceAPI";
-import { asyncForEach } from "@utils/common";
 
 const MAX_TRAVEL_DISTANCE = 10;
 const KEY = "AIzaSyC8IlI2BReTv7lnWEQyp5Ca-argo7D1eVA";
