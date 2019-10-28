@@ -242,31 +242,31 @@ export async function insertDatabase() {
                     let image = new Images();
                     db.children.bulkCreate([
                         {
-                            name: 'child 1',
+                            name: 'Phong',
                             age: 1,
                             parentId: 4,
                             image: image.img1,
                         },
                         {
-                            name: 'child 2',
-                            age: 1,
+                            name: 'Quân',
+                            age: 2,
                             parentId: 4,
                             image: image.img2,
                         },
                         {
-                            name: 'child 3',
-                            age: 1,
+                            name: 'Trang',
+                            age: 3,
                             parentId: 4,
                             image: image.img3,
                         },
                         {
-                            name: 'child 4',
+                            name: 'Linh',
                             age: 1,
                             parentId: 3,
                             image: image.img4,
                         },
                         {
-                            name: 'Con Dương',
+                            name: 'Dương Jr',
                             age: 1,
                             parentId: 1,
                             image: image.img4,

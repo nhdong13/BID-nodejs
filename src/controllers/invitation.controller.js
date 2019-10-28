@@ -71,9 +71,16 @@ const listInvitationBySitterId = async (req, res, next) => {
 };
 
 const create = async (req, res) => {
-    const newItem = req.body;
+    const requestId = req.params.requestId;
+    const newItem = JSON.parse(req.body.newInvite);
+    const newRequestItem = JSON.parse(req.body.newRequest);
     console.log('PHUC: create -> newItem', newItem);
     try {
+        let newRequest;
+        if (requestId == undefined || requestId == null || requestId == 0) {
+            newRequest = await models.sittingRequest.create(newRequestItem);
+            newItem.requestId = newRequest.id;
+        }
         const newInvitation = await models.invitation
             .create(newItem)
             .then(async (res) => {
@@ -82,20 +89,32 @@ const create = async (req, res) => {
                         id: res.id,
                     },
                 });
-                console.log('PHUC: create -> invitations.user', tracking.token);
 
-                const notification = {
-                    id: res.id,
-                    pushToken: tracking.token,
-                    message: invitationMessages.parentSendInvitation,
-                };
-                console.log(
-                    'PHUC: Invitation.controller -> create -> notification',
-                    notification,
-                );
-                sendSingleMessage(notification);
+                if (tracking) {
+                    console.log(
+                        'PHUC: create -> invitations.user',
+                        tracking.token,
+                    );
+                    const notification = {
+                        id: res.id,
+                        pushToken: tracking.token,
+                        message: invitationMessages.parentSendInvitation,
+                    };
+                    console.log(
+                        'PHUC: Invitation.controller -> create -> notification',
+                        notification,
+                    );
+                    sendSingleMessage(notification);
+                } else {
+                    console.log("Duong: Invitation.controller create -> notification fail, tracking data not found");
+                }
             });
-        res.send(newInvitation);
+
+        res.send({
+            newInvitation: newInvitation,
+            newRequest: newRequest,
+        });
+        console.log("Duong: Invitation.controller create -> create invitation success");
     } catch (err) {
         res.status(400);
         res.send(err);
@@ -148,7 +167,6 @@ const update = async (req, res) => {
                 where: { id },
             })
             .then(async (result) => {
-
                 const invitation = await models.invitation.findOne({
                     where: {
                         id: id,
