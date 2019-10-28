@@ -22,15 +22,18 @@ const list = async (req, res, next) => {
 const listForWeb = async (req, res, next) => {
     try {
         const listSittings = await models.sittingRequest.findAll({
-            include: [{
-                model: models.user,
-                as: 'user',
-                attributes: ['nickname']
-            },{
-                model: models.user,
-                as: 'bsitter',
-                attributes: ['nickname']
-            }],
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                    attributes: ['nickname'],
+                },
+                {
+                    model: models.user,
+                    as: 'bsitter',
+                    attributes: ['nickname'],
+                },
+            ],
         });
         testSocketIo();
         res.send(listSittings);
@@ -119,22 +122,29 @@ const listMatchedBabysitter = async (req, res, next) => {
 // recommend babysitter
 const recommendBabysitter = async (req, res, next) => {
     const requestId = req.params.id;
+    let request = req.body;
     let listMatched = [];
     let recommendList = [];
 
     try {
-        const request = await models.sittingRequest.findOne({
-            where: {
-                id: requestId,
-            },
-        });
+        // find by id
+        if (requestId !== undefined && requestId !== null) {
+            request = await models.sittingRequest.findOne({
+                where: {
+                    id: requestId,
+                },
+            });
+        }
 
+        // matching
         if (request != null && request != undefined) {
             listMatched = await matching(request);
         }
+        // recommending
         if (listMatched != null && listMatched != undefined) {
             recommendList = await recommendToParent(request, listMatched);
         }
+        // find different between recommended and matched
         if (recommendList.length > 0) {
             recommendList.forEach((recommendSitter) => {
                 listMatched = listMatched.filter(
@@ -144,6 +154,7 @@ const recommendBabysitter = async (req, res, next) => {
             });
         }
 
+        // response
         res.send({
             matchedCount: listMatched.length,
             listMatched,
@@ -364,9 +375,9 @@ const read = async (req, res) => {
         if (sittingReq) {
             // check if this request can check in or check out or not
             const canCheckIn = checkCheckInStatus(sittingReq);
-            console.log("Duong: read -> canCheckIn", canCheckIn)
+            console.log('Duong: read -> canCheckIn', canCheckIn);
             const canCheckOut = checkCheckOutStatus(sittingReq);
-            console.log("Duong: read -> canCheckOut", canCheckOut)
+            console.log('Duong: read -> canCheckOut', canCheckOut);
 
             sittingReq.canCheckIn = canCheckIn;
             sittingReq.canCheckOut = canCheckOut;

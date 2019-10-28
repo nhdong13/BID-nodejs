@@ -78,7 +78,7 @@ export async function insertDatabase() {
 
     // Mr Khanh
     user = {
-        phoneNumber: '07',
+        phoneNumber: '04',
         email: 'Khanh@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'MR.Khanh',
@@ -97,7 +97,7 @@ export async function insertDatabase() {
     //#region seed babysitter here
     // sitter
     user = {
-        phoneNumber: '04',
+        phoneNumber: '05',
         email: 'dong4@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'DongBS',
@@ -114,7 +114,7 @@ export async function insertDatabase() {
 
     // sitter
     user = {
-        phoneNumber: '05',
+        phoneNumber: '06',
         email: 'ky@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Ky',
@@ -131,7 +131,7 @@ export async function insertDatabase() {
 
     // sitter
     user = {
-        phoneNumber: '06',
+        phoneNumber: '07',
         email: 'duong@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Duong',
@@ -358,7 +358,7 @@ export async function insertDatabase() {
                     },
                     {
                         createdUser: 2,
-                        acceptedBabysitter: 3,
+                        acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
@@ -386,7 +386,7 @@ export async function insertDatabase() {
                     },
                     {
                         createdUser: 2,
-                        acceptedBabysitter: 4,
+                        acceptedBabysitter: 6,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
@@ -413,8 +413,8 @@ export async function insertDatabase() {
                         status: 'DONE',
                     },
                     {
-                        createdUser: 5,
-                        acceptedBabysitter: 3,
+                        createdUser: 2,
+                        acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
@@ -450,26 +450,14 @@ export async function insertDatabase() {
                                 {
                                     requestId: el.id,
                                     sender: el.createdUser,
-                                    receiver: 3,
-                                    status: 'PENDING',
-                                },
-                                {
-                                    requestId: el.id,
-                                    sender: el.createdUser,
-                                    receiver: 4,
-                                    status: 'PENDING',
-                                },
-                                {
-                                    requestId: el.id,
-                                    sender: el.createdUser,
-                                    receiver: 5,
-                                    status: 'PENDING',
+                                    receiver: 7,
+                                    status: 'CONFIRMED',
                                 },
                                 {
                                     requestId: el.id,
                                     sender: el.createdUser,
                                     receiver: 6,
-                                    status: 'PENDING',
+                                    status: 'EXPIRED',
                                 },
                             ]);
                         }
