@@ -21,9 +21,11 @@ export async function matching(sittingRequest) {
 
     matchedList = await randomizeDistance(sittingRequest.sittingAddress, matchedList);
 
-    console.time("checkSent"); // 
-    matchedList = await checkIfSentInvite(sittingRequest, matchedList);
-    console.timeEnd("checkSent"); // evaluate the estimate time checkIfSentInvite function needed to run
+    if (sittingRequest.id !== undefined && sittingRequest.id !== null && sittingRequest.id > 0) {
+        console.time("checkSent"); // 
+        matchedList = await checkIfSentInvite(sittingRequest, matchedList);
+        console.timeEnd("checkSent"); // evaluate the estimate time checkIfSentInvite function needed to run
+    }
 
     return matchedList;
 }

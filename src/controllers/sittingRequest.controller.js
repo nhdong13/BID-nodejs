@@ -128,7 +128,7 @@ const recommendBabysitter = async (req, res, next) => {
 
     try {
         // find by id
-        if (requestId !== undefined && requestId !== null) {
+        if (requestId !== undefined && requestId !== null && requestId > 0) {
             request = await models.sittingRequest.findOne({
                 where: {
                     id: requestId,
