@@ -47,24 +47,21 @@ async function main() {
         // Init roues
         app.use('/api/v1', routes);
 
-        const sitter = io.of('/api/v1/sitterIO').on('connection', (socket) => {
-            socket.on('qrscanning', (data) => {
+        const socketIO = io.of('/api/v1/socket').on('connection', (socket) => {
+            socket.on('userId', (userId) => {
+                socket.join('user_room_' + userId);
+                console.log(`room created for user ${userId}`);
+            });
+
+            socket.on('scanQr', (data) => {
                 console.log('PHUC: main -> data', data);
 
-                socket.broadcast.emit('qrTrigger', { qr: data });
+                console.log('PHUC: scanqr -> data.userId', data.userId);
+                socketIO
+                    .to('user_room_' + data.userId)
+                    .emit('triggerQr', { qr: data.qr });
             });
         });
-
-        const parent = io.of('/api/v1/parentIO').on('connection', (socket) => {
-            socket.on('qrscanning', (data) => {
-                console.log('PHUC: main -> data', data);
-
-                socket.broadcast.emit('qrTrigger', { qr: data });
-            });
-        });
-        // app.listen(5000, function() {
-        //     console.log('App is listening on port 5000!');
-        // });
 
         server.listen(5000, () => {
             console.log('App is running at port 5000');
