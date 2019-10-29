@@ -331,7 +331,7 @@ export async function insertDatabase() {
 
             //     let schedule = {
             //         userId: sitters[0].userId,
-            //         scheduleTime: '* * 18-20 11 10 * 2019',
+            //         scheduleTime: '15:00:00 20:00:00 11 10 2019',
             //         type: 'UNAVAILABLE',
             //     }
 
@@ -387,31 +387,31 @@ export async function insertDatabase() {
                     },
                     {
                         createdUser: 2,
-                        acceptedBabysitter: 5,
+                        acceptedBabysitter: null,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
                             year: 2019,
-                            month: 8,
-                            date: 26,
+                            month: 9,
+                            date: 11,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 9,
+                                hour: 15,
                                 minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
-                                hour: 12,
+                                hour: 20,
                                 minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
-                        status: 'DONE',
+                        status: 'PENDING',
                     },
                     {
                         createdUser: 2,
