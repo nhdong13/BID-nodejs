@@ -5,6 +5,7 @@ import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
+import { getScheduleTime } from '@utils/schedule'
 
 const Sequelize = require('sequelize');
 
@@ -203,6 +204,15 @@ const acceptBabysitter = async (req, res, next) => {
                     },
                     selector,
                 );
+
+                // create a schedule for the accepted babysitter'schedules
+                let scheduleTime = getScheduleTime(request);
+                let schedule = {
+                    userId: sitterId,
+                    scheduleTime: scheduleTime,
+                    type: 'UNAVAILABLE',
+                };
+                await models.schedule.create(schedule);
 
                 // notify the accepted babysitter
                 const invitation = await models.invitation.findOne({
