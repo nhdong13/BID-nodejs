@@ -41,9 +41,15 @@ export function randomFloat(min, max, decimal) {
  */
 export function checkCheckInStatus(sittingRequest) {
     const sittingDate = moment(sittingRequest.sittingDate).format('YYYYMMDD');
-    const startTime = moment(sittingRequest.startTime, "HH:mm").format('HH:mm');
+    console.log('PHUC: checkCheckInStatus -> sittingDate', sittingDate);
+    const startTime = moment(sittingRequest.startTime, 'HH:mm')
+        .subtract(30, 'minutes')
+        .format('HH:mm');
+    console.log('PHUC: checkCheckInStatus -> startTime', startTime);
     const currentDate = moment().format('YYYYMMDD');
+    console.log('PHUC: checkCheckInStatus -> currentDate', currentDate);
     const currentTime = moment().format('HH:mm');
+    console.log('PHUC: checkCheckInStatus -> currentTime', currentTime);
     if (sittingRequest.status == 'CONFIRMED') {
         if (sittingDate <= currentDate) {
             if (startTime <= currentTime) {
@@ -53,7 +59,6 @@ export function checkCheckInStatus(sittingRequest) {
     }
     return false;
 }
-
 /**
  * Check if a sitting request can be check out
  * @param  {any} sittingRequest The siting request
@@ -61,14 +66,16 @@ export function checkCheckInStatus(sittingRequest) {
  */
 export function checkCheckOutStatus(sittingRequest) {
     const sittingDate = moment(sittingRequest.sittingDate).format('YYYYMMDD');
-    const endTime = moment(sittingRequest.endTime, "HH:mm").add(30, 'minutes').format('HH:mm');
-    console.log("Duong: checkCheckOutStatus -> endTime", endTime)
+    const startTime = moment(sittingRequest.startTime, 'HH:mm')
+        .add(30, 'minutes')
+        .format('HH:mm');
+    console.log('Duong: checkCheckOutStatus -> startTime', startTime);
     const currentDate = moment().format('YYYYMMDD');
     const currentTime = moment().format('HH:mm');
-    console.log("Duong: checkCheckOutStatus -> currentTime", currentTime)
+    console.log('Duong: checkCheckOutStatus -> currentTime', currentTime);
     if (sittingRequest.status == 'ONGOING') {
         if (sittingDate <= currentDate) {
-            if (endTime <= currentTime) {
+            if (startTime <= currentTime) {
                 return true;
             }
         }
