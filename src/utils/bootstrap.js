@@ -290,8 +290,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 4.5,
-                        totalFeedback: 20,
+                        averageRating: 0,//4.5,
+                        totalFeedback: 0,//20,
                     };
                 } else if (index < 2) {
                     babysitter = {
@@ -302,8 +302,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 5,
-                        totalFeedback: 1,
+                        averageRating: 0,//5,
+                        totalFeedback: 0,//1,
                     };
                 } else {
                     babysitter = {
@@ -314,8 +314,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 4,
-                        totalFeedback: 1,
+                        averageRating: 0,//4,
+                        totalFeedback: 0,//1,
                     };
                 }
 
@@ -468,8 +468,8 @@ export async function insertDatabase() {
                             // seed feedback
                             db.feedback.bulkCreate([
                                 {
-                                    requestId: el.id,
-                                    rating: 4,
+                                    // requestId: el.id,
+                                    // rating: 4,
                                 },
                             ]);
                         }
