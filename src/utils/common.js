@@ -42,7 +42,9 @@ export function randomFloat(min, max, decimal) {
 export function checkCheckInStatus(sittingRequest) {
     const sittingDate = moment(sittingRequest.sittingDate).format('YYYYMMDD');
     console.log('PHUC: checkCheckInStatus -> sittingDate', sittingDate);
-    const startTime = moment(sittingRequest.startTime, 'HH:mm').format('HH:mm');
+    const startTime = moment(sittingRequest.startTime, 'HH:mm')
+        .subtract(30, 'minutes')
+        .format('HH:mm');
     console.log('PHUC: checkCheckInStatus -> startTime', startTime);
     const currentDate = moment().format('YYYYMMDD');
     console.log('PHUC: checkCheckInStatus -> currentDate', currentDate);
@@ -50,22 +52,13 @@ export function checkCheckInStatus(sittingRequest) {
     console.log('PHUC: checkCheckInStatus -> currentTime', currentTime);
     if (sittingRequest.status == 'CONFIRMED') {
         if (sittingDate <= currentDate) {
-            console.log(
-                "PHUC: checkCheckInStatus -> moment -> ",
-                moment(currentTime, 'HH:mm').subtract(30, 'minutes'),
-            );
-            if (
-                startTime <= currentTime ||
-                startTime <=
-                    moment(currentTime, 'HH:mm').subtract(30, 'minutes')
-            ) {
+            if (startTime <= currentTime) {
                 return true;
             }
         }
     }
     return false;
 }
-
 /**
  * Check if a sitting request can be check out
  * @param  {any} sittingRequest The siting request
