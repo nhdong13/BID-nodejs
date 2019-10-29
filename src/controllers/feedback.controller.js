@@ -11,6 +11,21 @@ const list = async (req, res, next) => {
     }
 };
 
+const getById = async (req, res) => {
+  const id = req.params.id;
+  try {
+      const list = await models.feedback.findOne({
+        where: {
+          requestId: id,
+        }
+      });
+      res.send(list);
+  } catch (err) {
+      res.status(400);
+      res.send(err);
+  }
+};
+
 const create = async (req, res) => {
     let newItem = req.body;
 
@@ -61,4 +76,5 @@ const create = async (req, res) => {
 export default {
     list,
     create,
+    getById,
 };

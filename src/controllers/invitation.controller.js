@@ -4,7 +4,6 @@ import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages } from '@utils/notificationMessages';
 
 const list = async (req, res, next) => {
-    console.log('PHUC: list -> invitations', invitations.user.tracking.token);
     var invitations = await models.invitation.findAll({
         include: [
             {
@@ -18,7 +17,14 @@ const list = async (req, res, next) => {
                 ],
             },
         ],
-    });
+    });      registerPushNotifications(userId).then((response) => {
+        if (response) {
+          console.log(
+            'PHUC: HomeScreen -> registerPushNotifications -> response',
+            response.data,
+          );
+        }
+      });
     res.send(invitations);
 };
 
@@ -86,7 +92,7 @@ const create = async (req, res) => {
             .then(async (res) => {
                 const tracking = await models.tracking.findOne({
                     where: {
-                        id: res.id,
+                        userId: newItem.receiver,
                     },
                 });
 
