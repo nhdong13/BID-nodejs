@@ -83,3 +83,19 @@ export function checkCheckOutStatus(sittingRequest) {
 
     return false;
 }
+
+/**
+ * convert a time range into an array of 2 elements
+ * @param  {String} time 'HH-HH'
+ * @returns {Array<String}
+ */
+export function splitTimeRange(time) {
+    if (time == null) {
+        return null;
+    }
+    let arr = [];
+
+    arr = time.split('-');
+
+    return arr;
+}

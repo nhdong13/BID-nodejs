@@ -85,6 +85,8 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id",
             as: "transactions"
         });
+
+        // user - tracking
         user.hasOne(models.tracking, {
             foreignKey: {
                 name: "userId",
@@ -93,6 +95,17 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id",
             as: "tracking"
         })
+
+        // user - schedule
+        user.hasMany(models.schedule, {
+            foreignKey: {
+                name: "userId",
+                allowNull: false
+            },
+            sourceKey: "id",
+            as: "schedules",
+            onDelete: "CASCADE"
+        });
     };
 
     return user;

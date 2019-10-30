@@ -4,6 +4,8 @@ import { hashPassword } from '@utils/hash';
 import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
 
+const CronJob = require('cron').CronJob;
+
 export async function insertDatabase() {
     const db = models.sequelize.models;
     console.log('inserting records to databse....');
@@ -321,7 +323,34 @@ export async function insertDatabase() {
 
                 babysitters.push(babysitter);
             });
-            db.babysitter.bulkCreate(babysitters);
+            db.babysitter.bulkCreate(babysitters)
+            // seed schedule
+            // .then((result) => {
+            //     let sitters = result;
+            //     let schedules = [];
+
+            //     let schedule = {
+            //         userId: sitters[0].userId,
+            //         scheduleTime: '15:00:00 20:00:00 11 10 2019',
+            //         type: 'UNAVAILABLE',
+            //     }
+
+            //     // moment().add(10, 'seconds').toDate(),
+
+            //     schedules.push(schedule);
+
+            //     db.schedule.bulkCreate(schedules).then(() => {
+            //         db.schedule.findOne({
+                
+            //         }).then((result) => {
+            //             let scheduleTime = moment().add(10, 'seconds').toDate();
+            //             let cronJ = new CronJob(scheduleTime, function() {
+            //                 console.log("Duong: bootstrap.js insertDatabase -> scheduleTime", scheduleTime)
+            //                 console.log('HAKUNA MATATA!!!');
+            //             }, null, true,);
+            //         });
+            //     });
+            // });
             //#endregion
         })
         .then(() => {
@@ -358,31 +387,31 @@ export async function insertDatabase() {
                     },
                     {
                         createdUser: 2,
-                        acceptedBabysitter: 5,
+                        acceptedBabysitter: null,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
                             year: 2019,
-                            month: 8,
-                            date: 26,
+                            month: 9,
+                            date: 11,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 9,
+                                hour: 15,
                                 minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
-                                hour: 12,
+                                hour: 20,
                                 minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
-                        status: 'DONE',
+                        status: 'PENDING',
                     },
                     {
                         createdUser: 2,
@@ -481,6 +510,8 @@ export async function insertDatabase() {
                 });
 
             console.log('Finish insert to database.');
+            
+            
         });
     db.configuration.bulkCreate([
         {
