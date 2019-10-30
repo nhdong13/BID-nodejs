@@ -49,8 +49,10 @@ async function main() {
 
         const socketIO = io.of('/api/v1/socket').on('connection', (socket) => {
             socket.on('userId', (userId) => {
-                socket.join('user_room_' + userId);
-                console.log(`room created for user ${userId}`);
+                if (userId != null) {
+                    socket.join('user_room_' + userId);
+                    console.log(`room created for user ${userId}`);
+                }
             });
 
             socket.on('scanQr', (data) => {
