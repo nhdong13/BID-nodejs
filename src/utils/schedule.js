@@ -71,7 +71,7 @@ export function checkRequestTime(firstRequest, secondRequest) {
  */
 export function getScheduleTime(request) {
     let scheduleTime = '';
-    let sittingDate = moment(request.sittingDate, 'yyyy-MM-dd');
+    let sittingDate = moment(request.sittingDate, 'yyyy-MM-DD');
     let startTime = request.startTime;
     let endTime = request.endTime;
     scheduleTime += startTime;
@@ -89,25 +89,7 @@ export function getScheduleTime(request) {
  * @param  {sittingRequest} request
  * @returns {Boolean} true if available, false otherwise
  */
-export async function checkBabysitterSchedule(sitterId, request) {
-    const babysitter = await models.babysitter.findOne({
-        where: {
-            userId: sitterId,
-        },
-        include: [
-            {
-                model: models.user,
-                as: 'user',
-                include: [
-                    {
-                        model: models.schedule,
-                        as: 'schedules',
-                    },
-                ],
-            },
-        ],
-    });
-
+export function checkBabysitterSchedule(babysitter, request) {
     let schedules = babysitter.user.schedules;
     // unavailable schedules
     let unavailable = schedules.filter(
