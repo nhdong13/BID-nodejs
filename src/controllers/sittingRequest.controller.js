@@ -196,243 +196,257 @@ const acceptBabysitter = (req, res, next) => {
     const sitterId = req.params.sitterId;
 
     try {
-        sequelize.transaction((t) => {
-            return models.babysitter
-                .findOne({
-                    where: {
-                        userId: sitterId,
-                    },
-                    include: [
-                        {
-                            model: models.user,
-                            as: 'user',
-                            include: [
-                                {
-                                    model: models.schedule,
-                                    as: 'schedules',
-                                },
-                            ],
+        sequelize
+            .transaction((t) => {
+                return models.babysitter
+                    .findOne({
+                        where: {
+                            userId: sitterId,
                         },
-                    ],
-                    transaction: t,
-                    lock: t.LOCK.UPDATE,
-                })
-                .then((babysitter) => {
-                    return models.sittingRequest
-                        .findOne({
-                            where: {
-                                id: requestId,
+                        include: [
+                            {
+                                model: models.user,
+                                as: 'user',
+                                include: [
+                                    {
+                                        model: models.schedule,
+                                        as: 'schedules',
+                                    },
+                                ],
                             },
-                            transaction: t,
-                            lock: t.LOCK.UPDATE,
-                        })
-                        .then((request) => {
-                            if (request) {
-                                let available = checkBabysitterSchedule(
-                                    babysitter,
-                                    request,
-                                );
-                                if (!available) {
-                                    res.status(409);
-                                    res.send();
-                                    return t.commit();
-                                }
+                        ],
+                        transaction: t,
+                        lock: t.LOCK.UPDATE,
+                    })
+                    .then((babysitter) => {
+                        return models.sittingRequest
+                            .findOne({
+                                where: {
+                                    id: requestId,
+                                },
+                                transaction: t,
+                                lock: t.LOCK.UPDATE,
+                            })
+                            .then((request) => {
+                                if (request) {
+                                    let available = checkBabysitterSchedule(
+                                        babysitter,
+                                        request,
+                                    );
+                                    if (!available) {
+                                        throw new Error('OVERLAP');
+                                    }
 
-                                // update sitting request
-                                return models.sittingRequest
-                                    .update(
-                                        {
-                                            status: 'CONFIRMED',
-                                            acceptedBabysitter: sitterId,
-                                        },
-                                        {
-                                            where: {
-                                                id: requestId,
-                                            },
-                                            transaction: t,
-                                            lock: t.LOCK.UPDATE,
-                                        },
-                                    )
-                                    .then((res) => {
-                                        // update the accepted babysitter's invitation status to CONFIRMED
-                                        let selector = {
-                                            where: {
-                                                requestId: requestId,
-                                                receiver: sitterId,
-                                            },
-                                            transaction: t,
-                                            lock: t.LOCK.UPDATE,
-                                        };
-                                        models.invitation.update(
+                                    // update sitting request
+                                    return models.sittingRequest
+                                        .update(
                                             {
                                                 status: 'CONFIRMED',
+                                                acceptedBabysitter: sitterId,
                                             },
-                                            selector,
-                                        );
-
-                                        // create a schedule for the accepted babysitter'schedules
-                                        let scheduleTime = getScheduleTime(
-                                            request,
-                                        );
-                                        let schedule = {
-                                            userId: sitterId,
-                                            scheduleTime: scheduleTime,
-                                            type: 'UNAVAILABLE',
-                                        };
-                                        models.schedule.create(schedule, {
-                                            transaction: t,
-                                            lock: t.LOCK.UPDATE,
-                                        });
-
-                                        // update invitations of the accepted babysitter that colission with this request
-                                        // first find all invitations sent to this babysitter from sitting-requests with the same date as this request
-                                        models.invitation
-                                            .findAll({
+                                            {
                                                 where: {
-                                                    receiver: sitterId,
-                                                    status: {
-                                                        [Sequelize.Op.or]: [
-                                                            'ACCEPTED',
-                                                            'PENDING',
-                                                        ],
-                                                    },
+                                                    id: requestId,
                                                 },
-                                                include: [
-                                                    {
-                                                        model:
-                                                            models.sittingRequest,
-                                                        as: 'sittingRequest',
-                                                        where: {
-                                                            sittingDate:
-                                                                request.sittingDate,
-                                                            id: {
-                                                                [Sequelize.Op
-                                                                    .ne]: requestId,
-                                                            },
-                                                        },
-                                                    },
-                                                ],
                                                 transaction: t,
                                                 lock: t.LOCK.UPDATE,
-                                            })
-                                            .then((unavailableInvitations) => {
-                                                // then set EXPIRED status for those invitations
-                                                // first check if the time is overlap each other or not
-                                                unavailableInvitations.forEach(
-                                                    (invite) => {
-                                                        if (
-                                                            checkRequestTime(
-                                                                invite.sittingRequest,
-                                                                request,
-                                                            )
-                                                        ) {
-                                                            models.invitation.update(
-                                                                {
-                                                                    status:
-                                                                        'OVERLAP',
-                                                                },
-                                                                {
-                                                                    where: {
-                                                                        id:
-                                                                            invite.id,
-                                                                    },
-                                                                    transaction: t,
-                                                                    lock:
-                                                                        t.LOCK
-                                                                            .UPDATE,
-                                                                },
-                                                            );
-                                                        }
-                                                    },
-                                                );
-                                            });
-
-                                        // notify the accepted babysitter
-                                        models.invitation
-                                            .findOne({
+                                            },
+                                        )
+                                        .then((res) => {
+                                            // update the accepted babysitter's invitation status to CONFIRMED
+                                            let selector = {
                                                 where: {
                                                     requestId: requestId,
                                                     receiver: sitterId,
                                                 },
-                                                include: [
-                                                    {
-                                                        model: models.user,
-                                                        as: 'user',
-                                                        include: [
-                                                            {
-                                                                model:
-                                                                    models.tracking,
-                                                                as: 'tracking',
-                                                            },
-                                                        ],
-                                                    },
-                                                ],
                                                 transaction: t,
                                                 lock: t.LOCK.UPDATE,
-                                            })
-                                            .then((invitation) => {
-                                                if (
-                                                    invitation.user.tracking !=
-                                                    null
-                                                ) {
-                                                    const notification = {
-                                                        id: invitation.id,
-                                                        pushToken:
-                                                            invitation.user
-                                                                .tracking.token,
-                                                        message:
-                                                            invitationMessages.parentAcceptedBabysitter,
-                                                    };
-                                                    sendSingleMessage(
-                                                        notification,
-                                                    );
-                                                }
+                                            };
+                                            models.invitation.update(
+                                                {
+                                                    status: 'CONFIRMED',
+                                                },
+                                                selector,
+                                            );
+
+                                            // create a schedule for the accepted babysitter'schedules
+                                            let scheduleTime = getScheduleTime(
+                                                request,
+                                            );
+                                            let schedule = {
+                                                userId: sitterId,
+                                                scheduleTime: scheduleTime,
+                                                type: 'UNAVAILABLE',
+                                            };
+                                            models.schedule.create(schedule, {
+                                                transaction: t,
+                                                lock: t.LOCK.UPDATE,
                                             });
 
-                                        // then update other babysitter's invitation status to EXPIRED
-                                        selector = {
-                                            where: {
-                                                requestId: requestId,
-                                                receiver: {
-                                                    [Sequelize.Op.ne]: sitterId,
-                                                },
-                                            },
-                                            transaction: t,
-                                            lock: t.LOCK.UPDATE,
-                                        };
-                                        models.invitation.update(
-                                            {
-                                                status: 'EXPIRED',
-                                            },
-                                            selector,
-                                        );
+                                            // update invitations of the accepted babysitter that colission with this request
+                                            // first find all invitations sent to this babysitter from sitting-requests with the same date as this request
+                                            models.invitation
+                                                .findAll({
+                                                    where: {
+                                                        receiver: sitterId,
+                                                        status: {
+                                                            [Sequelize.Op.or]: [
+                                                                'ACCEPTED',
+                                                                'PENDING',
+                                                            ],
+                                                        },
+                                                    },
+                                                    include: [
+                                                        {
+                                                            model:
+                                                                models.sittingRequest,
+                                                            as:
+                                                                'sittingRequest',
+                                                            where: {
+                                                                sittingDate:
+                                                                    request.sittingDate,
+                                                                id: {
+                                                                    [Sequelize
+                                                                        .Op
+                                                                        .ne]: requestId,
+                                                                },
+                                                            },
+                                                        },
+                                                    ],
+                                                    transaction: t,
+                                                    lock: t.LOCK.UPDATE,
+                                                })
+                                                .then(
+                                                    (
+                                                        unavailableInvitations,
+                                                    ) => {
+                                                        // then set EXPIRED status for those invitations
+                                                        // first check if the time is overlap each other or not
+                                                        unavailableInvitations.forEach(
+                                                            (invite) => {
+                                                                if (
+                                                                    checkRequestTime(
+                                                                        invite.sittingRequest,
+                                                                        request,
+                                                                    )
+                                                                ) {
+                                                                    models.invitation.update(
+                                                                        {
+                                                                            status:
+                                                                                'OVERLAP',
+                                                                        },
+                                                                        {
+                                                                            where: {
+                                                                                id:
+                                                                                    invite.id,
+                                                                            },
+                                                                            transaction: t,
+                                                                            lock:
+                                                                                t
+                                                                                    .LOCK
+                                                                                    .UPDATE,
+                                                                        },
+                                                                    );
+                                                                }
+                                                            },
+                                                        );
+                                                    },
+                                                );
 
-                                        
-                                        //
-                                        selector = {
-                                            where: {
-                                                requestId: requestId,
-                                                receiver: sitterId,
-                                            },
-                                            transaction: t,
-                                            lock: t.LOCK.UPDATE,
-                                        };
-                                        return models.invitation.update(
-                                            {
-                                                status: 'CONFIRMED',
-                                            },
-                                            selector,
-                                        );
-                                    });
-                            }
-                        })
-                        .catch((err) => {
-                            console.log(err);
-                            return t.rollback();
-                        });
-                });
-        });
-        res.send();
+                                            // notify the accepted babysitter
+                                            models.invitation
+                                                .findOne({
+                                                    where: {
+                                                        requestId: requestId,
+                                                        receiver: sitterId,
+                                                    },
+                                                    include: [
+                                                        {
+                                                            model: models.user,
+                                                            as: 'user',
+                                                            include: [
+                                                                {
+                                                                    model:
+                                                                        models.tracking,
+                                                                    as:
+                                                                        'tracking',
+                                                                },
+                                                            ],
+                                                        },
+                                                    ],
+                                                    transaction: t,
+                                                    lock: t.LOCK.UPDATE,
+                                                })
+                                                .then((invitation) => {
+                                                    if (
+                                                        invitation.user
+                                                            .tracking != null
+                                                    ) {
+                                                        const notification = {
+                                                            id: invitation.id,
+                                                            pushToken:
+                                                                invitation.user
+                                                                    .tracking
+                                                                    .token,
+                                                            message:
+                                                                invitationMessages.parentAcceptedBabysitter,
+                                                        };
+                                                        sendSingleMessage(
+                                                            notification,
+                                                        );
+                                                    }
+                                                });
+
+                                            // then update other babysitter's invitation status to EXPIRED
+                                            selector = {
+                                                where: {
+                                                    requestId: requestId,
+                                                    receiver: {
+                                                        [Sequelize.Op
+                                                            .ne]: sitterId,
+                                                    },
+                                                },
+                                                transaction: t,
+                                                lock: t.LOCK.UPDATE,
+                                            };
+                                            models.invitation.update(
+                                                {
+                                                    status: 'EXPIRED',
+                                                },
+                                                selector,
+                                            );
+
+                                            //
+                                            selector = {
+                                                where: {
+                                                    requestId: requestId,
+                                                    receiver: sitterId,
+                                                },
+                                                transaction: t,
+                                                lock: t.LOCK.UPDATE,
+                                            };
+                                            return models.invitation.update(
+                                                {
+                                                    status: 'CONFIRMED',
+                                                },
+                                                selector,
+                                            );
+                                        });
+                                }
+                            });
+                    });
+            })
+            .then((result) => {
+                console.log('Duong: acceptBabysitter -> result', result);
+                res.send();
+            })
+            .catch((err) => {
+                console.log('Duong: acceptBabysitter -> err', err);
+                if (err.message == 'OVERLAP') {
+                    res.status(409);
+                    res.send(err);
+                }
+            });
     } catch (err) {
         res.status(400);
         res.send(err);
