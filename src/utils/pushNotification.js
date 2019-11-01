@@ -17,10 +17,8 @@ export async function sendSingleMessage(notification) {
         data: { id: notification.id },
     };
 
-    try {
-        const ticket = await expo.sendPushNotificationsAsync(message);
-        console.log('PHUC: sendSingleMessage -> ticket', ticket);
-    } catch (error) {
-        console.log('PHUC: sendSingleMessage -> error', error);
-    }
+    const ticket = await expo
+        .sendPushNotificationsAsync(message)
+        .catch((error) => console.log(error));
+    console.log('PHUC: sendSingleMessage -> ticket', ticket);
 }
