@@ -292,8 +292,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 0,//4.5,
-                        totalFeedback: 0,//20,
+                        averageRating: 0, //4.5,
+                        totalFeedback: 0, //20,
                     };
                 } else if (index < 2) {
                     babysitter = {
@@ -304,8 +304,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 0,//5,
-                        totalFeedback: 0,//1,
+                        averageRating: 0, //5,
+                        totalFeedback: 0, //1,
                     };
                 } else {
                     babysitter = {
@@ -316,14 +316,14 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 0,//4,
-                        totalFeedback: 0,//1,
+                        averageRating: 0, //4,
+                        totalFeedback: 0, //1,
                     };
                 }
 
                 babysitters.push(babysitter);
             });
-            db.babysitter.bulkCreate(babysitters)
+            db.babysitter.bulkCreate(babysitters);
             // seed schedule
             // .then((result) => {
             //     let sitters = result;
@@ -341,7 +341,7 @@ export async function insertDatabase() {
 
             //     db.schedule.bulkCreate(schedules).then(() => {
             //         db.schedule.findOne({
-                
+
             //         }).then((result) => {
             //             let scheduleTime = moment().add(10, 'seconds').toDate();
             //             let cronJ = new CronJob(scheduleTime, function() {
@@ -386,7 +386,7 @@ export async function insertDatabase() {
                         status: 'PENDING',
                     },
                     {
-                        createdUser: 4,
+                        createdUser: 1,
                         acceptedBabysitter: null,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
@@ -473,38 +473,36 @@ export async function insertDatabase() {
                 ])
                 .then((result) => {
                     //#region seed invitations
-                    result.forEach((el) => {
-                        if (el.status === 'PENDING') {
-                            db.invitation.bulkCreate([
-                                {
-                                    requestId: el.id,
-                                    receiver: 7,
-                                    status: 'ACCEPTED',
-                                },
-                            ]);
-                        }
-                        //#endregion
+                    // result.forEach((el) => {
+                    //     if (el.status === 'PENDING') {
+                    //         db.invitation.bulkCreate([
+                    //             {
+                    //                 requestId: el.id,
+                    //                 receiver: 7,
+                    //                 status: 'ACCEPTED',
+                    //             },
+                    //         ]);
+                    //     }
+                    //     //#endregion
 
-                        //#region feedbacks
-                        if (el.status === 'DONE') {
-                            // seed feedback
-                            db.feedback.bulkCreate([
-                                {
-                                    // requestId: el.id,
-                                    // rating: 4,
-                                },
-                            ]);
-                        }
-                        //#endregion
-                    });
+                    //     //#region feedbacks
+                    //     if (el.status === 'DONE') {
+                    //         // seed feedback
+                    //         db.feedback.bulkCreate([
+                    //             {
+                    //                 // requestId: el.id,
+                    //                 // rating: 4,
+                    //             },
+                    //         ]);
+                    //     }
+                    // });
+                    //#endregion
                 })
                 .catch((err) => {
                     console.log(err);
                 });
 
             console.log('Finish insert to database.');
-            
-            
         });
     db.configuration.bulkCreate([
         {
@@ -522,7 +520,7 @@ export async function insertDatabase() {
                 .format('HH:mm:ss'),
         },
     ]);
-    for (var i=20; i<30;i++){
+    for (var i = 20; i < 30; i++) {
         db.configuration.bulkCreate([
             {
                 price: 150,
