@@ -9,6 +9,7 @@ import invitationRoutes from '@routes/invitation.route';
 import circleRoutes from '@routes/circle.route';
 import configurationRoutes from '@routes/configuration.route';
 import feedbackRoutes from '@routes/feedback.route';
+import paymentRoutes from '@routes/payment.route';
 import { jwtAuthentication } from '../middlewares/jwt.middleware';
 
 const router = express.Router();
@@ -25,5 +26,6 @@ router.use('/circles', circleRoutes);
 router.use('/invitations', invitationRoutes);
 router.use('/configuration', configurationRoutes);
 router.use('/feedback', feedbackRoutes);
+router.use('/payment', paymentRoutes);
 
 export default router;
