@@ -515,11 +515,11 @@ export async function insertDatabase() {
         });
     db.configuration.bulkCreate([
         {
-            price: 100,
+            price: 100000,
             description: 'Base',
         },
         {
-            price: 150,
+            price: 150000,
             date: moment().set({ year: 2019, month: 9, date: 24 }),
             startTime: moment()
                 .set({ hour: 17, minute: 0, second: 0 })
@@ -532,7 +532,7 @@ export async function insertDatabase() {
     for (var i=20; i<30;i++){
         db.configuration.bulkCreate([
             {
-                price: 150,
+                price: 150000,
                 date: moment().set({ year: 2019, month: 9, date: i }),
                 startTime: moment()
                     .set({ hour: 17, minute: 0, second: 0 })

@@ -4,7 +4,7 @@ import controller from "@controllers/sittingRequest.controller";
 const router = express.Router();
 
 router.route("/listParent").post(controller.listByParentId);
-router.route("/listStatus").get(controller.listByParentAndStatus);
+router.route("/listByStatus").post(controller.listByParentAndStatus);
 router.route("/listBabysitter").get(controller.listMatchedBabysitter);
 router.route("/bsitterSitting").post(controller.listSittingByBabysitterId);
 router.route("/recommend/:id").post(controller.recommendBabysitter);
