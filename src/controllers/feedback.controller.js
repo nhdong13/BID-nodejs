@@ -14,7 +14,7 @@ const list = async (req, res, next) => {
 const getById = async (req, res) => {
   const id = req.params.id;
   try {
-      const list = await models.feedback.findOne({
+      const list = await models.feedback.findAll({
         where: {
           requestId: id,
         }

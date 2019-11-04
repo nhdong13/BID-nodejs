@@ -36,11 +36,10 @@ const create = async (req, res) => {
 
 const read = async (req, res) => {
     const id = req.params.id;
-
     try {
         const tracking = await models.tracking.findOne({
             where: {
-                id,
+                userId: id,
             },
         });
         if (tracking) {

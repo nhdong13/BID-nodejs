@@ -106,7 +106,7 @@ const update = async (req, res) => {
     try {
         await models.babysitter.update(updatingSitter, {
             where: {
-                id,
+                userId: id,
             },
         });
         res.send();
