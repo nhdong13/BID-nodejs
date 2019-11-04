@@ -15,7 +15,7 @@ export default function(sequelize, DataTypes) {
                 allowNull: false
             },
             sittingDate: {
-                type: DataTypes.DATE,
+                type: DataTypes.DATEONLY,
                 allowNull: false
             },
             startTime: {
