@@ -1,23 +1,12 @@
 import models from "@models";
+import { getCircleDetail } from '@services/circleService';
 
 const list = async (req, res, next) => {
     const ownerId = req.params.ownerId;
 
     try {
-        const listCircle = await models.circle.findAll({
-            where: {
-                ownerId: ownerId
-            },
-            include: [{
-                model: models.parent,
-                as: 'friend',
-                include: [{
-                    model: models.user,
-                    as: 'user',
-                }]
-            }]
-        });
-        res.send(listCircle);
+        let circle = await getCircleDetail(ownerId);
+        res.send(circle);
     } catch (err) {
         res.status(400);
         res.send(err);
