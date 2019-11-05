@@ -47,6 +47,10 @@ async function findHiredSitters(userId) {
         // }
     });
 
+    if(hiredIds.length <= 0) {
+        return [];
+    }
+
     hiredIds = hiredIds.map(id => { return id.acceptedBabysitter});
 
     let hireds = await models.babysitter.findAll({
@@ -66,7 +70,7 @@ async function findHiredSitters(userId) {
 
 async function findFriendSittersInCircle(circle) {
     if (circle.length <= 0) {
-        return null;
+        return [];
     }
     let friends = circle.map(record => {
         return record.friendId;

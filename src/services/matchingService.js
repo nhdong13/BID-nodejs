@@ -255,10 +255,12 @@ function checkAgainstSchedules(request, babysitters) {
             unavailable.forEach(schedule => {
                 let scheduleTime = parseSchedule(schedule.scheduleTime);
                 
-                if (!(request.sittingDate == scheduleTime.date)) {
+                if (request.sittingDate == scheduleTime.date) {
                     if (!checkScheduleTime(request.startTime, request.endTime, scheduleTime)) {
                         matchedList.push(sitter);
                     }
+                } else {
+                    matchedList.push(sitter);
                 }
                 
             });
