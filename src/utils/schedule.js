@@ -14,9 +14,8 @@ export function parseSchedule(scheduleTime) {
             endTime: arr[1],
             dayOfMonth: arr[2],
             month: arr[3],
-            dayOfWeek: arr[4],
-            year: arr[5],
-            date: `${arr[5]}-${arr[3]}-${arr[2]}`,
+            year: arr[4],
+            date: `${arr[4]}-${arr[3]}-${arr[2]}`,
         };
         return obj;
     } catch (error) {
@@ -25,14 +24,13 @@ export function parseSchedule(scheduleTime) {
 }
 
 /**
- * check if the request time and the schedule time are colission or not
+ * check if the request time and the schedule time are overlapping each other or not
  * @param  {String} startTime
  * @param  {String} endTime
  * @param  {CronObj} cron
  * @returns {Boolean}
  */
 export function checkScheduleTime(startTime, endTime, scheduleTime) {
-    let hours = splitTimeRange(scheduleTime.hour);
     let scheduleStartTime = scheduleTime.startTime;
     let scheduleEndTime = scheduleTime.endTime;
 
@@ -40,6 +38,27 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
         return true;
     }
     if (scheduleStartTime <= endTime && endTime <= scheduleEndTime) {
+        return true;
+    }
+    if (startTime < scheduleStartTime && scheduleEndTime < endTime)
+
+    return false;
+}
+
+/**
+ * check if 2 requests sitting time is overlapping each other
+ * @param  {sittingRequest} firstRequest
+ * @param  {sittingRequest} secondRequest
+ * @returns {Boolean}
+ */
+export function checkRequestTime(firstRequest, secondRequest) {
+    if (firstRequest.startTime <= secondRequest.startTime && secondRequest.startTime <= firstRequest.endTime) {
+        return true;
+    }
+    if (firstRequest <= secondRequest.endTime && secondRequest.endTime <= firstRequest) {
+        return true;
+    }
+    if (secondRequest.startTime < firstRequest.startTime && secondRequest.endTime < firstRequest.endTime) {
         return true;
     }
 
@@ -52,7 +71,7 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
  */
 export function getScheduleTime(request) {
     let scheduleTime = '';
-    let sittingDate = moment(request.sittingDate, 'yyyy-MM-dd');
+    let sittingDate = moment(request.sittingDate, 'yyyy-MM-DD');
     let startTime = request.startTime;
     let endTime = request.endTime;
     scheduleTime += startTime;
@@ -70,25 +89,7 @@ export function getScheduleTime(request) {
  * @param  {sittingRequest} request
  * @returns {Boolean} true if available, false otherwise
  */
-export async function checkBabysitterSchedule(sitterId, request) {
-    const babysitter = await models.babysitter.findOne({
-        where: {
-            userId: sitterId,
-        },
-        include: [
-            {
-                model: models.user,
-                as: 'user',
-                include: [
-                    {
-                        model: models.schedule,
-                        as: 'schedules',
-                    },
-                ],
-            },
-        ],
-    });
-
+export function checkBabysitterSchedule(babysitter, request) {
     let schedules = babysitter.user.schedules;
     // unavailable schedules
     let unavailable = schedules.filter(
