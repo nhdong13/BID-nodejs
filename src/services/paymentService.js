@@ -49,15 +49,21 @@ const createCustomer = async (req, res) => {
 };
 
 const getCustomer = async (req, res) => {
-    const id = req.params.id;
+    const userId = req.body.userId;
 
     try {
         const customer = await models.tracking.findOne({
-            where: { id },
+            where: { userId },
         });
 
-        if (customer) {
-            res.send(customer);
+        if (customer.customerId) {
+            const data = await stripe.customers
+                .retrieve('cus_G67ueF6SLeyjsk')
+                .catch((error) =>
+                    console.log('PHUC: getCustomer -> error', error),
+                );
+
+            res.send(data);
         } else {
             res.status(404);
             res.send();
