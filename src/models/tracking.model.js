@@ -21,6 +21,11 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
+            cardId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                unique: true,
+            },
         },
         {
             timestamps: true,

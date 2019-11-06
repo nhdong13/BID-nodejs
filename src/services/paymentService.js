@@ -26,7 +26,7 @@ const createCharges = async (req, res) => {
 };
 
 const createCustomer = async (req, res) => {
-    const { email, token, userId, name } = req.body;
+    const { email, token, userId, name, cardId } = req.body;
 
     try {
         const { id: customerId, balance } = await stripe.customers.create({
@@ -36,7 +36,7 @@ const createCustomer = async (req, res) => {
         });
 
         await models.tracking.update(
-            { customerId: customerId, balance: balance },
+            { customerId: customerId, balance: balance, cardId: cardId },
             {
                 where: { userId },
             },
@@ -48,30 +48,32 @@ const createCustomer = async (req, res) => {
     }
 };
 
-const getCustomer = async (req, res) => {
+const getCustomerCard = async (req, res) => {
     const userId = req.body.userId;
 
     try {
-        const customer = await models.tracking.findOne({
-            where: { userId },
-        });
+        // const {customerId, cardId} = await models.tracking.findOne({
+        //     where: { userId },
+        // });
 
-        if (customer.customerId) {
-            const data = await stripe.customers
-                .retrieve('cus_G67ueF6SLeyjsk')
-                .catch((error) =>
-                    console.log('PHUC: getCustomer -> error', error),
-                );
+        // if (customer.customerId) {
+        const data = await stripe.customers
+            .retrieveSource(
+                'cus_G7DEqPVFx0on1p',
+                'card_1Fayo8CfPfiUgoF25ED4hSdK',
+            )
+            .catch((error) => console.log('PHUC: getCustomer -> error', error));
+        console.log('PHUC: getCustomerCard -> data', data);
 
-            res.send(data);
-        } else {
-            res.status(404);
-            res.send();
-        }
+        res.send(data);
+        // } else {
+        //     res.status(404);
+        //     res.send();
+        // }
     } catch (err) {
         res.status(400);
         res.send(err);
     }
 };
 
-export default { createCharges, createCustomer, getCustomer };
+export default { createCharges, createCustomer, getCustomerCard };
