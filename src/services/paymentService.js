@@ -52,24 +52,25 @@ const getCustomerCard = async (req, res) => {
     const userId = req.body.userId;
 
     try {
-        // const {customerId, cardId} = await models.tracking.findOne({
-        //     where: { userId },
-        // });
+        if (userId) {
+            const tracking = await models.tracking.findOne({
+                where: { userId },
+            });
+            const { customerId, cardId } = tracking;
 
-        // if (customer.customerId) {
-        const data = await stripe.customers
-            .retrieveSource(
-                'cus_G7DEqPVFx0on1p',
-                'card_1Fayo8CfPfiUgoF25ED4hSdK',
-            )
-            .catch((error) => console.log('PHUC: getCustomer -> error', error));
-        console.log('PHUC: getCustomerCard -> data', data);
+            if (customerId && cardId) {
+                const data = await stripe.customers
+                    .retrieveSource(customerId, cardId)
+                    .catch((error) =>
+                        console.log('PHUC: getCustomer -> error', error),
+                    );
 
-        res.send(data);
-        // } else {
-        //     res.status(404);
-        //     res.send();
-        // }
+                res.send(data);
+            }
+        } else {
+            res.status(404);
+            res.send();
+        }
     } catch (err) {
         res.status(400);
         res.send(err);
