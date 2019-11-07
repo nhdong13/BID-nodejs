@@ -246,7 +246,7 @@ function checkAgainstSchedules(request, babysitters) {
     babysitters.forEach(sitter => {
         let schedules = sitter.user.schedules;
         // unavailable schedules
-        let unavailable = schedules.filter(schedule => schedule.type == 'UNAVAILABLE');
+        let unavailable = schedules.filter(schedule => schedule.type == 'FUTURE');
         // available schedules
         let available = schedules.filter(schedule => schedule.type == 'AVAILABLE');
 
@@ -255,10 +255,12 @@ function checkAgainstSchedules(request, babysitters) {
             unavailable.forEach(schedule => {
                 let scheduleTime = parseSchedule(schedule.scheduleTime);
                 
-                if (!(request.sittingDate == scheduleTime.date)) {
+                if (request.sittingDate == scheduleTime.date) {
                     if (!checkScheduleTime(request.startTime, request.endTime, scheduleTime)) {
                         matchedList.push(sitter);
                     }
+                } else {
+                    matchedList.push(sitter);
                 }
                 
             });
