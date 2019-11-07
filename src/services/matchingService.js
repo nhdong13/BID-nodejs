@@ -260,32 +260,6 @@ function checkAgainstSchedules(request, babysitters) {
     return matchedList;
 }
 
-// babysitters.forEach(sitter => {
-//     let schedules = sitter.user.schedules;
-//     // unavailable schedules
-//     let unavailable = schedules.filter(schedule => schedule.type == 'FUTURE');
-//     // available schedules
-//     let available = schedules.filter(schedule => schedule.type == 'AVAILABLE');
-
-//     //
-//     if (unavailable.length > 0) {
-//         unavailable.forEach(schedule => {
-//             let scheduleTime = parseSchedule(schedule.scheduleTime);
-
-//             if (request.sittingDate == scheduleTime.date) {
-//                 if (!checkScheduleTime(request.startTime, request.endTime, scheduleTime)) {
-//                     matchedList.push(sitter);
-//                 }
-//             } else {
-//                 matchedList.push(sitter);
-//             }
-
-//         });
-//     } else {
-//         matchedList.push(sitter);
-//     }
-// });
-
 /**
  * check if the sitting request date are in babysitter weekly schedule
  * @param  {Date} date the sitting date
