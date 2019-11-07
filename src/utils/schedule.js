@@ -15,7 +15,7 @@ export function parseSchedule(scheduleTime) {
             dayOfMonth: arr[2],
             month: arr[3],
             year: arr[4],
-            date: `${arr[4]}-${arr[3]}-${arr[2]}`,
+            date: moment(`${arr[4]}-${arr[3]}-${arr[2]}`, 'yyyy-MM-DD').format('yyyy-MM-DD'),
         };
         return obj;
     } catch (error) {
@@ -41,8 +41,7 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
         return true;
     }
     if (startTime < scheduleStartTime && scheduleEndTime < endTime)
-
-    return false;
+        return false;
 }
 
 /**
@@ -52,13 +51,22 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
  * @returns {Boolean}
  */
 export function checkRequestTime(firstRequest, secondRequest) {
-    if (firstRequest.startTime <= secondRequest.startTime && secondRequest.startTime <= firstRequest.endTime) {
+    if (
+        firstRequest.startTime <= secondRequest.startTime &&
+        secondRequest.startTime <= firstRequest.endTime
+    ) {
         return true;
     }
-    if (firstRequest <= secondRequest.endTime && secondRequest.endTime <= firstRequest) {
+    if (
+        firstRequest <= secondRequest.endTime &&
+        secondRequest.endTime <= firstRequest
+    ) {
         return true;
     }
-    if (secondRequest.startTime < firstRequest.startTime && secondRequest.endTime < firstRequest.endTime) {
+    if (
+        secondRequest.startTime < firstRequest.startTime &&
+        secondRequest.endTime < firstRequest.endTime
+    ) {
         return true;
     }
 
@@ -84,7 +92,7 @@ export function getScheduleTime(request) {
 }
 
 /**
- * check if a request is available to a babysitter'schedules
+ else { * check if a request is available to a babysitter'schedules
  * @param  {Integer} sitterId
  * @param  {sittingRequest} request
  * @returns {Boolean} true if available, false otherwise
@@ -105,7 +113,9 @@ export function checkBabysitterSchedule(babysitter, request) {
         unavailable.forEach((schedule) => {
             let scheduleTime = parseSchedule(schedule.scheduleTime);
 
-            if (!(request.sittingDate == scheduleTime.date)) {
+            if (
+                moment(request.sittingDate, 'yyyy-MM-DD').format('yyyy-MM-DD') == scheduleTime.date
+            ) {
                 if (
                     !checkScheduleTime(
                         request.startTime,
@@ -115,6 +125,8 @@ export function checkBabysitterSchedule(babysitter, request) {
                 ) {
                     return true;
                 }
+            } else {
+                return true;
             }
         });
     } else {

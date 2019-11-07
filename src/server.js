@@ -63,6 +63,12 @@ async function main() {
                     .to('user_room_' + data.userId)
                     .emit('triggerQr', { qr: data.qr });
             });
+
+            socket.on('success', (data) => {
+                socketIO
+                    .to('user_room_' + data.userId)
+                    .emit('scanned', { message: 'scan successed' });
+            });
         });
 
         server.listen(5000, () => {
