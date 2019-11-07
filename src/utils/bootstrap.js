@@ -238,6 +238,10 @@ export async function insertDatabase() {
                             ownerId: result[0].userId, // parent[0]
                             friendId: result[2].userId, // is friend with parent[2]
                         },
+                        {
+                            ownerId: result[3].userId, // parent[0]
+                            friendId: result[0].userId, // is friend with parent[2]
+                        },
                     ]);
                     //#endregion
                     //seed children
@@ -292,8 +296,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 0, //4.5,
-                        totalFeedback: 0, //20,
+                        averageRating: 4.5,
+                        totalFeedback: 20,
                     };
                 } else if (index < 2) {
                     babysitter = {
@@ -304,8 +308,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 0, //5,
-                        totalFeedback: 0, //1,
+                        averageRating: 5,
+                        totalFeedback: 1,
                     };
                 } else {
                     babysitter = {
@@ -358,8 +362,8 @@ export async function insertDatabase() {
             db.sittingRequest
                 .bulkCreate([
                     {
-                        createdUser: 1,
-                        acceptedBabysitter: null,
+                        createdUser: 2,
+                        acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
@@ -383,17 +387,17 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'PENDING',
+                        status: 'DONE',
                     },
                     {
-                        createdUser: 1,
-                        acceptedBabysitter: null,
+                        createdUser: 2,
+                        acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 9,
-                            date: 29,
+                            date: 30,
                         }),
                         startTime: moment()
                             .set({
@@ -410,65 +414,65 @@ export async function insertDatabase() {
                             })
                             .format('HH:mm:ss'),
                         sittingAddress:
-                            '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
-                        status: 'PENDING',
+                            '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+                        status: 'DONE',
                     },
-                    // {
-                    //     createdUser: 2,
-                    //     acceptedBabysitter: 6,
-                    //     childrenNumber: 2,
-                    //     minAgeOfChildren: 1,
-                    //     sittingDate: moment().set({
-                    //         year: 2019,
-                    //         month: 8,
-                    //         date: 26,
-                    //     }),
-                    //     startTime: moment()
-                    //         .set({
-                    //             hour: 9,
-                    //             minute: 0,
-                    //             second: 0,
-                    //         })
-                    //         .format('HH:mm:ss'),
-                    //     endTime: moment()
-                    //         .set({
-                    //             hour: 12,
-                    //             minute: 0,
-                    //             second: 0,
-                    //         })
-                    //         .format('HH:mm:ss'),
-                    //     sittingAddress:
-                    //         '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
-                    //     status: 'DONE',
-                    // },
-                    // {
-                    //     createdUser: 2,
-                    //     acceptedBabysitter: 5,
-                    //     childrenNumber: 2,
-                    //     minAgeOfChildren: 1,
-                    //     sittingDate: moment().set({
-                    //         year: 2019,
-                    //         month: 8,
-                    //         date: 25,
-                    //     }),
-                    //     startTime: moment()
-                    //         .set({
-                    //             hour: 9,
-                    //             minute: 0,
-                    //             second: 0,
-                    //         })
-                    //         .format('HH:mm:ss'),
-                    //     endTime: moment()
-                    //         .set({
-                    //             hour: 12,
-                    //             minute: 0,
-                    //             second: 0,
-                    //         })
-                    //         .format('HH:mm:ss'),
-                    //     sittingAddress:
-                    //         '124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
-                    //     status: 'DONE',
-                    // },
+                    {
+                        createdUser: 3,
+                        acceptedBabysitter: 6,
+                        childrenNumber: 2,
+                        minAgeOfChildren: 1,
+                        sittingDate: moment().set({
+                            year: 2019,
+                            month: 8,
+                            date: 26,
+                        }),
+                        startTime: moment()
+                            .set({
+                                hour: 9,
+                                minute: 0,
+                                second: 0,
+                            })
+                            .format('HH:mm:ss'),
+                        endTime: moment()
+                            .set({
+                                hour: 12,
+                                minute: 0,
+                                second: 0,
+                            })
+                            .format('HH:mm:ss'),
+                        sittingAddress:
+                            '100 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
+                        status: 'DONE',
+                    },
+                    {
+                        createdUser: 1,
+                        acceptedBabysitter: 5,
+                        childrenNumber: 2,
+                        minAgeOfChildren: 1,
+                        sittingDate: moment().set({
+                            year: 2019,
+                            month: 8,
+                            date: 25,
+                        }),
+                        startTime: moment()
+                            .set({
+                                hour: 9,
+                                minute: 0,
+                                second: 0,
+                            })
+                            .format('HH:mm:ss'),
+                        endTime: moment()
+                            .set({
+                                hour: 12,
+                                minute: 0,
+                                second: 0,
+                            })
+                            .format('HH:mm:ss'),
+                        sittingAddress:
+                            '124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
+                        status: 'DONE',
+                    },
                     //#endregion
                 ])
                 .then((result) => {
@@ -506,11 +510,11 @@ export async function insertDatabase() {
         });
     db.configuration.bulkCreate([
         {
-            price: 100,
+            price: 100000,
             description: 'Base',
         },
         {
-            price: 150,
+            price: 150000,
             date: moment().set({ year: 2019, month: 9, date: 24 }),
             startTime: moment()
                 .set({ hour: 17, minute: 0, second: 0 })
@@ -523,7 +527,7 @@ export async function insertDatabase() {
     for (var i = 20; i < 30; i++) {
         db.configuration.bulkCreate([
             {
-                price: 150,
+                price: 150000,
                 date: moment().set({ year: 2019, month: 9, date: i }),
                 startTime: moment()
                     .set({ hour: 17, minute: 0, second: 0 })

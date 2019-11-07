@@ -91,7 +91,17 @@ const listByParentAndStatus = async (req, res, next) => {
             where: {
                 createdUser: parentId,
                 status: status,
-            },
+						},
+						include: [
+							{
+									model: models.user,
+									as: 'user',
+							},
+							{
+									model: models.user,
+									as: 'bsitter',
+							},
+					],
         });
         res.send(listSittings);
     } catch (err) {
