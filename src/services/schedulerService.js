@@ -11,7 +11,16 @@ export function initScheduler() {
             schedules.forEach((sche) => {
                 let cronTime = parseCron(sche.scheduleTime);
                 console.log('Duong: initScheduler -> cronTime', cronTime);
-                new CronJob(cronTime, function() {}, null, true);
+                
+                new CronJob(
+                    cronTime,
+                    function() {
+                        remindBabysitter(sche.userId, sche.requestId);
+                        remindParent(sche.requestId);
+                    },
+                    null,
+                    true,
+                );
             });
         }
     });
@@ -56,22 +65,25 @@ function remindBabysitter(sitterId, requestId) {
         .then((invitation) => {
             if (invitation) {
                 if (invitation.user.tracking != null) {
-                    const notification = {
-                        id: invitation.id,
-                        pushToken: invitation.user.tracking.token,
-                        message: reminderMessages.sitterUpcommingSitting,
-                    };
-                    sendSingleMessage(notification);
+                    try {
+                        const notification = {
+                            id: invitation.id,
+                            pushToken: invitation.user.tracking.token,
+                            message: reminderMessages.sitterUpcommingSitting,
+                        };
+                        sendSingleMessage(notification);
+                    } catch (error) {
+                        console.log('Duong: remindBabysitter -> error', error);
+                    }
                 }
             }
         });
 }
 
-function remindParent(parentId, requestId) {
+function remindParent(requestId) {
     models.sittingRequest
         .findOne({
             where: {
-                createdUser: parentId,
                 id: requestId,
             },
             include: [
@@ -90,12 +102,16 @@ function remindParent(parentId, requestId) {
         .then((request) => {
             if (request) {
                 if (request.user.tracking != null) {
-                    const notification = {
-                        id: request.id,
-                        pushToken: request.user.tracking.token,
-                        message: reminderMessages.sitterUpcommingSitting,
-                    };
-                    sendSingleMessage(notification);
+                    try {
+                        const notification = {
+                            id: request.id,
+                            pushToken: request.user.tracking.token,
+                            message: reminderMessages.sitterUpcommingSitting,
+                        };
+                        sendSingleMessage(notification);
+                    } catch (error) {
+                        console.log('Duong: remindParent -> error', error);
+                    }
                 }
             }
         });
