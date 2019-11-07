@@ -285,8 +285,9 @@ const acceptBabysitter = (req, res, next) => {
                                             );
                                             let schedule = {
                                                 userId: sitterId,
+                                                requestId: requestId,
                                                 scheduleTime: scheduleTime,
-                                                type: 'UNAVAILABLE',
+                                                type: 'FUTURE',
                                             };
                                             models.schedule.create(schedule, {
                                                 transaction: t,

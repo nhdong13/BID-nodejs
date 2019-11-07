@@ -3,6 +3,7 @@ import moment from 'moment';
 import { hashPassword } from '@utils/hash';
 import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
+import { initScheduler } from '@services/schedulerService';
 
 const CronJob = require('cron').CronJob;
 
@@ -327,34 +328,36 @@ export async function insertDatabase() {
 
                 babysitters.push(babysitter);
             });
-            db.babysitter.bulkCreate(babysitters);
-            // seed schedule
-            // .then((result) => {
-            //     let sitters = result;
-            //     let schedules = [];
+            db.babysitter
+                .bulkCreate(babysitters)
+                // seed schedule
+                .then((result) => {
+                    let sitters = result;
+                    let schedules = [];
 
-            //     let schedule = {
-            //         userId: sitters[0].userId,
-            //         scheduleTime: '15:00:00 20:00:00 11 10 2019',
-            //         type: 'UNAVAILABLE',
-            //     }
+                    let schedule = {
+                        userId: sitters[0].userId,
+                        scheduleTime: '17:28:00 20:00:00 4 11 2019',
+                        type: 'FUTURE',
+                        requestId: 1,
+                    };
 
-            //     // moment().add(10, 'seconds').toDate(),
+                    // moment().add(10, 'seconds').toDate(),
 
-            //     schedules.push(schedule);
+                    schedules.push(schedule);
 
-            //     db.schedule.bulkCreate(schedules).then(() => {
-            //         db.schedule.findOne({
+                    db.schedule.bulkCreate(schedules).then(() => {
+                        db.schedule.findOne({}).then((result) => {
+                            initScheduler();
 
-            //         }).then((result) => {
-            //             let scheduleTime = moment().add(10, 'seconds').toDate();
-            //             let cronJ = new CronJob(scheduleTime, function() {
-            //                 console.log("Duong: bootstrap.js insertDatabase -> scheduleTime", scheduleTime)
-            //                 console.log('HAKUNA MATATA!!!');
-            //             }, null, true,);
-            //         });
-            //     });
-            // });
+                            // let scheduleTime = moment().add(10, 'seconds').toDate();
+                            // let cronJ = new CronJob(scheduleTime, function() {
+                            //     console.log("Duong: bootstrap.js insertDatabase -> scheduleTime", scheduleTime)
+                            //     console.log('HAKUNA MATATA!!!');
+                            // }, null, true,);
+                        });
+                    });
+                });
             //#endregion
         })
         .then(() => {
@@ -488,7 +491,6 @@ export async function insertDatabase() {
                     //         ]);
                     //     }
                     //     //#endregion
-
                     //     //#region feedbacks
                     //     if (el.status === 'DONE') {
                     //         // seed feedback

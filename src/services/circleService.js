@@ -6,7 +6,11 @@ export async function getCircleDetail(ownerId) {
     let hiredSitter = await findHiredSitters(ownerId);
     let friendSitter = await findFriendSittersInCircle(circle);
 
-    return {circle: circle, hiredSitter: hiredSitter, friendSitter: friendSitter};
+    return {
+        circle: circle,
+        hiredSitter: hiredSitter,
+        friendSitter: friendSitter,
+    };
 }
 
 async function getCircle(ownerId) {
@@ -33,7 +37,12 @@ async function getCircle(ownerId) {
 
 async function findHiredSitters(userId) {
     let hiredIds = await models.sittingRequest.findAll({
-        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('acceptedBabysitter')), 'acceptedBabysitter']],
+        attributes: [
+            [
+                Sequelize.fn('DISTINCT', Sequelize.col('acceptedBabysitter')),
+                'acceptedBabysitter',
+            ],
+        ],
         where: {
             createdUser: userId,
         },
@@ -47,22 +56,24 @@ async function findHiredSitters(userId) {
         // }
     });
 
-    if(hiredIds.length <= 0) {
+    if (hiredIds.length <= 0) {
         return [];
     }
 
-    hiredIds = hiredIds.map(id => { return id.acceptedBabysitter});
+    hiredIds = hiredIds.map((id) => {
+        return id.acceptedBabysitter;
+    });
 
     let hireds = await models.babysitter.findAll({
         where: {
             userId: {
                 [Sequelize.Op.or]: hiredIds,
-            }
+            },
         },
         include: {
             model: models.user,
             as: 'user',
-        }
+        },
     });
 
     return hireds;
@@ -72,11 +83,16 @@ async function findFriendSittersInCircle(circle) {
     if (circle.length <= 0) {
         return [];
     }
-    let friends = circle.map(record => {
+    let friends = circle.map((record) => {
         return record.friendId;
-    })
+    });
     let friendSitterIds = await models.sittingRequest.findAll({
-        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('acceptedBabysitter')), 'acceptedBabysitter']],
+        attributes: [
+            [
+                Sequelize.fn('DISTINCT', Sequelize.col('acceptedBabysitter')),
+                'acceptedBabysitter',
+            ],
+        ],
         where: {
             createdUser: {
                 [Sequelize.Op.or]: friends,
@@ -92,21 +108,22 @@ async function findFriendSittersInCircle(circle) {
         // }
     });
 
-    friendSitterIds = friendSitterIds.map(id => {return id.acceptedBabysitter});
-    
+    friendSitterIds = friendSitterIds.map((id) => {
+        return id.acceptedBabysitter;
+    });
+
     let friendSitter = await models.babysitter.findAll({
-        
         where: {
             userId: {
-                [Sequelize.Op.or]: friendSitterIds
-            }
+                [Sequelize.Op.or]: friendSitterIds,
+            },
         },
         include: {
             model: models.user,
             as: 'user',
-            attributes: {exclude: ['password']},
-        }
+            attributes: { exclude: ['password'] },
+        },
     });
-        
+
     return friendSitter;
 }

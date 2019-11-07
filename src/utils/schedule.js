@@ -9,13 +9,16 @@ import { splitTimeRange } from '@utils/common';
 export function parseSchedule(scheduleTime) {
     try {
         let arr = scheduleTime.split(' ');
+
         let obj = {
             startTime: arr[0],
             endTime: arr[1],
             dayOfMonth: arr[2],
             month: arr[3],
             year: arr[4],
-            date: moment(`${arr[4]}-${arr[3]}-${arr[2]}`, 'yyyy-MM-DD').format('yyyy-MM-DD'),
+            date: moment(`${arr[4]}-${arr[3]}-${arr[2]}`, 'YYYY-MM-DD').format(
+                'YYYY-MM-DD',
+            ),
         };
         return obj;
     } catch (error) {
@@ -40,8 +43,11 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
     if (scheduleStartTime <= endTime && endTime <= scheduleEndTime) {
         return true;
     }
-    if (startTime < scheduleStartTime && scheduleEndTime < endTime)
-        return false;
+    if (startTime < scheduleStartTime && scheduleEndTime < endTime) {
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -79,14 +85,14 @@ export function checkRequestTime(firstRequest, secondRequest) {
  */
 export function getScheduleTime(request) {
     let scheduleTime = '';
-    let sittingDate = moment(request.sittingDate, 'yyyy-MM-DD');
+    let sittingDate = moment(request.sittingDate, 'YYYY-MM-DD');
     let startTime = request.startTime;
     let endTime = request.endTime;
     scheduleTime += startTime;
     scheduleTime += ' ' + endTime;
-    scheduleTime += ' ' + sittingDate.date();
-    scheduleTime += ' ' + (sittingDate.month() + 1);
-    scheduleTime += ' ' + sittingDate.year();
+    scheduleTime += ' ' + sittingDate.format('DD');
+    scheduleTime += ' ' + sittingDate.format('MM');
+    scheduleTime += ' ' + sittingDate.format('YYYY');
 
     return scheduleTime;
 }
@@ -98,11 +104,10 @@ export function getScheduleTime(request) {
  * @returns {Boolean} true if available, false otherwise
  */
 export function checkBabysitterSchedule(babysitter, request) {
+    let flag = false;
     let schedules = babysitter.user.schedules;
     // unavailable schedules
-    let unavailable = schedules.filter(
-        (schedule) => schedule.type == 'UNAVAILABLE',
-    );
+    let unavailable = schedules.filter((schedule) => schedule.type == 'FUTURE');
     // available schedules
     let available = schedules.filter(
         (schedule) => schedule.type == 'AVAILABLE',
@@ -113,9 +118,7 @@ export function checkBabysitterSchedule(babysitter, request) {
         unavailable.forEach((schedule) => {
             let scheduleTime = parseSchedule(schedule.scheduleTime);
 
-            if (
-                moment(request.sittingDate, 'yyyy-MM-DD').format('yyyy-MM-DD') == scheduleTime.date
-            ) {
+            if (request.sittingDate == scheduleTime.date) {
                 if (
                     !checkScheduleTime(
                         request.startTime,
@@ -123,15 +126,15 @@ export function checkBabysitterSchedule(babysitter, request) {
                         scheduleTime,
                     )
                 ) {
-                    return true;
+                    flag = true;
                 }
             } else {
-                return true;
+                flag = true;
             }
         });
     } else {
-        return true;
+        flag = true;
     }
 
-    return false;
+    return flag;
 }

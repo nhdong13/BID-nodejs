@@ -246,7 +246,7 @@ function checkAgainstSchedules(request, babysitters) {
     babysitters.forEach(sitter => {
         let schedules = sitter.user.schedules;
         // unavailable schedules
-        let unavailable = schedules.filter(schedule => schedule.type == 'UNAVAILABLE');
+        let unavailable = schedules.filter(schedule => schedule.type == 'FUTURE');
         // available schedules
         let available = schedules.filter(schedule => schedule.type == 'AVAILABLE');
 
