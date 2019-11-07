@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
                 allowNull: false
             },
             type: {
-                type: DataTypes.ENUM('AVAILABLE', 'UNAVAILABLE'),
+                type: DataTypes.ENUM('AVAILABLE', 'UNAVAILABLE', 'FUTURE', 'DONE'),
                 allowNull: false
             }
         },
@@ -24,6 +24,13 @@ export default function(sequelize, DataTypes) {
             foreignKey: "userId",
             sourceKey: "id",
             as: "user"
+        });
+
+        schedule.belongsTo(models.sittingRequest, {
+            foreignKey: "requestId",
+            sourceKey: "id",
+            as: "request",
+            allowNull: true,
         });
     };
 

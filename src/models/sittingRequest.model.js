@@ -106,6 +106,13 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id",
             as: "bsitter"
         });
+
+        sittingRequest.hasMany(models.schedule, {
+            foreignKey: {
+                name: "requestId"
+            },
+            sourceKey: "id",
+        });
     };
 
     return sittingRequest;

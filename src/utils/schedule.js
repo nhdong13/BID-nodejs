@@ -93,7 +93,7 @@ export function checkBabysitterSchedule(babysitter, request) {
     let schedules = babysitter.user.schedules;
     // unavailable schedules
     let unavailable = schedules.filter(
-        (schedule) => schedule.type == 'UNAVAILABLE',
+        (schedule) => schedule.type == 'FUTURE',
     );
     // available schedules
     let available = schedules.filter(
@@ -105,7 +105,7 @@ export function checkBabysitterSchedule(babysitter, request) {
         unavailable.forEach((schedule) => {
             let scheduleTime = parseSchedule(schedule.scheduleTime);
 
-            if (!(request.sittingDate == scheduleTime.date)) {
+            if (request.sittingDate == scheduleTime.date) {
                 if (
                     !checkScheduleTime(
                         request.startTime,
@@ -115,6 +115,8 @@ export function checkBabysitterSchedule(babysitter, request) {
                 ) {
                     return true;
                 }
+            } else {
+                return true;
             }
         });
     } else {
