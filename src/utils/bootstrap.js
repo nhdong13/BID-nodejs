@@ -337,7 +337,7 @@ export async function insertDatabase() {
 
                     let schedule = {
                         userId: sitters[0].userId,
-                        scheduleTime: '17:28:00 20:00:00 4 11 2019',
+                        scheduleTime: '17:28:00 20:00:00 07 11 2019',
                         type: 'FUTURE',
                         requestId: 1,
                     };
@@ -369,6 +369,7 @@ export async function insertDatabase() {
                         acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
+                        totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 9,
@@ -397,6 +398,7 @@ export async function insertDatabase() {
                         acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
+                        totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 9,
@@ -425,6 +427,7 @@ export async function insertDatabase() {
                         acceptedBabysitter: 6,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
+                        totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 8,
@@ -450,58 +453,59 @@ export async function insertDatabase() {
                     },
                     {
                         createdUser: 1,
-                        acceptedBabysitter: 5,
+                        acceptedBabysitter: null,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
+                        totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
-                            month: 8,
-                            date: 25,
+                            month: 10,
+                            date: 7,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 9,
+                                hour: 17,
                                 minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
                         endTime: moment()
                             .set({
-                                hour: 12,
+                                hour: 18,
                                 minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '124 Quang Trung, Q12, TP Ho Chi Minh, Viet Nam',
-                        status: 'DONE',
+                        status: 'PENDING',
                     },
                     //#endregion
                 ])
                 .then((result) => {
                     //#region seed invitations
-                    // result.forEach((el) => {
-                    //     if (el.status === 'PENDING') {
-                    //         db.invitation.bulkCreate([
-                    //             {
-                    //                 requestId: el.id,
-                    //                 receiver: 7,
-                    //                 status: 'ACCEPTED',
-                    //             },
-                    //         ]);
-                    //     }
-                    //     //#endregion
-                    //     //#region feedbacks
-                    //     if (el.status === 'DONE') {
-                    //         // seed feedback
-                    //         db.feedback.bulkCreate([
-                    //             {
-                    //                 // requestId: el.id,
-                    //                 // rating: 4,
-                    //             },
-                    //         ]);
-                    //     }
-                    // });
+                    result.forEach((el) => {
+                        if (el.status === 'PENDING') {
+                            db.invitation.bulkCreate([
+                                {
+                                    requestId: el.id,
+                                    receiver: 5,
+                                    status: 'ACCEPTED',
+                                },
+                            ]);
+                        }
+                        //#endregion
+                        //#region feedbacks
+                        // if (el.status === 'DONE') {
+                        //     // seed feedback
+                        //     db.feedback.bulkCreate([
+                        //         {
+                        //             // requestId: el.id,
+                        //             // rating: 4,
+                        //         },
+                        //     ]);
+                        // }
+                    });
                     //#endregion
                 })
                 .catch((err) => {

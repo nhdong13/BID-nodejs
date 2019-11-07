@@ -43,6 +43,7 @@ export default function(sequelize, DataTypes) {
             },
             distance: DataTypes.VIRTUAL,
             isInvited: DataTypes.VIRTUAL,
+            workFor: DataTypes.VIRTUAL,
         },
         {
             timestamps: true,
