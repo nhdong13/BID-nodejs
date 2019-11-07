@@ -153,7 +153,7 @@ async function calCircle(parentId, listWithCircle) {
 
             if (found) {
                 if (b.circleW < 100) {
-                    b.circleW += 100;
+                    b.circleW += 50;
                 }
             }
 

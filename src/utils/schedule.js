@@ -34,20 +34,21 @@ export function parseSchedule(scheduleTime) {
  * @returns {Boolean}
  */
 export function checkScheduleTime(startTime, endTime, scheduleTime) {
+    let flag = false;
     let scheduleStartTime = scheduleTime.startTime;
     let scheduleEndTime = scheduleTime.endTime;
 
     if (scheduleStartTime <= startTime && startTime <= scheduleEndTime) {
-        return true;
+        flag = true;
     }
     if (scheduleStartTime <= endTime && endTime <= scheduleEndTime) {
-        return true;
+        flag = true;
     }
     if (startTime < scheduleStartTime && scheduleEndTime < endTime) {
-        return true;
+        flag = true;
     }
 
-    return false;
+    return flag;
 }
 
 /**
@@ -57,26 +58,27 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
  * @returns {Boolean}
  */
 export function checkRequestTime(firstRequest, secondRequest) {
+    let flag = false;
     if (
         firstRequest.startTime <= secondRequest.startTime &&
         secondRequest.startTime <= firstRequest.endTime
     ) {
-        return true;
+        flag = true;
     }
     if (
         firstRequest <= secondRequest.endTime &&
         secondRequest.endTime <= firstRequest
     ) {
-        return true;
+        flag = true;
     }
     if (
         secondRequest.startTime < firstRequest.startTime &&
         secondRequest.endTime < firstRequest.endTime
     ) {
-        return true;
+        flag = true;
     }
 
-    return false;
+    return flag;
 }
 
 /**
@@ -104,7 +106,7 @@ export function getScheduleTime(request) {
  * @returns {Boolean} true if available, false otherwise
  */
 export function checkBabysitterSchedule(babysitter, request) {
-    let flag = false;
+    let flag = true;
     let schedules = babysitter.user.schedules;
     // unavailable schedules
     let unavailable = schedules.filter((schedule) => schedule.type == 'FUTURE');
@@ -120,20 +122,16 @@ export function checkBabysitterSchedule(babysitter, request) {
 
             if (request.sittingDate == scheduleTime.date) {
                 if (
-                    !checkScheduleTime(
+                    checkScheduleTime(
                         request.startTime,
                         request.endTime,
                         scheduleTime,
                     )
                 ) {
-                    flag = true;
+                    flag = false;
                 }
-            } else {
-                flag = true;
             }
         });
-    } else {
-        flag = true;
     }
 
     return flag;

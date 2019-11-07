@@ -455,7 +455,7 @@ const acceptBabysitter = (req, res, next) => {
                 console.log('Duong: acceptBabysitter -> err', err);
                 if (err.message == 'OVERLAP') {
                     res.status(409);
-                    res.send(err);
+                    res.send(sitterId);
                 }
             });
     } catch (err) {
