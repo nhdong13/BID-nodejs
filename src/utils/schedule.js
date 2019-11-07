@@ -16,7 +16,9 @@ export function parseSchedule(scheduleTime) {
             dayOfMonth: arr[2],
             month: arr[3],
             year: arr[4],
-            date: moment(`${arr[4]}-${arr[3]}-${arr[2]}`, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+            date: moment(`${arr[4]}-${arr[3]}-${arr[2]}`, 'YYYY-MM-DD').format(
+                'YYYY-MM-DD',
+            ),
         };
         return obj;
     } catch (error) {
@@ -32,20 +34,21 @@ export function parseSchedule(scheduleTime) {
  * @returns {Boolean}
  */
 export function checkScheduleTime(startTime, endTime, scheduleTime) {
+    let flag = false;
     let scheduleStartTime = scheduleTime.startTime;
     let scheduleEndTime = scheduleTime.endTime;
 
     if (scheduleStartTime <= startTime && startTime <= scheduleEndTime) {
-        return true;
+        flag = true;
     }
     if (scheduleStartTime <= endTime && endTime <= scheduleEndTime) {
-        return true;
+        flag = true;
     }
     if (startTime < scheduleStartTime && scheduleEndTime < endTime) {
-        return true;
+        flag = true;
     }
 
-    return false;
+    return flag;
 }
 
 /**
@@ -55,17 +58,27 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
  * @returns {Boolean}
  */
 export function checkRequestTime(firstRequest, secondRequest) {
-    if (firstRequest.startTime <= secondRequest.startTime && secondRequest.startTime <= firstRequest.endTime) {
-        return true;
+    let flag = false;
+    if (
+        firstRequest.startTime <= secondRequest.startTime &&
+        secondRequest.startTime <= firstRequest.endTime
+    ) {
+        flag = true;
     }
-    if (firstRequest <= secondRequest.endTime && secondRequest.endTime <= firstRequest) {
-        return true;
+    if (
+        firstRequest <= secondRequest.endTime &&
+        secondRequest.endTime <= firstRequest
+    ) {
+        flag = true;
     }
-    if (secondRequest.startTime < firstRequest.startTime && secondRequest.endTime < firstRequest.endTime) {
-        return true;
+    if (
+        secondRequest.startTime < firstRequest.startTime &&
+        secondRequest.endTime < firstRequest.endTime
+    ) {
+        flag = true;
     }
 
-    return false;
+    return flag;
 }
 
 /**
@@ -93,12 +106,10 @@ export function getScheduleTime(request) {
  * @returns {Boolean} true if available, false otherwise
  */
 export function checkBabysitterSchedule(babysitter, request) {
-    let flag = false;
+    let flag = true;
     let schedules = babysitter.user.schedules;
     // unavailable schedules
-    let unavailable = schedules.filter(
-        (schedule) => schedule.type == 'FUTURE',
-    );
+    let unavailable = schedules.filter((schedule) => schedule.type == 'FUTURE');
     // available schedules
     let available = schedules.filter(
         (schedule) => schedule.type == 'AVAILABLE',
@@ -111,20 +122,16 @@ export function checkBabysitterSchedule(babysitter, request) {
 
             if (request.sittingDate == scheduleTime.date) {
                 if (
-                    !checkScheduleTime(
+                    checkScheduleTime(
                         request.startTime,
                         request.endTime,
                         scheduleTime,
                     )
                 ) {
-                    flag = true;
+                    flag = false;
                 }
-            } else {
-                flag = true;
             }
         });
-    } else {
-        flag = true;
     }
 
     return flag;
