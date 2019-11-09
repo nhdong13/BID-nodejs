@@ -2,7 +2,7 @@ import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
-import { invitationMessages } from '@utils/notificationMessages';
+import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
 import {
@@ -91,17 +91,17 @@ const listByParentAndStatus = async (req, res, next) => {
             where: {
                 createdUser: parentId,
                 status: status,
-						},
-						include: [
-							{
-									model: models.user,
-									as: 'user',
-							},
-							{
-									model: models.user,
-									as: 'bsitter',
-							},
-					],
+            },
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                },
+                {
+                    model: models.user,
+                    as: 'bsitter',
+                },
+            ],
         });
         res.send(listSittings);
     } catch (err) {
@@ -401,6 +401,8 @@ const acceptBabysitter = (req, res, next) => {
                                                                     .token,
                                                             message:
                                                                 invitationMessages.parentAcceptedBabysitter,
+                                                            title:
+                                                                titleMessages.parentAcceptedBabysitter,
                                                         };
                                                         sendSingleMessage(
                                                             notification,

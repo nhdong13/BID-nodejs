@@ -1,5 +1,9 @@
 import models from '@models';
-import { reminderMessages } from '@utils/notificationMessages';
+import {
+    reminderMessages,
+    titleMessages,
+    titleReminderMessages,
+} from '@utils/notificationMessages';
 import moment from 'moment';
 
 var CronJob = require('cron').CronJob;
@@ -11,7 +15,7 @@ export function initScheduler() {
             schedules.forEach((sche) => {
                 let cronTime = parseCron(sche.scheduleTime);
                 console.log('Duong: initScheduler -> cronTime', cronTime);
-                
+
                 new CronJob(
                     cronTime,
                     function() {
@@ -70,6 +74,7 @@ function remindBabysitter(sitterId, requestId) {
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
+                            title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
                     } catch (error) {
@@ -107,6 +112,7 @@ function remindParent(requestId) {
                             id: request.id,
                             pushToken: request.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
+                            title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
                     } catch (error) {
