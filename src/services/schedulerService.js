@@ -2,28 +2,95 @@ import models from '@models';
 import { reminderMessages } from '@utils/notificationMessages';
 import moment from 'moment';
 
-var CronJob = require('cron').CronJob;
+const CronJob = require('cron').CronJob;
+const REMIND_BEFORE_DURATION_0 = 7; // remind before 8 hour
+const REMIND_BEFORE_DURATION_1 = 1; // remind before 1 hour
+const TIME_ZONE = 'Asia/Bangkok';
 
 export function initScheduler() {
     console.log('here');
     loadSchedule().then((schedules) => {
         if (schedules != null && schedules != undefined) {
             schedules.forEach((sche) => {
-                let cronTime = parseCron(sche.scheduleTime);
-                console.log('Duong: initScheduler -> cronTime', cronTime);
-                
+                let time = parseTime(sche.scheduleTime);
+                console.log('Duong: initScheduler -> time', time);
+
+                // let remindTime_0 = time.subtract(REMIND_BEFORE_DURATION_0, 'hours');
+                // console.log("Duong: initScheduler -> remindTime_0", remindTime_0)
+                // new CronJob(
+                //     remindTime_0,
+                //     function() {
+                //         console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                //         remindBabysitter(sche.userId, sche.requestId);
+                //         remindParent(sche.requestId);
+                //     },
+                //     null,
+                //     true,
+                //     TIME_ZONE
+                // );
+
+                let remindTime_1 = time.subtract(
+                    REMIND_BEFORE_DURATION_1,
+                    'hours',
+                );
+                console.log(
+                    'Duong: initScheduler -> remindTime_1',
+                    remindTime_1,
+                );
                 new CronJob(
-                    cronTime,
+                    remindTime_1,
                     function() {
+                        console.log('---------------------------------');
                         remindBabysitter(sche.userId, sche.requestId);
                         remindParent(sche.requestId);
                     },
                     null,
                     true,
+                    TIME_ZONE,
                 );
             });
         }
     });
+}
+
+export function createReminder(sitterId, requestId, scheduleTime) {
+    let time = parseTime(scheduleTime);
+    console.log('Duong: createReminder -> time', time);
+    
+    let remindTime_1 = time.subtract(REMIND_BEFORE_DURATION_1, 'hours');
+    console.log('Duong: createReminder -> remindTime_1', remindTime_1);
+    if (remindTime_1.isAfter(moment())) {
+        console.log('here');
+        new CronJob(
+            remindTime_1,
+            function() {
+                console.log('---------------------------------');
+                remindBabysitter(sitterId, requestId);
+                remindParent(requestId);
+            },
+            null,
+            true,
+            TIME_ZONE,
+        );
+    }
+
+    let remindTime_0 = time.subtract(REMIND_BEFORE_DURATION_0, 'hours');
+    console.log("Duong: createReminder -> remindTime_0", remindTime_0)
+    if (remindTime_0.isAfter(moment())) {
+        new CronJob(
+            remindTime_0,
+            function() {
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                remindBabysitter(sitterId, requestId);
+                remindParent(requestId);
+            },
+            null,
+            true,
+            TIME_ZONE,
+        );
+    }
+
+    console.log('reminder created');
 }
 
 export function loadSchedule() {
@@ -46,7 +113,7 @@ function remindBabysitter(sitterId, requestId) {
     models.invitation
         .findOne({
             where: {
-                receiverId: sitterId,
+                receiver: sitterId,
                 requestId: requestId,
             },
             include: [
@@ -117,38 +184,7 @@ function remindParent(requestId) {
         });
 }
 
-function parseCron(scheduleTime) {
-    let arr = scheduleTime.split(' ');
-    let startTime = arr[0];
-    let endTime = arr[1];
-    let date = arr[2];
-    let month = arr[3] - 1;
-    let yeah = arr[4];
-    let weekDay = '*';
-
-    let time = parseTime(startTime);
-
-    let cron = `${time.second} ${time.minute} ${time.hour} ${date} ${month} ${weekDay}`;
-
-    return cron;
-}
-
-function parseTime(time) {
-    let arr = time.split(':');
-    let hour = arr[0];
-    let minute = arr[1];
-    let second = 0;
-
-    let obj = {
-        hour: hour,
-        minute: minute,
-        second: second,
-    };
-
-    return obj;
-}
-
-function parseDate(scheduleTime) {
+function parseTime(scheduleTime) {
     let arr = scheduleTime.split(' ');
     let startTime = arr[0];
     let endTime = arr[1];
@@ -157,10 +193,13 @@ function parseDate(scheduleTime) {
     let year = arr[4];
     let weekDay = '*';
 
-    let result = `${date}-${month}-${year}`;
-    return result;
-}
+    // let time = parseTime(startTime);
+    let cron = `${date}-${month}-${year} ${startTime}`;
 
-function getDateTime(scheduleTime) {
-    moment();
+    let time = moment(cron, 'DD-MM-YYYY HH:mm:ss');
+    console.log('Duong: parseTime -> time', time);
+
+    // let before = `${time.second} ${time.minute} ${time.hour} ${date} ${month} ${weekDay}`;
+
+    return time;
 }
