@@ -100,7 +100,7 @@ export function getScheduleTime(request) {
 }
 
 /**
- * check if a request is available to a babysitter'schedules
+ else { * check if a request is available to a babysitter'schedules
  * @param  {Integer} sitterId
  * @param  {sittingRequest} request
  * @returns {Boolean} true if available, false otherwise
