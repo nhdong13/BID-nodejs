@@ -40,7 +40,8 @@ export default function(sequelize, DataTypes) {
                     "CANCELED",
                     "ONGOING",
                     "DONE",
-                    "BS_FINISH"
+                    "DONE_UNCONFIMRED",
+                    "DONE_BY_NEWSTART"
                 ),
                 allowNull: false
             },
