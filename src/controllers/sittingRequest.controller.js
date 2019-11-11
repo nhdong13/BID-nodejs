@@ -10,6 +10,7 @@ import {
     checkBabysitterSchedule,
     checkRequestTime,
 } from '@utils/schedule';
+import { createReminder } from '@services/schedulerService';
 import Sequelize from 'sequelize';
 
 import env, { checkEnvLoaded } from '@utils/env';
@@ -293,6 +294,8 @@ const acceptBabysitter = (req, res, next) => {
                                                 transaction: t,
                                                 lock: t.LOCK.UPDATE,
                                             });
+
+                                            createReminder(sitterId, requestId, scheduleTime);
 
                                             // update invitations of the accepted babysitter that colission with this request
                                             // first find all invitations sent to this babysitter from sitting-requests with the same date as this request
