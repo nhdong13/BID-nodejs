@@ -1,29 +1,37 @@
 export default function(sequelize, DataTypes) {
     const transaction = sequelize.define(
-        "transaction", // Model Name
+        'transaction', // Model Name
         {
             userId: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
+            },
+            requestId: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            chargeId: {
+                type: DataTypes.STRING,
+                allowNull: false,
             },
             type: {
-                type: DataTypes.ENUM("CHARGE", "PAY"),
-                allowNull: false
+                type: DataTypes.ENUM('CHARGE', 'PAY'),
+                allowNull: false,
             },
             description: {
                 type: DataTypes.STRING,
-                allowNull: true
+                allowNull: true,
             },
             amount: {
                 type: DataTypes.FLOAT,
-                allowNull: true
-            }
+                allowNull: true,
+            },
         },
         {
             timestamps: true,
-            charset: "utf8",
-            collate: "utf8_general_ci"
-        }
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
+        },
     );
 
     transaction.associate = function(models) {};

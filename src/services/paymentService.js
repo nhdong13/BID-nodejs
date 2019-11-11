@@ -17,6 +17,7 @@ const createCharges = async (req, res) => {
         });
         console.log('PHUC: createCharges -> charge', charge);
         if (charge) {
+            await models.transaction.create();
             res.send(charge);
         }
     } catch (error) {
