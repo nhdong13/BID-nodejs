@@ -546,6 +546,7 @@ const create = async (req, res) => {
 
     try {
         const newSittingReq = await models.sittingRequest.create(newItem);
+        // ghi charge vao transaction
         res.send(newSittingReq);
     } catch (err) {
         res.status(400);

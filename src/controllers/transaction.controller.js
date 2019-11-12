@@ -6,29 +6,14 @@ const list = async (req, res, next) => {
 };
 
 const create = async (req, res) => {
-    const newItem = req.body;
+    const newTransaction = req.body;
 
     try {
-        await models.transaction
-            .findOrCreate({
-                where: {
-                    userId: newItem.userAgent.trim(),
-                    token: newItem.token,
-                },
-                defaults: {
-                    userId: newItem.userAgent.trim(),
-                    token: newItem.token,
-                },
-            })
-            .then((result) => {
-                const created = result[1];
-                if (!created) {
-                    res.status(400);
-                    res.send({ message: 'Token exist!!' });
-                } else res.send(result);
-            });
+        const newTransactionReq = await models.transaction.create(
+            newTransaction,
+        );
+        res.send(newTransactionReq);
     } catch (err) {
-        // console.log('PHUC: create -> err', err);
         res.status(400);
         res.send(err);
     }

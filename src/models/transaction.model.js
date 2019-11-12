@@ -2,20 +2,12 @@ export default function(sequelize, DataTypes) {
     const transaction = sequelize.define(
         'transaction', // Model Name
         {
-            userId: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            requestId: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
             chargeId: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
             type: {
-                type: DataTypes.ENUM('CHARGE', 'PAY'),
+                type: DataTypes.ENUM('CHARGE', 'PAY', 'REFUND'),
                 allowNull: false,
             },
             description: {
@@ -34,7 +26,25 @@ export default function(sequelize, DataTypes) {
         },
     );
 
-    transaction.associate = function(models) {};
+    transaction.associate = function(models) {
+        transaction.belongsTo(models.user, {
+            foreignKey: {
+                name: 'userId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+            as: 'user',
+        });
+
+        transaction.belongsTo(models.sittingRequest, {
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+            as: 'sittingRequest',
+        });
+    };
 
     return transaction;
 }
