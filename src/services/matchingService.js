@@ -1,9 +1,13 @@
 import models from '@models/';
 import { parseSchedule, checkScheduleTime, checkBabysitterSchedule } from '@utils/schedule';
 import { splitTimeRange } from '@utils/common';
+import env, { checkEnvLoaded } from "@utils/env";
+
+checkEnvLoaded();
+const { apiKey } = env;
 
 const MAX_TRAVEL_DISTANCE = 1;
-const KEY = 'AIzaSyC8IlI2BReTv7lnWEQyp5Ca-argo7D1eVA';
+const KEY = apiKey;
 var distance = require('google-distance-matrix');
 
 const googleMaps = require('@google/maps');
@@ -161,6 +165,7 @@ async function getDistance(address1, address2) {
             mode: 'walking',
         })
         .asPromise();
+        console.log(distances.requestUrl);
 
     return distances.json.rows[0].elements[0].distance.text;
 }
