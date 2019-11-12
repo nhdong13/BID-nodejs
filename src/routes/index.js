@@ -14,7 +14,7 @@ import { jwtAuthentication } from '../middlewares/jwt.middleware';
 
 const router = express.Router();
 
-router.get('/status', (res) => res.send('Server is up!'));
+router.get('/status', (req, res) => res.send('Server is up!'));
 
 router.use('/auth', authRoutes);
 router.use('/trackings', trackingRoutes);
