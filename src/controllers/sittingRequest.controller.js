@@ -284,11 +284,11 @@ const startSittingRequest = async (req, res, next) => {
                     },
                 });
 
-                schedule.status = 'DONE'
+                schedule.status = 'DONE';
 
                 await models.schedule.update({
-                    schedule
-                })
+                    schedule,
+                });
 
                 if (schedule) {
                     createCheckoutPoint(requestId, schedule.scheduleTime);
@@ -429,40 +429,53 @@ const destroy = async (req, res) => {
 
 const cancelSittingRequest = async (req, res) => {
     const { requestId: id, status, chargeId, amount } = req.body;
+    const refundConfig = 90;
 
     try {
         // make refund request
         const refund = await stripe.refunds.create({
             charge: chargeId,
-            amount: amount,
+            amount: (amount * refundConfig) / 100,
             reason: 'requested_by_customer',
         });
-        console.log('PHUC: cancelSittingRequest -> refund', refund);
+        console.log('PHUC: cancelSittingRequest -> refund', refund.amount);
 
         if (refund.status == 'succeeded') {
-            console.log();
             // update status "CANCEL" to request
             const updatingSittingReq = {
                 id,
                 status,
             };
+
             await models.sittingRequest
                 .update(updatingSittingReq, {
                     where: { id },
                 })
                 .then(async () => {
-                    const refundConfig = 90;
                     const updatingTransaction = {
                         type: 'REFUND',
                         description: 'requested_by_customer',
-                        amount: (amount * refundConfig) / 100,
+                        amount: refund.amount,
                     };
-                    await models.transaction.update(updatingTransaction, {
-                        where: { chargeId },
-                    });
-                });
-            res.status(200);
-            res.send();
+                    await models.transaction
+                        .update(updatingTransaction, {
+                            where: { chargeId },
+                        })
+                        .catch((error) =>
+                            console.log(
+                                'error in sittingRequestController -> cancelRequest ' +
+                                    error,
+                            ),
+                        );
+                    res.status(200);
+                    res.send(refund);
+                })
+                .catch((error) =>
+                    console.log(
+                        'error in sittingRequestController -> cancelRequest ' +
+                            error,
+                    ),
+                );
         }
         // update the refund amount
     } catch (error) {
