@@ -34,46 +34,45 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
 });
 
 export function acceptSitter(requestId, sitterId) {
-    return sequelize
-        .transaction((t) => {
-            return lockBabysitterForUpdate(sitterId, t).then((babysitter) => {
-                return findRequest(requestId, t).then((request) => {
-                    if (request) {
-                        // check available
-                        let available = checkAvailable(request, babysitter);
-                        if (!available) {
-                            throw new Error('OVERLAP');
-                        } else {
-                            return confirmRequest(requestId, sitterId, t).then(
-                                (res) => {
-                                    // confirm the sitter invitation
-                                    confirmInvitaion(requestId, sitterId, t);
-                                    // create sitter schedule for this sitting
-                                    createSchedule(
-                                        request,
-                                        sitterId,
-                                        requestId,
-                                        t,
-                                    );
-                                    // update any invitations of this babysitter that overlap with this request
-                                    updateInvitations(sitterId, requestId, request, t);
-                                    
-                                    // notify to the accepted babysitter
-                                    notifyBabysitter(requestId, sitterId, t);
+    return sequelize.transaction((t) => {
+        return lockBabysitterForUpdate(sitterId, t).then((babysitter) => {
+            return findRequest(requestId, t).then((request) => {
+                if (request) {
+                    // check available
+                    let available = checkAvailable(request, babysitter);
+                    if (!available) {
+                        throw new Error('OVERLAP');
+                    } else {
+                        return confirmRequest(requestId, sitterId, t).then(
+                            (res) => {
+                                // confirm the sitter invitation
+                                confirmInvitaion(requestId, sitterId, t);
+                                // create sitter schedule for this sitting
+                                createSchedule(request, sitterId, requestId, t);
+                                // update any invitations of this babysitter that overlap with this request
+                                updateInvitations(
+                                    sitterId,
+                                    requestId,
+                                    request,
+                                    t,
+                                );
 
-                                    // expire other invitation of this request
-                                    return expireInvitations(
-                                        requestId,
-                                        sitterId,
-                                        t,
-                                    );
-                                },
-                            );
-                        }
+                                // notify to the accepted babysitter
+                                notifyBabysitter(requestId, sitterId, t);
+
+                                // expire other invitation of this request
+                                return expireInvitations(
+                                    requestId,
+                                    sitterId,
+                                    t,
+                                );
+                            },
+                        );
                     }
-                });
+                }
             });
-        })
+        });
+    });
 }
 
 function lockBabysitterForUpdate(sitterId, transaction) {
@@ -133,19 +132,23 @@ function confirmRequest(requestId, sitterId, transaction) {
 
 function createSchedule(request, sitterId, requestId, transaction) {
     // create a schedule for the accepted babysitter'schedules
-    let scheduleTime = getScheduleTime(request);
-    let schedule = {
-        userId: sitterId,
-        requestId: requestId,
-        scheduleTime: scheduleTime,
-        type: 'FUTURE',
-    };
-    models.schedule.create(schedule, {
-        transaction: transaction,
-        lock: transaction.LOCK.UPDATE,
-    });
+    try {
+        let scheduleTime = getScheduleTime(request);
+        let schedule = {
+            userId: sitterId,
+            requestId: requestId,
+            scheduleTime: scheduleTime,
+            type: 'FUTURE',
+        };
+        models.schedule.create(schedule, {
+            transaction: transaction,
+            lock: transaction.LOCK.UPDATE,
+        });
 
-    createReminder(sitterId, requestId, scheduleTime);
+        createReminder(sitterId, requestId, scheduleTime);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 function updateInvitations(sitterId, requestId, request, transaction) {
@@ -226,7 +229,8 @@ function notifyBabysitter(requestId, sitterId, transaction) {
                         const notification = {
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
-                            message: invitationMessages.parentAcceptedBabysitter,
+                            message:
+                                invitationMessages.parentAcceptedBabysitter,
                         };
                         sendSingleMessage(notification);
                     }

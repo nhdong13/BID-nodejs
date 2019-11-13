@@ -1,7 +1,11 @@
 import models from '@models/';
-import { parseSchedule, checkScheduleTime, checkBabysitterSchedule } from '@utils/schedule';
+import {
+    parseSchedule,
+    checkScheduleTime,
+    checkBabysitterSchedule,
+} from '@utils/schedule';
 import { splitTimeRange } from '@utils/common';
-import env, { checkEnvLoaded } from "@utils/env";
+import env, { checkEnvLoaded } from '@utils/env';
 
 checkEnvLoaded();
 const { apiKey } = env;
@@ -11,6 +15,10 @@ const KEY = apiKey;
 var distance = require('google-distance-matrix');
 
 const googleMaps = require('@google/maps');
+const mapsClient = googleMaps.createClient({
+    key: KEY, // api key
+    Promise: Promise, // enable promise request
+});
 
 /**
  * matching parent's sitting request with available babysitter
@@ -25,7 +33,7 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // calculate distance
-    matchedList = await randomizeDistance(
+    matchedList = await getBabysitterDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
@@ -81,9 +89,11 @@ async function searchForBabysitter(sittingAddress) {
 async function getBabysitterDistance(sittingAddress, listOfSitter) {
     let matchedList = [];
 
+    let address1LatLog = await placeSearch(sittingAddress);
+
     const promises = listOfSitter.map(async (sitter) => {
         // x.x km
-        let distance = await getDistance(sittingAddress, sitter.user.address);
+        let distance = await getDistance(address1LatLog, sitter.user.address);
 
         // x.x
         let temp = distance.split(' ');
@@ -152,22 +162,34 @@ async function checkIfSentInvite(sittingRequest, babysitters) {
  * @param  {String} address2
  * @returns {} the distance in 'km'
  */
-async function getDistance(address1, address2) {
-    let mapsClient = googleMaps.createClient({
-        key: KEY, // api key
-        Promise: Promise, // enable promise request
-    });
+async function getDistance(address1LatLog, address2) {
+    let place_2 = await placeSearch(address2);
 
     let distances = await mapsClient
         .distanceMatrix({
-            origins: [address1], // start address
-            destinations: [address2], // destination address
+            origins: [address1LatLog[0].geometry.location], // start address
+            destinations: [place_2[0].geometry.location], // destination address
             mode: 'walking',
         })
         .asPromise();
-        console.log(distances.requestUrl);
+    console.log(distances.requestUrl);
 
     return distances.json.rows[0].elements[0].distance.text;
+}
+
+async function placeSearch(address) {
+    try {
+        let result = await mapsClient
+            .findPlace({
+                input: address,
+                inputtype: 'textquery',
+                fields: ['geometry']
+            })
+            .asPromise();
+        return result.json.candidates;
+    } catch (error) {
+        console.log('Duong: placeSearch -> error', error);
+    }
 }
 
 /**
@@ -256,11 +278,11 @@ async function matchingCriteria(request, babysitters) {
 function checkAgainstSchedules(request, babysitters) {
     let matchedList = [];
 
-    babysitters.forEach(sitter => {
+    babysitters.forEach((sitter) => {
         if (checkBabysitterSchedule(sitter, request)) {
             matchedList.push(sitter);
         }
-    })
+    });
 
     return matchedList;
 }
