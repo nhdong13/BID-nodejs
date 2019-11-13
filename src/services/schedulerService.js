@@ -1,7 +1,6 @@
 import models from '@models';
 import {
     reminderMessages,
-    titleMessages,
     titleReminderMessages,
 } from '@utils/notificationMessages';
 import moment from 'moment';
@@ -73,12 +72,6 @@ export function createReminder(sitterId, requestId, scheduleTime) {
             remindTime_1,
         );
         try {
-            let schedule = Schedule.scheduleJob('7 11 13 11 *', function() {
-                console.log('đã chạy');
-                remindBabysitter(sitterId, requestId);
-                remindParent(requestId);
-            });
-
             schedule = Schedule.scheduleJob(remindTime_1, function() {
                 console.log('đã chạy');
                 remindBabysitter(sitterId, requestId);

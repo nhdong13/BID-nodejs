@@ -284,6 +284,12 @@ const startSittingRequest = async (req, res, next) => {
                     },
                 });
 
+                schedule.status = 'DONE'
+
+                await models.schedule.update({
+                    schedule
+                })
+
                 if (schedule) {
                     createCheckoutPoint(requestId, schedule.scheduleTime);
                 }

@@ -9,7 +9,13 @@ export default function(sequelize, DataTypes) {
             familyDescription: {
                 type: DataTypes.STRING,
                 allowNull: true
-            }
+            },
+            parentCode: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                unique: true
+            },
+            isInvited: DataTypes.VIRTUAL,
         },
         {
             timestamps: true,
