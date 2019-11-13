@@ -342,14 +342,9 @@ export async function insertDatabase() {
                         requestId: 2,
                     };
 
-                    // moment().add(10, 'seconds').toDate(),
-
                     schedules.push(schedule);
 
                     db.schedule.bulkCreate(schedules).then(() => {
-                        // initScheduler();
-
-                        // db.schedule.findOne({}).then((result) => {
                         let c = 0;
                         let scheduleTime = '* 16-17 * * * *';
                         console.log("Duong: insertDatabase -> Cron 1")
@@ -357,7 +352,6 @@ export async function insertDatabase() {
                         new CronJob({
                             cronTime: scheduleTime,
                             onTick: function() {
-                                // console.log(c++);
                                 console.log(moment().format('HH:mm:ss'));
                             },
                             start: true,

@@ -17,8 +17,21 @@ const createCharges = async (req, res) => {
         });
         console.log('PHUC: createCharges -> charge', charge);
         if (charge) {
-            // await models.transaction.
-            res.send(charge);
+            const { id: chargeId } = charge;
+            console.log('PHUC: createCharges -> chargeId', chargeId);
+            const newTransaction = {
+                chargeId,
+                type: 'CHARGE',
+                description: '',
+                amount: amount,
+                userId: userId,
+                requestId: requestId,
+            };
+            // luu charge vao bang transaction
+            if (newTransaction) {
+                await models.transaction.create(newTransaction);
+                res.send(charge);
+            }
         }
     } catch (error) {
         res.status(400);

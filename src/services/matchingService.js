@@ -32,8 +32,14 @@ export async function matching(sittingRequest) {
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
-    // calculate distance
-    matchedList = await getBabysitterDistance(
+    // calculate distance with api Google
+    // matchedList = await getBabysitterDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
@@ -161,9 +167,8 @@ async function checkIfSentInvite(sittingRequest, babysitters) {
  * @returns {} the distance in 'km'
  */
 async function getDistance(address1, address2) {
-
     let place_1 = await placeSearch(address1);
-    console.log("Duong: getDistance -> place_1", place_1[0].geometry.location)
+    console.log('Duong: getDistance -> place_1', place_1[0].geometry.location);
     let place_2 = await placeSearch(address2);
 
     let distances = await mapsClient
@@ -184,7 +189,7 @@ async function placeSearch(address) {
             .findPlace({
                 input: address,
                 inputtype: 'textquery',
-                fields: ['geometry']
+                fields: ['geometry'],
             })
             .asPromise();
         return result.json.candidates;
