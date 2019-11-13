@@ -219,6 +219,7 @@ export async function insertDatabase() {
                     userId: el.id,
                     childrenNumber: 3,
                     familyDescription: '',
+                    parentCode: 'A' + el.id
                 };
                 parents.push(parent); // push to array parents
             });
