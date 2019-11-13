@@ -40,7 +40,8 @@ export default function(sequelize, DataTypes) {
                     "CANCELED",
                     "ONGOING",
                     "DONE",
-                    "BS_FINISH"
+                    "DONE_UNCONFIMRED",
+                    "DONE_BY_NEWSTART"
                 ),
                 allowNull: false
             },
@@ -91,6 +92,7 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id"
         });
 
+        // request - user(parent)
         sittingRequest.belongsTo(models.user, {
             foreignKey: {
                 name: "createdUser"
@@ -99,12 +101,21 @@ export default function(sequelize, DataTypes) {
             as: "user"
         });
 
+        // request - user(sitter)
         sittingRequest.belongsTo(models.user, {
             foreignKey: {
                 name: "acceptedBabysitter"
             },
             sourceKey: "id",
             as: "bsitter"
+        });
+
+        // request - schedule
+        sittingRequest.hasMany(models.schedule, {
+            foreignKey: {
+                name: "requestId"
+            },
+            sourceKey: "id",
         });
     };
 

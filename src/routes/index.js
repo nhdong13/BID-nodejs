@@ -10,11 +10,12 @@ import circleRoutes from '@routes/circle.route';
 import configurationRoutes from '@routes/configuration.route';
 import feedbackRoutes from '@routes/feedback.route';
 import paymentRoutes from '@routes/payment.route';
+import transactionRoutes from '@routes/transaction.route';
 import { jwtAuthentication } from '../middlewares/jwt.middleware';
 
 const router = express.Router();
 
-router.get('/status', (res) => res.send('Server is up!'));
+router.get('/status', (req, res) => res.send('Server is up!'));
 
 router.use('/auth', authRoutes);
 router.use('/trackings', trackingRoutes);
@@ -27,5 +28,6 @@ router.use('/invitations', invitationRoutes);
 router.use('/configuration', configurationRoutes);
 router.use('/feedback', feedbackRoutes);
 router.use('/payment', paymentRoutes);
+router.use('/transactions', transactionRoutes);
 
 export default router;

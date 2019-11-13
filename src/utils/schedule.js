@@ -9,13 +9,16 @@ import { splitTimeRange } from '@utils/common';
 export function parseSchedule(scheduleTime) {
     try {
         let arr = scheduleTime.split(' ');
+
         let obj = {
             startTime: arr[0],
             endTime: arr[1],
             dayOfMonth: arr[2],
             month: arr[3],
             year: arr[4],
-            date: `${arr[4]}-${arr[3]}-${arr[2]}`,
+            date: moment(`${arr[4]}-${arr[3]}-${arr[2]}`, 'YYYY-MM-DD').format(
+                'YYYY-MM-DD',
+            ),
         };
         return obj;
     } catch (error) {
@@ -31,18 +34,21 @@ export function parseSchedule(scheduleTime) {
  * @returns {Boolean}
  */
 export function checkScheduleTime(startTime, endTime, scheduleTime) {
+    let flag = false;
     let scheduleStartTime = scheduleTime.startTime;
     let scheduleEndTime = scheduleTime.endTime;
 
     if (scheduleStartTime <= startTime && startTime <= scheduleEndTime) {
-        return true;
+        flag = true;
     }
     if (scheduleStartTime <= endTime && endTime <= scheduleEndTime) {
-        return true;
+        flag = true;
     }
-    if (startTime < scheduleStartTime && scheduleEndTime < endTime)
+    if (startTime < scheduleStartTime && scheduleEndTime < endTime) {
+        flag = true;
+    }
 
-    return false;
+    return flag;
 }
 
 /**
@@ -52,17 +58,27 @@ export function checkScheduleTime(startTime, endTime, scheduleTime) {
  * @returns {Boolean}
  */
 export function checkRequestTime(firstRequest, secondRequest) {
-    if (firstRequest.startTime <= secondRequest.startTime && secondRequest.startTime <= firstRequest.endTime) {
-        return true;
+    let flag = false;
+    if (
+        firstRequest.startTime <= secondRequest.startTime &&
+        secondRequest.startTime <= firstRequest.endTime
+    ) {
+        flag = true;
     }
-    if (firstRequest <= secondRequest.endTime && secondRequest.endTime <= firstRequest) {
-        return true;
+    if (
+        firstRequest.startTime <= secondRequest.endTime &&
+        secondRequest.endTime <= firstRequest.endTime
+    ) {
+        flag = true;
     }
-    if (secondRequest.startTime < firstRequest.startTime && secondRequest.endTime < firstRequest.endTime) {
-        return true;
+    if (
+        secondRequest.startTime < firstRequest.startTime &&
+        secondRequest.endTime < firstRequest.endTime
+    ) {
+        flag = true;
     }
 
-    return false;
+    return flag;
 }
 
 /**
@@ -71,30 +87,29 @@ export function checkRequestTime(firstRequest, secondRequest) {
  */
 export function getScheduleTime(request) {
     let scheduleTime = '';
-    let sittingDate = moment(request.sittingDate, 'yyyy-MM-DD');
+    let sittingDate = moment(request.sittingDate, 'YYYY-MM-DD');
     let startTime = request.startTime;
     let endTime = request.endTime;
     scheduleTime += startTime;
     scheduleTime += ' ' + endTime;
-    scheduleTime += ' ' + sittingDate.date();
-    scheduleTime += ' ' + (sittingDate.month() + 1);
-    scheduleTime += ' ' + sittingDate.year();
+    scheduleTime += ' ' + sittingDate.format('DD');
+    scheduleTime += ' ' + sittingDate.format('MM');
+    scheduleTime += ' ' + sittingDate.format('YYYY');
 
     return scheduleTime;
 }
 
 /**
- * check if a request is available to a babysitter'schedules
+ else { * check if a request is available to a babysitter'schedules
  * @param  {Integer} sitterId
  * @param  {sittingRequest} request
  * @returns {Boolean} true if available, false otherwise
  */
 export function checkBabysitterSchedule(babysitter, request) {
+    let flag = true;
     let schedules = babysitter.user.schedules;
     // unavailable schedules
-    let unavailable = schedules.filter(
-        (schedule) => schedule.type == 'UNAVAILABLE',
-    );
+    let unavailable = schedules.filter((schedule) => schedule.type == 'FUTURE');
     // available schedules
     let available = schedules.filter(
         (schedule) => schedule.type == 'AVAILABLE',
@@ -105,21 +120,19 @@ export function checkBabysitterSchedule(babysitter, request) {
         unavailable.forEach((schedule) => {
             let scheduleTime = parseSchedule(schedule.scheduleTime);
 
-            if (!(request.sittingDate == scheduleTime.date)) {
+            if (request.sittingDate == scheduleTime.date) {
                 if (
-                    !checkScheduleTime(
+                    checkScheduleTime(
                         request.startTime,
                         request.endTime,
                         scheduleTime,
                     )
                 ) {
-                    return true;
+                    flag = false;
                 }
             }
         });
-    } else {
-        return true;
     }
 
-    return false;
+    return flag;
 }

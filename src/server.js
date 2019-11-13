@@ -63,6 +63,17 @@ async function main() {
                     .to('user_room_' + data.userId)
                     .emit('triggerQr', { qr: data.qr });
             });
+
+            socket.on('success', (data) => {
+                console.log('PHUC: on success -> data', data);
+                socketIO
+                    .to('user_room_' + data.userId)
+                    .emit('scanned', { message: 'scan successed' });
+            });
+
+            socket.on('update', ({ message }) => {
+                socketIO.emit('updateSignal', { message });
+            });
         });
 
         server.listen(5000, () => {
