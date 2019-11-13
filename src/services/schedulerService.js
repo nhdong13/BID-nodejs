@@ -4,6 +4,7 @@ import moment from 'moment';
 import { handleForgotToCheckout } from '@services/sittingRequestService';
 
 const CronJob = require('cron').CronJob;
+const Schedule = require('node-schedule');
 const REMIND_BEFORE_DURATION_0 = 7; // remind before 8 hour
 const REMIND_BEFORE_DURATION_1 = 1; // remind before 1 hour
 const CHECKOUT_TIMEOUT = 1;
@@ -14,13 +15,11 @@ export function initScheduler() {
         if (schedules != null && schedules != undefined) {
             schedules.forEach((sche) => {
                 let time = parseStartTime(sche.scheduleTime);
-                console.log(moment().utcOffset());
                 console.log('Duong: initScheduler -> time', time.utcOffset());
 
-                let remindTime_1 = time.subtract(
-                    REMIND_BEFORE_DURATION_1,
-                    'hours',
-                ).utc(true);
+                let remindTime_1 = time
+                    .subtract(REMIND_BEFORE_DURATION_1, 'hours')
+                    .utc(true);
                 console.log(
                     'Duong: initScheduler -> remindTime_1',
                     remindTime_1,
@@ -63,45 +62,49 @@ export function createReminder(sitterId, requestId, scheduleTime) {
         remindTime_1.format('DD-MM-YYYY HH:mm:ss'),
     );
     if (remindTime_1.isAfter(moment())) {
-        console.log('Duong: createReminder -> true');
+        remindTime_1 = parseToScheduleTime(remindTime_1);
+        console.log(
+            'Duong: createReminder -> remindTime_1.toDate',
+            remindTime_1,
+        );
         try {
-            new CronJob(
+            let schedule = Schedule.scheduleJob(
+                '7 11 13 11 *',
+                function() {
+                    console.log('đã chạy');
+                    remindBabysitter(sitterId, requestId);
+                    remindParent(requestId);
+                },
+            );
+
+            schedule = Schedule.scheduleJob(
                 remindTime_1,
                 function() {
                     console.log('đã chạy');
                     remindBabysitter(sitterId, requestId);
                     remindParent(requestId);
                 },
-                null,
-                true,
-                TIME_ZONE,
             );
-            console.log('1 created');
+            console.log('1 created', schedule);
         } catch (error) {
             console.log('Duong: createReminder -> error', error);
         }
     }
 
     let remindTime_0 = time.subtract(REMIND_BEFORE_DURATION_0, 'hours');
-    console.log(
-        'Duong: createReminder -> remindTime_0',
-        remindTime_0.format('DD-MM-YYYY HH:mm:ss'),
-    );
+
     if (remindTime_0.isAfter(moment())) {
-        console.log('Duong: createReminder -> true');
+        console.log(
+            'Duong: createReminder -> remindTime_0.todate',
+            remindTime_0.toDate(),
+        );
         try {
-            new CronJob(
-                remindTime_0,
-                function() {
-                    console.log('đã chạy');
-                    remindBabysitter(sitterId, requestId);
-                    remindParent(requestId);
-                },
-                null,
-                true,
-                TIME_ZONE,
-            );
-            console.log('0 created');
+            let schedule = Schedule.scheduleJob(parseToScheduleTime(remindTime_0), function() {
+                console.log('đã chạy');
+                remindBabysitter(sitterId, requestId);
+                remindParent(requestId);
+            });
+            console.log('0 created', schedule);
         } catch (error) {
             console.log('Duong: createReminder -> error', error);
         }
@@ -264,4 +267,17 @@ function parseEndTime(scheduleTime) {
     let time = moment(cron, 'DD-MM-YYYY HH:mm:ss');
 
     return time;
+}
+
+function parseToScheduleTime(momentObj) {
+    let result = moment().set({
+        year: momentObj.year(),
+        month: momentObj.month(),
+        date: momentObj.date(),
+        hour: momentObj.hour(),
+        minute: momentObj.minute(),
+        second: momentObj.second()
+    });
+
+    return result.toDate();
 }
