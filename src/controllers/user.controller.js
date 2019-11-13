@@ -1,15 +1,32 @@
-import models from "@models";
-import { hashPassword } from "@utils/hash";
+import models from '@models';
+import { hashPassword } from '@utils/hash';
 
 const list = async (req, res) => {
-    const role = req.roleId;
-    if (role === 2) {
-        const listUsers = await models.user.findAll();
-        res.send(listUsers);
-    } else {
-        res.status(401);
-        res.send({ message: 'Unauthorized' });
-    }
+    // const role = req.roleId;
+    // if (role === 2) {
+    const listUsers = await models.user.findAll({
+        include: [
+            {
+                model: models.parent,
+                as: 'parent',
+                include: [
+                    {
+                        model: models.children,
+                        as: 'children',
+                    },
+                ],
+            },
+            {
+                model: models.babysitter,
+                as: 'babysitter',
+            },
+        ],
+    });
+    res.send(listUsers);
+    // } else {
+    //     res.status(401);
+    //     res.send({ message: 'Unauthorized' });
+    // }
 };
 
 const create = async (req, res) => {
@@ -33,19 +50,24 @@ const read = async (req, res) => {
     try {
         const user = await models.user.findOne({
             where: {
-                id
+                id,
             },
-            include:[{
-                model: models.parent,
-                as: 'parent',
-                include: [{
-                    model: models.children,
-                    as: 'children',
-                }]
-            },{
-                model: models.babysitter,
-                as: 'babysitter',
-            }]
+            include: [
+                {
+                    model: models.parent,
+                    as: 'parent',
+                    include: [
+                        {
+                            model: models.children,
+                            as: 'children',
+                        },
+                    ],
+                },
+                {
+                    model: models.babysitter,
+                    as: 'babysitter',
+                },
+            ],
         });
         if (user) {
             res.status(201);
@@ -67,9 +89,9 @@ const update = async (req, res) => {
 
     try {
         await models.user.update(updatingUser, {
-            where: { id }
+            where: { id },
         });
-        res.send();
+        res.send(updatingUser);
     } catch (err) {
         res.status(422);
         res.send(err);
@@ -82,8 +104,8 @@ const destroy = async (req, res) => {
     try {
         await models.user.destroy({
             where: {
-                id
-            }
+                id,
+            },
         });
         res.status(204);
         res.send();

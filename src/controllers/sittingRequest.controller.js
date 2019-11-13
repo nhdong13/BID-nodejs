@@ -598,7 +598,7 @@ const update = async (req, res) => {
         await models.sittingRequest.update(updatingSittingReq, {
             where: { id },
         });
-        res.send();
+        res.send(updatingSittingReq);
     } catch (err) {
         res.status(422);
         res.send(err);
