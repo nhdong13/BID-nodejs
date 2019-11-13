@@ -104,7 +104,7 @@ export async function insertDatabase() {
         email: 'dong4@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'DongBS',
-        address: '684 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -332,32 +332,56 @@ export async function insertDatabase() {
                 .bulkCreate(babysitters)
                 // seed schedule
                 .then((result) => {
-                    // let sitters = result;
-                    // let schedules = [];
+                    let sitters = result;
+                    let schedules = [];
 
-                    // let schedule = {
-                    //     userId: sitters[0].userId,
-                    //     scheduleTime: '17:21:00 20:00:00 9 11 2019',
-                    //     type: 'FUTURE',
-                    //     requestId: 1,
-                    // };
+                    let schedule = {
+                        userId: sitters[0].userId,
+                        scheduleTime: '10:01:00 19:00:00 13 11 2019',
+                        type: 'FUTURE',
+                        requestId: 2,
+                    };
 
                     // moment().add(10, 'seconds').toDate(),
 
-                    // schedules.push(schedule);
+                    schedules.push(schedule);
 
-                    // db.schedule.bulkCreate(schedules).then(() => {
-                    //     initScheduler();
+                    db.schedule.bulkCreate(schedules).then(() => {
+                        // initScheduler();
 
-                    //     // db.schedule.findOne({}).then((result) => {
+                        // db.schedule.findOne({}).then((result) => {
+                        let c = 0;
+                        let scheduleTime = '* 16-17 * * * *';
+                        console.log("Duong: insertDatabase -> Cron 1")
+                        
+                        new CronJob({
+                            cronTime: scheduleTime,
+                            onTick: function() {
+                                // console.log(c++);
+                                console.log(moment().format('HH:mm:ss'));
+                            },
+                            start: true,
+                            timeZone: 'UTC'
+                        });
+                        console.log("Duong: insertDatabase -> End Cron 1")
 
-                    //     //     let scheduleTime = moment().add(10, 'seconds').toDate();
-                    //     //     let cronJ = new CronJob(scheduleTime, function() {
-                    //     //         console.log("Duong: bootstrap.js insertDatabase -> scheduleTime", scheduleTime)
-                    //     //         console.log('HAKUNA MATATA!!!');
-                    //     //     }, null, true,);
-                    //     // });
-                    // });
+                        console.log("Duong: insertDatabase -> Cron 2")
+
+                        scheduleTime = '* 18-19 * * * *';
+                        new CronJob({
+                            cronTime: scheduleTime,
+                            onTick: function() {
+                                // console.log(c++);
+                                console.log('New cron' , moment().format('HH:mm:ss'));
+                            },
+                            start: true,
+                            timeZone: 'UTC'
+                        });
+                            
+                        console.log("Duong: insertDatabase -> End Cron 2")
+
+                        // });
+                    });
                 });
             //#endregion
         })
@@ -374,12 +398,41 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
-                            date: 10,
+                            date: 12,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 19,
-                                minute: 48,
+                                hour: 12,
+                                minute: 7,
+                                second: 0,
+                            })
+                            .format('HH:mm:ss'),
+                        endTime: moment()
+                            .set({
+                                hour: 15,
+                                minute: 7,
+                                second: 0,
+                            })
+                            .format('HH:mm:ss'),
+                        sittingAddress:
+                            '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+                        status: 'PENDING',
+                    },
+                    {
+                        createdUser: 2,
+                        acceptedBabysitter: 5,
+                        childrenNumber: 2,
+                        minAgeOfChildren: 1,
+                        totalPrice: 100000,
+                        sittingDate: moment().set({
+                            year: 2019,
+                            month: 10,
+                            date: 11,
+                        }),
+                        startTime: moment()
+                            .set({
+                                hour: 18,
+                                minute: 0,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
@@ -392,37 +445,8 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'PENDING',
+                        status: 'CONFIRMED',
                     },
-                    // {
-                    //     createdUser: 2,
-                    //     acceptedBabysitter: 5,
-                    //     childrenNumber: 2,
-                    //     minAgeOfChildren: 1,
-                    //     totalPrice: 100000,
-                    //     sittingDate: moment().set({
-                    //         year: 2019,
-                    //         month: 9,
-                    //         date: 30,
-                    //     }),
-                    //     startTime: moment()
-                    //         .set({
-                    //             hour: 14,
-                    //             minute: 0,
-                    //             second: 0,
-                    //         })
-                    //         .format('HH:mm:ss'),
-                    //     endTime: moment()
-                    //         .set({
-                    //             hour: 18,
-                    //             minute: 0,
-                    //             second: 0,
-                    //         })
-                    //         .format('HH:mm:ss'),
-                    //     sittingAddress:
-                    //         '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                    //     status: 'DONE',
-                    // },
                     // {
                     //     createdUser: 3,
                     //     acceptedBabysitter: 6,
