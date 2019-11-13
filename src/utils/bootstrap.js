@@ -350,9 +350,9 @@ export async function insertDatabase() {
                     db.schedule.bulkCreate(schedules).then(() => {
                         // initScheduler();
 
-                        let c = 0;
-                        let scheduleTime = '* 16-17 * * * *';
-                        console.log('Duong: insertDatabase -> Cron 1');
+                        // let c = 0;
+                        // let scheduleTime = '* 16-17 * * * *';
+                        // console.log('Duong: insertDatabase -> Cron 1');
 
                         // new CronJob({
                         //     cronTime: scheduleTime,
@@ -366,32 +366,32 @@ export async function insertDatabase() {
 
                         // console.log(moment().add('seconds', 10).toDate());
                         // console.log(moment().set({hour: 11, minute: 21, seconds: 0}).toDate());
-                        console.log(moment().toDate());
+                        // console.log(moment().toDate());
 
-                        console.log(
-                            moment()
-                                .set({ hour: 10, minute: 23, second: 0 })
-                                .toDate(),
-                        );
+                        // console.log(
+                        //     moment()
+                        //         .set({ hour: 10, minute: 23, second: 0 })
+                        //         .toDate(),
+                        // );
 
-                        let sche = Schedule.scheduleJob(
-                            "* 51-52 10 13 11 *",
-                            function() {
-                                console.log(
-                                    'Old ',
-                                    moment().format('HH:mm:ss'),
-                                );
-                            }
-                        );
-                        sche = Schedule.scheduleJob(
-                            "* 53-54 10 13 11 *",
-                            function() {
-                                console.log(
-                                    'New ',
-                                    moment().format('HH:mm:ss'),
-                                );
-                            }
-                        );
+                        // let sche = Schedule.scheduleJob(
+                        //     "* 51-52 10 13 11 *",
+                        //     function() {
+                        //         console.log(
+                        //             'Old ',
+                        //             moment().format('HH:mm:ss'),
+                        //         );
+                        //     }
+                        // );
+                        // sche = Schedule.scheduleJob(
+                        //     "* 53-54 10 13 11 *",
+                        //     function() {
+                        //         console.log(
+                        //             'New ',
+                        //             moment().format('HH:mm:ss'),
+                        //         );
+                        //     }
+                        // );
 
                         // sche = Schedule.scheduleJob(
                         //     moment()
@@ -405,7 +405,7 @@ export async function insertDatabase() {
                         //     }
                         // );
 
-                        console.log(sche);
+                        // console.log(sche);
 
                         // console.log("Duong: insertDatabase -> End Cron 1")
 

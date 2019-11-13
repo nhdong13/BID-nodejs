@@ -1,7 +1,8 @@
 import models from '@models';
-import { reminderMessages } from '@utils/notificationMessages';
 import moment from 'moment';
+import { reminderMessages } from '@utils/notificationMessages';
 import { handleForgotToCheckout } from '@services/sittingRequestService';
+import { sendSingleMessage } from '@utils/pushNotification'
 
 const CronJob = require('cron').CronJob;
 const Schedule = require('node-schedule');
@@ -68,15 +69,6 @@ export function createReminder(sitterId, requestId, scheduleTime) {
             remindTime_1,
         );
         try {
-            let schedule = Schedule.scheduleJob(
-                '7 11 13 11 *',
-                function() {
-                    console.log('đã chạy');
-                    remindBabysitter(sitterId, requestId);
-                    remindParent(requestId);
-                },
-            );
-
             schedule = Schedule.scheduleJob(
                 remindTime_1,
                 function() {

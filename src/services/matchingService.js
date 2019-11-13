@@ -89,9 +89,11 @@ async function searchForBabysitter(sittingAddress) {
 async function getBabysitterDistance(sittingAddress, listOfSitter) {
     let matchedList = [];
 
+    let address1LatLog = await placeSearch(sittingAddress);
+
     const promises = listOfSitter.map(async (sitter) => {
         // x.x km
-        let distance = await getDistance(sittingAddress, sitter.user.address);
+        let distance = await getDistance(address1LatLog, sitter.user.address);
 
         // x.x
         let temp = distance.split(' ');
@@ -160,15 +162,12 @@ async function checkIfSentInvite(sittingRequest, babysitters) {
  * @param  {String} address2
  * @returns {} the distance in 'km'
  */
-async function getDistance(address1, address2) {
-
-    let place_1 = await placeSearch(address1);
-    console.log("Duong: getDistance -> place_1", place_1[0].geometry.location)
+async function getDistance(address1LatLog, address2) {
     let place_2 = await placeSearch(address2);
 
     let distances = await mapsClient
         .distanceMatrix({
-            origins: [place_1[0].geometry.location], // start address
+            origins: [address1LatLog[0].geometry.location], // start address
             destinations: [place_2[0].geometry.location], // destination address
             mode: 'walking',
         })
