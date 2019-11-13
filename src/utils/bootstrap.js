@@ -5,7 +5,8 @@ import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
 import { initScheduler } from '@services/schedulerService';
 
-const CronJob = require('cron').CronJob;
+// const CronJob = require('cron').CronJob;
+const Schedule = require('node-schedule');
 
 export async function insertDatabase() {
     const db = models.sequelize.models;
@@ -335,45 +336,93 @@ export async function insertDatabase() {
                     let sitters = result;
                     let schedules = [];
 
-                    let schedule = {
-                        userId: sitters[0].userId,
-                        scheduleTime: '10:01:00 19:00:00 13 11 2019',
-                        type: 'FUTURE',
-                        requestId: 2,
-                    };
+                    // let schedule = {
+                    //     userId: sitters[0].userId,
+                    //     scheduleTime: '10:01:00 19:00:00 13 11 2019',
+                    //     type: 'FUTURE',
+                    //     requestId: 2,
+                    // };
 
-                    schedules.push(schedule);
+                    // moment().add(10, 'seconds').toDate(),
+
+                    // schedules.push(schedule);
 
                     db.schedule.bulkCreate(schedules).then(() => {
+                        // initScheduler();
+
                         let c = 0;
                         let scheduleTime = '* 16-17 * * * *';
-                        console.log("Duong: insertDatabase -> Cron 1")
-                        
-                        new CronJob({
-                            cronTime: scheduleTime,
-                            onTick: function() {
-                                console.log(moment().format('HH:mm:ss'));
-                            },
-                            start: true,
-                            timeZone: 'UTC'
-                        });
-                        console.log("Duong: insertDatabase -> End Cron 1")
+                        console.log('Duong: insertDatabase -> Cron 1');
 
-                        console.log("Duong: insertDatabase -> Cron 2")
+                        // new CronJob({
+                        //     cronTime: scheduleTime,
+                        //     onTick: function() {
+                        //         // console.log(c++);
+                        //         console.log(moment().format('HH:mm:ss'));
+                        //     },
+                        //     start: true,
+                        //     timeZone: 'UTC'
+                        // });
 
-                        scheduleTime = '* 18-19 * * * *';
-                        new CronJob({
-                            cronTime: scheduleTime,
-                            onTick: function() {
-                                // console.log(c++);
-                                console.log('New cron' , moment().format('HH:mm:ss'));
-                            },
-                            start: true,
-                            timeZone: 'UTC'
-                        });
-                            
-                        console.log("Duong: insertDatabase -> End Cron 2")
+                        // console.log(moment().add('seconds', 10).toDate());
+                        // console.log(moment().set({hour: 11, minute: 21, seconds: 0}).toDate());
+                        console.log(moment().toDate());
 
+                        console.log(
+                            moment()
+                                .set({ hour: 10, minute: 23, second: 0 })
+                                .toDate(),
+                        );
+
+                        let sche = Schedule.scheduleJob(
+                            "* 51-52 10 13 11 *",
+                            function() {
+                                console.log(
+                                    'Old ',
+                                    moment().format('HH:mm:ss'),
+                                );
+                            }
+                        );
+                        sche = Schedule.scheduleJob(
+                            "* 53-54 10 13 11 *",
+                            function() {
+                                console.log(
+                                    'New ',
+                                    moment().format('HH:mm:ss'),
+                                );
+                            }
+                        );
+
+                        // sche = Schedule.scheduleJob(
+                        //     moment()
+                        //         .set({ hour: 10, minute: 51, second: 0 })
+                        //         .toDate(),
+                        //     function() {
+                        //         console.log(
+                        //             'Old ',
+                        //             moment().format('HH:mm:ss'),
+                        //         );
+                        //     }
+                        // );
+
+                        console.log(sche);
+
+                        // console.log("Duong: insertDatabase -> End Cron 1")
+
+                        // console.log("Duong: insertDatabase -> Cron 2")
+
+                        // scheduleTime = '* 18-19 * * * *';
+                        // Schedule.scheduleJob('* 18-19 * * * *', function(){
+                        //     console.log('New ', moment().format('HH:mm:ss'));
+                        //   });
+                        // new CronJob({
+                        //     cronTime: scheduleTime,
+                        //     onTick: function() {
+                        //         // console.log(c++);
+                        //         console.log('New cron' , moment().format('HH:mm:ss'));
+                        //     },
+                        //     start: true,
+                        //     timeZone: 'UTC'
                         // });
                     });
                 });
@@ -392,7 +441,7 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
-                            date: 12,
+                            date: 13,
                         }),
                         startTime: moment()
                             .set({

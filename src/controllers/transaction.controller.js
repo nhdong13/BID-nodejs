@@ -20,16 +20,16 @@ const create = async (req, res) => {
 };
 
 const read = async (req, res) => {
-    const id = req.params.id;
+    const requestId = req.params.id;
     try {
-        const tracking = await models.transaction.findOne({
+        const transaction = await models.transaction.findOne({
             where: {
-                userId: id,
+                requestId,
             },
         });
-        if (tracking) {
+        if (transaction) {
             res.status(201);
-            res.send(tracking);
+            res.send(transaction);
         } else {
             res.status(404);
             res.send();
