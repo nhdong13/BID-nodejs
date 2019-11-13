@@ -92,6 +92,7 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id"
         });
 
+        // request - user(parent)
         sittingRequest.belongsTo(models.user, {
             foreignKey: {
                 name: "createdUser"
@@ -100,6 +101,7 @@ export default function(sequelize, DataTypes) {
             as: "user"
         });
 
+        // request - user(sitter)
         sittingRequest.belongsTo(models.user, {
             foreignKey: {
                 name: "acceptedBabysitter"
@@ -108,6 +110,7 @@ export default function(sequelize, DataTypes) {
             as: "bsitter"
         });
 
+        // request - schedule
         sittingRequest.hasMany(models.schedule, {
             foreignKey: {
                 name: "requestId"

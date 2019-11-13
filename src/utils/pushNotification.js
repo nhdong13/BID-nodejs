@@ -14,11 +14,17 @@ export async function sendSingleMessage(notification) {
         to: notification.pushToken,
         sound: 'default',
         body: notification.message,
-        data: { id: notification.id },
+        data: {
+            id: notification.id,
+            message: notification.message,
+            title: notification.title,
+        },
     };
 
-    const ticket = await expo
+    let ticket = await expo
         .sendPushNotificationsAsync(message)
         .catch((error) => console.log(error));
-    console.log('PHUC: sendSingleMessage -> ticket', ticket);
+    if (ticket) {
+        console.log('PHUC: sendSingleMessage -> ticket', ticket);
+    }
 }

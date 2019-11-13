@@ -1,8 +1,11 @@
 import models from '@models';
+import {
+    reminderMessages,
+    titleReminderMessages,
+} from '@utils/notificationMessages';
 import moment from 'moment';
-import { reminderMessages } from '@utils/notificationMessages';
 import { handleForgotToCheckout } from '@services/sittingRequestService';
-import { sendSingleMessage } from '@utils/pushNotification'
+import { sendSingleMessage } from '@utils/pushNotification';
 
 const CronJob = require('cron').CronJob;
 const Schedule = require('node-schedule');
@@ -69,14 +72,11 @@ export function createReminder(sitterId, requestId, scheduleTime) {
             remindTime_1,
         );
         try {
-            schedule = Schedule.scheduleJob(
-                remindTime_1,
-                function() {
-                    console.log('đã chạy');
-                    remindBabysitter(sitterId, requestId);
-                    remindParent(requestId);
-                },
-            );
+            schedule = Schedule.scheduleJob(remindTime_1, function() {
+                console.log('đã chạy');
+                remindBabysitter(sitterId, requestId);
+                remindParent(requestId);
+            });
             console.log('1 created', schedule);
         } catch (error) {
             console.log('Duong: createReminder -> error', error);
@@ -91,11 +91,14 @@ export function createReminder(sitterId, requestId, scheduleTime) {
             remindTime_0.toDate(),
         );
         try {
-            let schedule = Schedule.scheduleJob(parseToScheduleTime(remindTime_0), function() {
-                console.log('đã chạy');
-                remindBabysitter(sitterId, requestId);
-                remindParent(requestId);
-            });
+            let schedule = Schedule.scheduleJob(
+                parseToScheduleTime(remindTime_0),
+                function() {
+                    console.log('đã chạy');
+                    remindBabysitter(sitterId, requestId);
+                    remindParent(requestId);
+                },
+            );
             console.log('0 created', schedule);
         } catch (error) {
             console.log('Duong: createReminder -> error', error);
@@ -149,6 +152,7 @@ function remindBabysitter(sitterId, requestId) {
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
+                            title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
                         console.log(
@@ -190,6 +194,7 @@ function remindParent(requestId) {
                             id: request.id,
                             pushToken: request.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
+                            title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
                         console.log(
@@ -268,7 +273,7 @@ function parseToScheduleTime(momentObj) {
         date: momentObj.date(),
         hour: momentObj.hour(),
         minute: momentObj.minute(),
-        second: momentObj.second()
+        second: momentObj.second(),
     });
 
     return result.toDate();

@@ -2,9 +2,10 @@ import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
-import { invitationMessages } from '@utils/notificationMessages';
+import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
+
 import {
     getScheduleTime,
     checkBabysitterSchedule,
@@ -18,6 +19,7 @@ import { acceptSitter } from '@services/sittingRequestService';
 import Sequelize from 'sequelize';
 
 import env, { checkEnvLoaded } from '@utils/env';
+const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
 
 checkEnvLoaded();
 const { dbHost, dbUser, dbPass, dbName, dbDialect } = env;
@@ -344,6 +346,7 @@ const create = async (req, res) => {
 
     try {
         const newSittingReq = await models.sittingRequest.create(newItem);
+        // ghi charge vao transaction
         res.send(newSittingReq);
     } catch (err) {
         res.status(400);
@@ -424,6 +427,50 @@ const destroy = async (req, res) => {
     }
 };
 
+const cancelSittingRequest = async (req, res) => {
+    const { requestId: id, status, chargeId, amount } = req.body;
+
+    try {
+        // make refund request
+        const refund = await stripe.refunds.create({
+            charge: chargeId,
+            amount: amount,
+            reason: 'requested_by_customer',
+        });
+        console.log('PHUC: cancelSittingRequest -> refund', refund);
+
+        if (refund.status == 'succeeded') {
+            console.log();
+            // update status "CANCEL" to request
+            const updatingSittingReq = {
+                id,
+                status,
+            };
+            await models.sittingRequest
+                .update(updatingSittingReq, {
+                    where: { id },
+                })
+                .then(async () => {
+                    const refundConfig = 90;
+                    const updatingTransaction = {
+                        type: 'REFUND',
+                        description: 'requested_by_customer',
+                        amount: (amount * refundConfig) / 100,
+                    };
+                    await models.transaction.update(updatingTransaction, {
+                        where: { chargeId },
+                    });
+                });
+            res.status(200);
+            res.send();
+        }
+        // update the refund amount
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
+};
+
 export default {
     listByParentId,
     listByParentAndStatus,
@@ -433,6 +480,7 @@ export default {
     acceptBabysitter,
     startSittingRequest,
     doneSittingRequest,
+    cancelSittingRequest,
     list,
     create,
     read,
