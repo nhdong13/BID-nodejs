@@ -10,10 +10,7 @@ import {
     checkBabysitterSchedule,
     checkRequestTime,
 } from '@utils/schedule';
-import {
-    createReminder,
-    createCheckoutPoint,
-} from '@services/schedulerService';
+import Scheduler from '@services/schedulerService';
 import Sequelize from 'sequelize';
 
 import env, { checkEnvLoaded } from '@utils/env';
@@ -145,7 +142,7 @@ function createSchedule(request, sitterId, requestId, transaction) {
             lock: transaction.LOCK.UPDATE,
         });
 
-        createReminder(sitterId, requestId, scheduleTime);
+        Scheduler.createReminder(sitterId, requestId, scheduleTime);
     } catch (error) {
         console.log(error);
     }

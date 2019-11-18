@@ -5,38 +5,10 @@ import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
-
-import {
-    getScheduleTime,
-    checkBabysitterSchedule,
-    checkRequestTime,
-} from '@utils/schedule';
-import {
-    createReminder,
-    createCheckoutPoint,
-} from '@services/schedulerService';
+import Scheduler from '@services/schedulerService';
 import { acceptSitter } from '@services/sittingRequestService';
-import Sequelize from 'sequelize';
 
-import env, { checkEnvLoaded } from '@utils/env';
 const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
-
-checkEnvLoaded();
-const { dbHost, dbUser, dbPass, dbName, dbDialect } = env;
-
-const sequelize = new Sequelize(dbName, dbUser, dbPass, {
-    host: dbHost,
-    dialect: dbDialect,
-    define: {
-        paranoid: false,
-        underscored: false,
-        timestamps: false,
-        freezeTableName: false,
-    },
-    logging: false,
-});
-
-// const Sequelize = require('sequelize');
 
 const list = async (req, res, next) => {
     try {
@@ -246,6 +218,7 @@ const startSittingRequest = async (req, res, next) => {
             request != null &&
             request.status == 'CONFIRMED'
         ) {
+            // if there are requests that started but haven't check out then change their status to 'DONE_BY_NEWSTART'
             const unfinishedRequest = await models.sittingRequest.findOne({
                 where: {
                     acceptedBabysitter: sitterId,
@@ -267,16 +240,9 @@ const startSittingRequest = async (req, res, next) => {
             }
 
             // update sitting request
-            request = await models.sittingRequest.update(
-                { status: 'ONGOING' },
-                {
-                    where: {
-                        id: requestId,
-                    },
-                },
-            );
+            let updated = await request.update({ status: 'ONGOING' });
 
-            if (request) {
+            if (updated) {
                 let schedule = await models.schedule.findOne({
                     where: {
                         requestId: requestId,
@@ -284,14 +250,16 @@ const startSittingRequest = async (req, res, next) => {
                     },
                 });
 
-                schedule.status = 'DONE';
-
-                await models.schedule.update({
-                    schedule,
-                });
-
                 if (schedule) {
-                    createCheckoutPoint(requestId, schedule.scheduleTime);
+                    schedule.type = 'DONE';
+
+                    await models.schedule.update({
+                        schedule,
+                    });
+                    Scheduler.createCheckoutPoint(
+                        requestId,
+                        schedule.scheduleTime,
+                    );
                 }
             }
         }

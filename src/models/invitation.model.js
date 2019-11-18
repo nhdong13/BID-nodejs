@@ -9,7 +9,8 @@ export default function(sequelize, DataTypes) {
                     "DENIED",
                     "EXPIRED",
                     "CONFIRMED",
-                    "OVERLAP"
+                    "OVERLAP",
+                    "CANCEL"
                 ),
                 allowNull: false
             },
