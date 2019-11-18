@@ -22,8 +22,12 @@ export default function(sequelize, DataTypes) {
             },
             receiver: {
                 type: DataTypes.INTEGER,
-                unique: 'compositeIndex',
+                unique: "compositeIndex"
             },
+            distance: {
+                type: DataTypes.STRING,
+                allowNull: true
+            }
         },
         {
             timestamps: true,

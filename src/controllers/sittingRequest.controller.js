@@ -183,9 +183,10 @@ const recommendBabysitter = async (req, res, next) => {
 const acceptBabysitter = (req, res, next) => {
     const requestId = req.params.requestId;
     const sitterId = req.params.sitterId;
+    const distance = req.params.distance;
 
     try {
-        acceptSitter(requestId, sitterId)
+        acceptSitter(requestId, sitterId, distance)
             .then((result) => {
                 res.send(result);
             })
@@ -251,10 +252,8 @@ const startSittingRequest = async (req, res, next) => {
                 });
 
                 if (schedule) {
-                    schedule.type = 'DONE';
-
-                    await models.schedule.update({
-                        schedule,
+                    await schedule.update({
+                        type: 'DONE'
                     });
                     Scheduler.createCheckoutPoint(
                         requestId,

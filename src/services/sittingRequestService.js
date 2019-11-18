@@ -30,7 +30,7 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
     logging: false,
 });
 
-export function acceptSitter(requestId, sitterId) {
+export function acceptSitter(requestId, sitterId, distance) {
     return sequelize.transaction((t) => {
         return lockBabysitterForUpdate(sitterId, t).then((babysitter) => {
             return findRequest(requestId, t).then((request) => {
@@ -40,7 +40,7 @@ export function acceptSitter(requestId, sitterId) {
                     if (!available) {
                         throw new Error('OVERLAP');
                     } else {
-                        return confirmRequest(requestId, sitterId, t).then(
+                        return confirmRequest(requestId, sitterId, distance, t).then(
                             (res) => {
                                 // confirm the sitter invitation
                                 confirmInvitaion(requestId, sitterId, t);
@@ -110,12 +110,13 @@ function checkAvailable(request, babysitter) {
     return available;
 }
 
-function confirmRequest(requestId, sitterId, transaction) {
+function confirmRequest(requestId, sitterId, distance, transaction) {
     // update sitting request
     return models.sittingRequest.update(
         {
             status: 'CONFIRMED',
             acceptedBabysitter: sitterId,
+            distance: distance
         },
         {
             where: {

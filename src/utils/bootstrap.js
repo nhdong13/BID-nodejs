@@ -5,9 +5,6 @@ import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
 import Scheduler from '@services/schedulerService';
 
-// const CronJob = require('cron').CronJob;
-const Schedule = require('node-schedule');
-
 export async function insertDatabase() {
     Scheduler.getInstance();
 
