@@ -353,7 +353,7 @@ export async function insertDatabase() {
                 .bulkCreate([
                     {
                         createdUser: 1,
-                        acceptedBabysitter: 5,
+                        acceptedBabysitter: 6,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
@@ -378,7 +378,7 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'ONGOING',
+                        status: 'PENDING',
                     },
                     {
                         createdUser: 2,
@@ -472,15 +472,45 @@ export async function insertDatabase() {
                 .then((result) => {
                     //#region seed invitations
                     result.forEach((el) => {
-                        // if (el.status === 'PENDING') {
-                        //     db.invitation.bulkCreate([
-                        //         {
-                        //             requestId: el.id,
-                        //             receiver: 5,
-                        //             status: 'ACCEPTED',
-                        //         },
-                        //     ]);
-                        // }
+                        if (el.status === 'PENDING') {
+                            db.invitation.bulkCreate([
+                                {
+                                    requestId: el.id,
+                                    receiver: 6,
+                                    status: 'ACCEPTED',
+                                },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'EXPIRED',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'CONFIRMED',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'OVERLAP',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'PARENT_CANCELED',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'DONE',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'ONGOING',
+                                // },
+                            ]);
+                        }
                         //#endregion
                         //#region feedbacks
                         // if (el.status === 'DONE') {
