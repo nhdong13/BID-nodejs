@@ -1,6 +1,9 @@
 import models from '@models';
+import {
+    reminderMessages,
+    titleReminderMessages,
+} from '@utils/notificationMessages';
 import moment from 'moment';
-import { reminderMessages } from '@utils/notificationMessages';
 import { handleForgotToCheckout } from '@services/sittingRequestService';
 import { sendSingleMessage } from '@utils/pushNotification';
 
@@ -212,6 +215,7 @@ function remindBabysitter(sitterId, requestId) {
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
+                            title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -247,6 +251,7 @@ function remindParent(requestId) {
                             id: request.id,
                             pushToken: request.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
+                            title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}

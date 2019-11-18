@@ -2,16 +2,13 @@ import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
-import { invitationMessages } from '@utils/notificationMessages';
+import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
-import {
-    getScheduleTime,
-    checkBabysitterSchedule,
-    checkRequestTime,
-} from '@utils/schedule';
 import Scheduler from '@services/schedulerService';
 import { acceptSitter } from '@services/sittingRequestService';
+
+const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
 
 const list = async (req, res, next) => {
     try {
@@ -317,6 +314,7 @@ const create = async (req, res) => {
 
     try {
         const newSittingReq = await models.sittingRequest.create(newItem);
+        // ghi charge vao transaction
         res.send(newSittingReq);
     } catch (err) {
         res.status(400);
@@ -373,7 +371,7 @@ const update = async (req, res) => {
         await models.sittingRequest.update(updatingSittingReq, {
             where: { id },
         });
-        res.send();
+        res.send(updatingSittingReq);
     } catch (err) {
         res.status(422);
         res.send(err);
@@ -397,6 +395,85 @@ const destroy = async (req, res) => {
     }
 };
 
+const cancelSittingRequest = async (req, res) => {
+    const { requestId: id, status, chargeId, amount } = req.body;
+    console.log('PHUC: cancelSittingRequest -> chargeId', chargeId);
+    const refundConfig = 90;
+
+    try {
+        // make refund request
+        if (status == 'PENDING' || chargeId == 0) {
+            const updatingSittingReq = {
+                id,
+                status: 'CANCELED',
+            };
+
+            const cancel = await models.sittingRequest
+                .update(updatingSittingReq, {
+                    where: { id },
+                })
+                .catch((error) =>
+                    console.log(
+                        'error in sittingRequestController -> cancelRequest ' +
+                            error,
+                    ),
+                );
+            res.status(200);
+            res.send(cancel);
+        } else {
+            const refund = await stripe.refunds.create({
+                charge: chargeId,
+                amount: (amount * refundConfig) / 100,
+                reason: 'requested_by_customer',
+            });
+            console.log('PHUC: cancelSittingRequest -> refund', refund.amount);
+
+            if (refund.status == 'succeeded') {
+                // update status "CANCEL" to request
+                const updatingSittingReq = {
+                    id,
+                    status,
+                };
+
+                await models.sittingRequest
+                    .update(updatingSittingReq, {
+                        where: { id },
+                    })
+                    .then(async () => {
+                        const updatingTransaction = {
+                            type: 'REFUND',
+                            description: 'requested_by_customer',
+                            amount: refund.amount,
+                        };
+                        await models.transaction
+                            .update(updatingTransaction, {
+                                where: { chargeId },
+                            })
+                            .catch((error) =>
+                                console.log(
+                                    'error in sittingRequestController -> cancelRequest ' +
+                                        error,
+                                ),
+                            );
+                        res.status(200);
+                        res.send(refund);
+                    })
+                    .catch((error) =>
+                        console.log(
+                            'error in sittingRequestController -> cancelRequest ' +
+                                error,
+                        ),
+                    );
+            }
+        }
+
+        // update the refund amount
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
+};
+
 export default {
     listByParentId,
     listByParentAndStatus,
@@ -406,6 +483,7 @@ export default {
     acceptBabysitter,
     startSittingRequest,
     doneSittingRequest,
+    cancelSittingRequest,
     list,
     create,
     read,

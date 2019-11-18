@@ -1,7 +1,7 @@
 import models from '@models';
 import userController from './user.controller';
 import { sendSingleMessage } from '@utils/pushNotification';
-import { invitationMessages } from '@utils/notificationMessages';
+import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 
 const list = async (req, res, next) => {
     var invitations = await models.invitation.findAll({
@@ -17,14 +17,15 @@ const list = async (req, res, next) => {
                 ],
             },
         ],
-    });      registerPushNotifications(userId).then((response) => {
+    });
+    registerPushNotifications(userId).then((response) => {
         if (response) {
-          console.log(
-            'PHUC: HomeScreen -> registerPushNotifications -> response',
-            response.data,
-          );
+            console.log(
+                'PHUC: HomeScreen -> registerPushNotifications -> response',
+                response.data,
+            );
         }
-      });
+    });
     res.send(invitations);
 };
 
@@ -105,6 +106,7 @@ const create = async (req, res) => {
                         id: res.id,
                         pushToken: tracking.token,
                         message: invitationMessages.parentSendInvitation,
+                        title: titleMessages.parentSendInvitation,
                     };
                     console.log(
                         'PHUC: Invitation.controller -> create -> notification',
@@ -112,7 +114,9 @@ const create = async (req, res) => {
                     );
                     sendSingleMessage(notification);
                 } else {
-                    console.log("Duong: Invitation.controller create -> notification fail, tracking data not found");
+                    console.log(
+                        'Duong: Invitation.controller create -> notification fail, tracking data not found',
+                    );
                 }
             });
 
@@ -120,7 +124,9 @@ const create = async (req, res) => {
             newInvitation: newInvitation,
             newRequest: newRequest,
         });
-        console.log("Duong: Invitation.controller create -> create invitation success");
+        console.log(
+            'Duong: Invitation.controller create -> create invitation success',
+        );
     } catch (err) {
         res.status(400);
         res.send(err);
@@ -202,6 +208,7 @@ const update = async (req, res) => {
                     pushToken: invitation.sittingRequest.user.tracking.token,
                     message: invitationMessages.babysitterAccepted,
                     id: invitation.requestId,
+                    title: titleMessages.babysitterAccepted,
                 };
 
                 sendSingleMessage(notification);

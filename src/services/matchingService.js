@@ -22,7 +22,7 @@ const mapsClient = googleMaps.createClient({
 
 /**
  * matching parent's sitting request with available babysitter
- * @param  {sittingRequest} sittingRequest
+ * @param  {sittingRequest} sittingRequestresponse
  * @return {Array<babysitter>} matchedList
  */
 export async function matching(sittingRequest) {
@@ -32,8 +32,14 @@ export async function matching(sittingRequest) {
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
-    // calculate distance
-    matchedList = await getBabysitterDistance(
+    // calculate distance with api Google
+    // matchedList = await getBabysitterDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
@@ -183,7 +189,7 @@ async function placeSearch(address) {
             .findPlace({
                 input: address,
                 inputtype: 'textquery',
-                fields: ['geometry']
+                fields: ['geometry'],
             })
             .asPromise();
         return result.json.candidates;

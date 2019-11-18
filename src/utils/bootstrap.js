@@ -69,7 +69,7 @@ export async function insertDatabase() {
         phoneNumber: '03',
         email: 'dong3@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'DongPR',
+        nickname: 'DongParent',
         address: '102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -105,7 +105,7 @@ export async function insertDatabase() {
         phoneNumber: '05',
         email: 'dong4@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'DongBS',
+        nickname: 'Hoang Nhat Dong',
         address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -122,7 +122,7 @@ export async function insertDatabase() {
         phoneNumber: '06',
         email: 'ky@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Ky',
+        nickname: 'Ho Tan Ky',
         address: '181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'FEMALE',
         dateOfBirth: moment().set({
@@ -139,7 +139,7 @@ export async function insertDatabase() {
         phoneNumber: '07',
         email: 'duong@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Duong',
+        nickname: 'Duong Chi Dai',
         address: '690 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'FEMALE',
         dateOfBirth: moment().set({
@@ -209,6 +209,13 @@ export async function insertDatabase() {
         .bulkCreate(users)
         // after creating users
         .then((result) => {
+            // db.tracking.create({
+            //     userId: 4,
+            //     token: '',
+            //     customerId: 'cus_GAezypenSHLAud',
+            //     balance: 0,
+            //     cardId: 'card_1FeJf8CfPfiUgoF2bQez8Vnm',
+            // });
             //#region seed parent based on user and seed circle of parent
             // get parents from the result of creating user
             let userParents = result.filter((user) => user.roleId == 2);
@@ -220,6 +227,7 @@ export async function insertDatabase() {
                     userId: el.id,
                     childrenNumber: 3,
                     familyDescription: '',
+                    parentCode: 'A' + el.id,
                 };
                 parents.push(parent); // push to array parents
             });

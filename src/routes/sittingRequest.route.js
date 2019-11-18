@@ -11,6 +11,7 @@ router.route("/recommend/:id").post(controller.recommendBabysitter);
 router.route("/acceptBabysitter/:requestId&:sitterId").get(controller.acceptBabysitter);
 router.route("/startSittingRequest/:requestId&:sitterId").get(controller.startSittingRequest);
 router.route("/doneSittingRequest/:requestId&:sitterId").get(controller.doneSittingRequest);
+router.route("/cancelSittingRequest/").put(controller.cancelSittingRequest);
 router.route("/all").get(controller.listForWeb);
 router.route("/").post(controller.create);
 router.route("/").get(controller.list);

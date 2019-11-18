@@ -1,4 +1,5 @@
 import Expo from 'expo-server-sdk';
+import io from 'socket.io-client';
 
 let expo = new Expo();
 
@@ -14,11 +15,39 @@ export async function sendSingleMessage(notification) {
         to: notification.pushToken,
         sound: 'default',
         body: notification.message,
-        data: { id: notification.id },
+        data: {
+            id: notification.id,
+            message: notification.message,
+            title: notification.title,
+        },
     };
 
-    const ticket = await expo
+    let ticket = await expo
         .sendPushNotificationsAsync(message)
         .catch((error) => console.log(error));
-    console.log('PHUC: sendSingleMessage -> ticket', ticket);
+    if (ticket) {
+        console.log('PHUC: sendSingleMessage -> ticket', ticket);
+    }
+}
+
+export async function sendNotificationWithSocket(notification) {
+    const socket = io(apiUrl.socket, {
+        transports: ['websocket'],
+    });
+
+    socket.on('connect_error', (error) => {
+        console.log('QR connection error  ', error);
+    });
+
+    socket.on('error', (error) => {
+        console.log('QR just some normal error, error in general ', error);
+    });
+
+    const message = {
+        data: {
+            userId: notification.userId,
+            message: notification.message,
+            title: notification.title,
+        },
+    };
 }

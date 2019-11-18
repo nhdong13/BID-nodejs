@@ -3,7 +3,7 @@ import models from '@models/';
 const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
 
 const createCharges = async (req, res) => {
-    const { amount, userId } = req.body;
+    const { amount, userId, requestId } = req.body;
     try {
         const result = await models.tracking.findOne({
             where: { userId },
@@ -17,7 +17,21 @@ const createCharges = async (req, res) => {
         });
         console.log('PHUC: createCharges -> charge', charge);
         if (charge) {
-            res.send(charge);
+            const { id: chargeId } = charge;
+            console.log('PHUC: createCharges -> chargeId', chargeId);
+            const newTransaction = {
+                chargeId,
+                type: 'CHARGE',
+                description: '',
+                amount: amount,
+                userId: userId,
+                requestId: requestId,
+            };
+            // luu charge vao bang transaction
+            if (newTransaction) {
+                await models.transaction.create(newTransaction);
+                res.send(charge);
+            }
         }
     } catch (error) {
         res.status(400);
