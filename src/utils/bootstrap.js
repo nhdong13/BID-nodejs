@@ -3,16 +3,17 @@ import moment from 'moment';
 import { hashPassword } from '@utils/hash';
 import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
-import { initScheduler } from '@services/schedulerService';
+import Scheduler from '@services/schedulerService';
 
 // const CronJob = require('cron').CronJob;
 const Schedule = require('node-schedule');
 
 export async function insertDatabase() {
+    Scheduler.getInstance();
+
     const db = models.sequelize.models;
     console.log('inserting records to databse....');
     // muon insert bang nao thi db.ten_model cua bang do ex: db.circle, db.parent
-
     // seed roles
     db.role.bulkCreate([
         {
@@ -335,96 +336,6 @@ export async function insertDatabase() {
                 .then((result) => {
                     let sitters = result;
                     let schedules = [];
-
-                    // let schedule = {
-                    //     userId: sitters[0].userId,
-                    //     scheduleTime: '10:01:00 19:00:00 13 11 2019',
-                    //     type: 'FUTURE',
-                    //     requestId: 2,
-                    // };
-
-                    // moment().add(10, 'seconds').toDate(),
-
-                    // schedules.push(schedule);
-
-                    db.schedule.bulkCreate(schedules).then(() => {
-                        // initScheduler();
-
-                        // let c = 0;
-                        // let scheduleTime = '* 16-17 * * * *';
-                        // console.log('Duong: insertDatabase -> Cron 1');
-
-                        // new CronJob({
-                        //     cronTime: scheduleTime,
-                        //     onTick: function() {
-                        //         // console.log(c++);
-                        //         console.log(moment().format('HH:mm:ss'));
-                        //     },
-                        //     start: true,
-                        //     timeZone: 'UTC'
-                        // });
-
-                        // console.log(moment().add('seconds', 10).toDate());
-                        // console.log(moment().set({hour: 11, minute: 21, seconds: 0}).toDate());
-                        // console.log(moment().toDate());
-
-                        // console.log(
-                        //     moment()
-                        //         .set({ hour: 10, minute: 23, second: 0 })
-                        //         .toDate(),
-                        // );
-
-                        // let sche = Schedule.scheduleJob(
-                        //     "* 51-52 10 13 11 *",
-                        //     function() {
-                        //         console.log(
-                        //             'Old ',
-                        //             moment().format('HH:mm:ss'),
-                        //         );
-                        //     }
-                        // );
-                        // sche = Schedule.scheduleJob(
-                        //     "* 53-54 10 13 11 *",
-                        //     function() {
-                        //         console.log(
-                        //             'New ',
-                        //             moment().format('HH:mm:ss'),
-                        //         );
-                        //     }
-                        // );
-
-                        // sche = Schedule.scheduleJob(
-                        //     moment()
-                        //         .set({ hour: 10, minute: 51, second: 0 })
-                        //         .toDate(),
-                        //     function() {
-                        //         console.log(
-                        //             'Old ',
-                        //             moment().format('HH:mm:ss'),
-                        //         );
-                        //     }
-                        // );
-
-                        // console.log(sche);
-
-                        // console.log("Duong: insertDatabase -> End Cron 1")
-
-                        // console.log("Duong: insertDatabase -> Cron 2")
-
-                        // scheduleTime = '* 18-19 * * * *';
-                        // Schedule.scheduleJob('* 18-19 * * * *', function(){
-                        //     console.log('New ', moment().format('HH:mm:ss'));
-                        //   });
-                        // new CronJob({
-                        //     cronTime: scheduleTime,
-                        //     onTick: function() {
-                        //         // console.log(c++);
-                        //         console.log('New cron' , moment().format('HH:mm:ss'));
-                        //     },
-                        //     start: true,
-                        //     timeZone: 'UTC'
-                        // });
-                    });
                 });
             //#endregion
         })
@@ -434,19 +345,19 @@ export async function insertDatabase() {
                 .bulkCreate([
                     {
                         createdUser: 1,
-                        acceptedBabysitter: null,
+                        acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
-                            date: 13,
+                            date: 17,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 12,
-                                minute: 7,
+                                hour: 16,
+                                minute: 40,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
@@ -459,7 +370,7 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'PENDING',
+                        status: 'ONGOING',
                     },
                     {
                         createdUser: 2,
