@@ -9,7 +9,7 @@ import { sendSingleMessage } from '@utils/pushNotification';
 
 const CronJob = require('cron').CronJob;
 const CronTime = require('cron').CronTime;
-const Schedule = require('node-schedule');
+
 const REMIND_BEFORE_DURATION_0 = 1; // remind before .. hour
 const REMIND_BEFORE_DURATION_1 = 7; // remind before (REMIND_BEFORE_DURATION_0 + ..) hour
 const CHECKOUT_TIMEOUT = 1;
@@ -61,19 +61,7 @@ export default {
     },
 
     reStartAllJob() {
-        instance.forEach((element) => {
-            let time = new CronTime(element.nextDate()  );;
-            if (element.nextDate().format('mm') == '40') {
-                time = new CronTime(element.nextDate().add(1, 'minute'));
-            }
-
-            element.stop();
-            element.setTime(time);
-            element.start();
-            console.log('Giờ hiện tại:', moment().format('HH:mm:ss'));
-            // console.log(time.getTimeout());
-            console.log('Giờ chạy:', element.nextDate().format('HH:mm:ss'));
-        });
+        instance.forEach((element) => {});
     },
 
     printInstance() {
@@ -285,19 +273,19 @@ export function privateCreateCheckoutPoint(requestId, scheduleTime) {
 
     let timeout = time.add(CHECKOUT_TIMEOUT, 'hours');
     if (timeout.isAfter(moment())) {
-        new CronJob(
+        let newSchedule = new CronJob(
             timeout,
             function() {
-                console.log('handling forgot to checkout');
+                console.log('--- Handling forgot to checkout.');
                 handleForgotToCheckout(requestId);
             },
             null,
             true,
             TIME_ZONE,
         );
+        instance.push(newSchedule);
+        console.log('--- Checkout point created');
     }
-
-    console.log('checkout point created');
 }
 
 function parseEndTime(scheduleTime) {
@@ -327,4 +315,25 @@ function parseToScheduleTime(momentObj) {
     });
 
     return result.toDate();
+}
+
+function restartJob(job) {
+    try {
+        let time = job.nextDate();
+        if (time.isAfter(moment())) {
+            time = new CronTime(time);
+
+            job.stop();
+            job.setTime(time);
+            job.start();
+            console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+            console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
+        } else {
+            console.log('--------- Schedule trong quá khứ !');
+            console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+            console.log('--- Giờ quá khứ:', time.format('HH:mm:ss'));
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }
