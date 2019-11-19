@@ -26,6 +26,7 @@ const mapsClient = googleMaps.createClient({
  * @return {Array<babysitter>} matchedList
  */
 export async function matching(sittingRequest) {
+    console.log('------------------------Matching------------------------');
     // find any babysitter in 1 km travel distance of the sitting address
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
 
@@ -33,16 +34,16 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // calculate distance with api Google
-    // matchedList = await getBabysitterDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
-
-    // calculate distance with magic and stuff you know
-    matchedList = await randomizeDistance(
+    matchedList = await getBabysitterDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
+
+    // calculate distance with magic and stuff you know
+    // matchedList = await randomizeDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
 
     // check against babysitter schedules
     matchedList = checkAgainstSchedules(sittingRequest, matchedList);
@@ -53,10 +54,14 @@ export async function matching(sittingRequest) {
         sittingRequest.id !== null &&
         sittingRequest.id > 0
     ) {
-        console.time('checkSent'); //
         matchedList = await checkIfSentInvite(sittingRequest, matchedList);
-        console.timeEnd('checkSent'); // evaluate the estimate time checkIfSentInvite function needed to run
     }
+
+    console.log(
+        '------------------------DONE MATCHING------------------------',
+    );
+
+    console.log('Matched:', matchedList.length);
 
     return matchedList;
 }
@@ -93,25 +98,43 @@ async function searchForBabysitter(sittingAddress) {
  * @returns {} matchedList distance is in 'km'
  */
 async function getBabysitterDistance(sittingAddress, listOfSitter) {
+    console.log('--- Getting distance data ...');
     let matchedList = [];
 
     let address1LatLog = await placeSearch(sittingAddress);
 
-    const promises = listOfSitter.map(async (sitter) => {
-        // x.x km
-        let distance = await getDistance(address1LatLog, sitter.user.address);
+    try {
+        const promises = listOfSitter.map(async (sitter) => {
+            // x.x km || x.x m
+            let distance = await getDistance(
+                address1LatLog,
+                sitter.user.address,
+            );
 
-        // x.x
-        let temp = distance.split(' ');
+            // x.x
+            let temp = distance.split(' ');
+            let unit = temp[1];
+            if (unit == 'km') {
+                let distanceKm = temp[0];
+                if (distanceKm < MAX_TRAVEL_DISTANCE) {
+                    sitter.distance = distance;
+                    matchedList.push(sitter);
+                } else {
+                    console.log(
+                        `${sitter.user.nickname} is two far away: ${distance}`,
+                    );
+                }
+            } else {
+                sitter.distance = distance;
+                matchedList.push(sitter);
+            }
+        });
+        await Promise.all(promises);
+    } catch (error) {
+        console.log('Duong: getBabysitterDistance -> error', error);
+    }
 
-        distance = temp[0];
-        if (distance < MAX_TRAVEL_DISTANCE) {
-            sitter.distance = distance;
-            matchedList.push(sitter);
-        }
-    });
-    await Promise.all(promises);
-
+    console.log('--- Done getting distance data ...');
     return matchedList;
 }
 
@@ -171,16 +194,20 @@ async function checkIfSentInvite(sittingRequest, babysitters) {
 async function getDistance(address1LatLog, address2) {
     let place_2 = await placeSearch(address2);
 
-    let distances = await mapsClient
-        .distanceMatrix({
-            origins: [address1LatLog[0].geometry.location], // start address
-            destinations: [place_2[0].geometry.location], // destination address
-            mode: 'walking',
-        })
-        .asPromise();
-    console.log(distances.requestUrl);
+    try {
+        let distances = await mapsClient
+            .distanceMatrix({
+                origins: [address1LatLog[0].geometry.location], // start address
+                destinations: [place_2[0].geometry.location], // destination address
+                mode: 'walking',
+            })
+            .asPromise();
+        // console.log(distances.requestUrl);
 
-    return distances.json.rows[0].elements[0].distance.text;
+        return distances.json.rows[0].elements[0].distance.text;
+    } catch (error) {
+        console.log('Duong: getDistance -> error', error);
+    }
 }
 
 async function placeSearch(address) {
@@ -207,9 +234,7 @@ async function placeSearch(address) {
  */
 async function matchingCriteria(request, babysitters) {
     let matchedList = [];
-    console.log(
-        '------------------------Matching with criteria------------------------',
-    );
+    console.log('--- Matching with criteria');
     console.log('Number of search: ' + babysitters.length);
     babysitters.forEach((bsitter) => {
         // check children number
@@ -268,10 +293,7 @@ async function matchingCriteria(request, babysitters) {
         matchedList.push(bsitter);
     });
 
-    console.log(
-        '------------------------DONE MATCHING------------------------',
-    );
-    console.log('Matched: ' + matchedList.length);
+    console.log('--- Done matching with criteria');
     return matchedList;
 }
 

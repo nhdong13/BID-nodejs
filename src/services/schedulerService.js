@@ -284,7 +284,10 @@ export function privateCreateCheckoutPoint(requestId, scheduleTime) {
             TIME_ZONE,
         );
         instance.push(newSchedule);
-        console.log('--- Checkout point created');
+        console.log(
+            `Check out point for request with id ${requestId} was created to run at:
+                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+        );
     }
 }
 

@@ -45,6 +45,10 @@ export default function(sequelize, DataTypes) {
                 ),
                 allowNull: false
             },
+            distance: {
+                type: DataTypes.STRING,
+                allowNull: true
+            },
             canCheckIn: DataTypes.VIRTUAL,
             canCheckOut: DataTypes.VIRTUAL,
         },
