@@ -14,6 +14,8 @@ const changeSystemTime = async (req, res, next) => {
         console.log(moment().format('HH:mm:ss'));
         res.send(moment().format('HH:mm:ss'));
     } catch (err) {
+        console.log('PHUC: changeSystemTime -> err', err);
+
         res.status(400);
         res.send(err);
     }
@@ -86,7 +88,7 @@ const destroy = async (req, res) => {
 };
 
 export default {
-  changeSystemTime,
+    changeSystemTime,
     list,
     create,
     destroy,

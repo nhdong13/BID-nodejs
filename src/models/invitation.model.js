@@ -1,22 +1,24 @@
 export default function(sequelize, DataTypes) {
     const invitation = sequelize.define(
-        "invitation", // Model Name
+        'invitation', // Model Name
         {
             status: {
                 type: DataTypes.ENUM(
-                    "PENDING",
-                    "ACCEPTED",
-                    "DENIED",
-                    "EXPIRED",
-                    "CONFIRMED",
-                    "OVERLAP",
-                    "CANCEL"
+                    'PENDING',
+                    'ACCEPTED',
+                    'DENIED',
+                    'EXPIRED',
+                    'CONFIRMED',
+                    'OVERLAP',
+                    'PARENT_CANCELED',
+                    'ONGOING',
+                    'DONE',
                 ),
-                allowNull: false
+                allowNull: false,
             },
             requestId: {
                 type: DataTypes.INTEGER,
-                unique: "compositeIndex"
+                unique: 'compositeIndex',
             },
             receiver: {
                 type: DataTypes.INTEGER,
@@ -29,30 +31,30 @@ export default function(sequelize, DataTypes) {
         },
         {
             timestamps: true,
-            charset: "utf8",
-            collate: "utf8_general_ci"
-        }
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
+        },
     );
 
     invitation.associate = function(models) {
         invitation.belongsTo(models.sittingRequest, {
             foreignKey: {
-                name: "requestId",
-                allowNull: false
+                name: 'requestId',
+                allowNull: false,
             },
-            sourceKey: "id",
-            as: "sittingRequest",
-            onDelete: "CASCADE"
+            sourceKey: 'id',
+            as: 'sittingRequest',
+            onDelete: 'CASCADE',
         });
 
         invitation.belongsTo(models.user, {
             foreignKey: {
-                name: "receiver",
-                allowNull: false
+                name: 'receiver',
+                allowNull: false,
             },
-            sourceKey: "id",
-            as: "user",
-            onDelete: "CASCADE"
+            sourceKey: 'id',
+            as: 'user',
+            onDelete: 'CASCADE',
         });
     };
 
