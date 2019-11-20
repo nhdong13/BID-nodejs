@@ -15,7 +15,21 @@ const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
 
 const list = async (req, res, next) => {
     try {
-        const listSittings = await models.sittingRequest.findAll({});
+        const listSittings = await models.sittingRequest.findAll({
+            include: [{
+                model: models.invitation,
+                include: [{
+                    model: models.user,
+                    as: 'user'
+                }]
+            },{
+                model: models.user,
+                as: 'user'
+            },{
+                model: models.user,
+                as: 'bsitter'
+            }]
+        });
         testSocketIo();
         res.send(listSittings);
     } catch (err) {
