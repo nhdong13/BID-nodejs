@@ -41,7 +41,9 @@ export default function(sequelize, DataTypes) {
                     "ONGOING",
                     "DONE",
                     "DONE_UNCONFIMRED",
-                    "DONE_BY_NEWSTART"
+                    "DONE_BY_NEWSTART",
+                    "SITTER_NOT_CHECKIN",
+                    "EXPIRED",
                 ),
                 allowNull: false
             },

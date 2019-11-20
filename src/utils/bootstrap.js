@@ -9,7 +9,7 @@ export async function insertDatabase() {
     Scheduler.getInstance();
 
     const db = models.sequelize.models;
-    console.log('inserting records to databse....');
+    console.log('inserting records to database....');
     // muon insert bang nao thi db.ten_model cua bang do ex: db.circle, db.parent
     // seed roles
     db.role.bulkCreate([
@@ -362,14 +362,14 @@ export async function insertDatabase() {
                 .bulkCreate([
                     {
                         createdUser: 1,
-                        acceptedBabysitter: 6,
+                        acceptedBabysitter: null,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
-                            date: 20,
+                            date: 21,
                         }),
                         startTime: moment()
                             .set({

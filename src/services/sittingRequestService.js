@@ -1,6 +1,9 @@
 import models from '@models';
 import { sendSingleMessage } from '@utils/pushNotification';
-import { invitationMessages } from '@utils/notificationMessages';
+import {
+    invitationMessages,
+    noticeMessages,
+} from '@utils/notificationMessages';
 import {
     getScheduleTime,
     checkBabysitterSchedule,
@@ -41,6 +44,7 @@ export function acceptSitter(requestId, sitterId, distance) {
                             distance,
                             t,
                         ).then((res) => {
+                            //
                             // confirm the sitter invitation
                             confirmInvitaion(requestId, sitterId, t);
                             // create sitter schedule for this sitting
@@ -133,6 +137,7 @@ function createSchedule(request, sitterId, requestId, transaction) {
         });
 
         Scheduler.createReminder(sitterId, requestId, scheduleTime);
+        Scheduler.createCheckinPoint(requestId, scheduleTime);
     } catch (error) {
         console.log(error);
     }
@@ -238,6 +243,14 @@ function expireInvitations(requestId, sitterId, transaction) {
         transaction: transaction,
         lock: transaction.LOCK.UPDATE,
     };
+    if (typeof sitterId == 'undefined' && typeof transaction == 'undefined') {
+        selector = {
+            where: {
+                requestId: requestId,
+            },
+        };
+    }
+
     return models.invitation.update(
         {
             status: 'EXPIRED',
@@ -315,5 +328,164 @@ export async function checkForSittingTime(request) {
         return overlapRequests;
     } catch (error) {
         console.log('Duong: checkForSittingTime -> error', error);
+    }
+}
+
+export async function handleNotCheckingIn(requestId) {
+    let request = await models.sittingRequest.findOne({
+        where: {
+            id: requestId,
+            status: 'ACCEPTED',
+        },
+    });
+
+    if (request) {
+        await models.sittingRequest.update(
+            {
+                status: 'SITTER_NOT_CHECKIN',
+            },
+            {
+                where: {
+                    id: requestId,
+                },
+            },
+        );
+
+        notifyParentCheckin(requestId);
+        notifyBabysitterCheckin(request.acceptSitter, requestId);
+    }
+}
+
+async function notifyParentCheckin(requestId) {
+    models.sittingRequest
+        .findOne({
+            where: {
+                id: requestId,
+            },
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                    include: [
+                        {
+                            model: models.tracking,
+                            as: 'tracking',
+                        },
+                    ],
+                },
+            ],
+        })
+        .then((request) => {
+            if (request) {
+                if (request.user.tracking != null) {
+                    try {
+                        const notification = {
+                            id: request.id,
+                            pushToken: request.user.tracking.token,
+                            message: noticeMessages.sitterNotCheckin_Parent,
+                            title: noticeMessages.titleNotCheckin,
+                        };
+                        sendSingleMessage(notification);
+                    } catch (error) {}
+                }
+            }
+        });
+}
+
+async function notifyBabysitterCheckin(sitterId, requestId) {
+    models.invitation
+        .findOne({
+            where: {
+                receiver: sitterId,
+                requestId: requestId,
+            },
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                    include: [
+                        {
+                            model: models.tracking,
+                            as: 'tracking',
+                        },
+                    ],
+                },
+            ],
+        })
+        .then((invitation) => {
+            if (invitation) {
+                if (invitation.user.tracking != null) {
+                    try {
+                        const notification = {
+                            id: invitation.id,
+                            pushToken: invitation.user.tracking.token,
+                            message: noticeMessages.sitterNotCheckin_Sitter,
+                            title: noticeMessages.titleNotCheckin,
+                        };
+                        sendSingleMessage(notification);
+                    } catch (error) {}
+                }
+            }
+        });
+}
+
+export async function handleRequestExpired(requestId) {
+    let request = await models.sittingRequest.findOne({
+        where: {
+            id: requestId,
+            status: 'PENDING',
+        },
+        include: [
+            {
+                model: models.user,
+                as: 'user',
+                include: [
+                    {
+                        model: models.tracking,
+                        as: 'tracking',
+                    },
+                ],
+            },
+        ],
+    });
+
+    if (request) {
+        await models.sittingRequest
+            .update(
+                {
+                    status: 'EXPIRED',
+                },
+                {
+                    where: {
+                        id: requestId,
+                    },
+                },
+            )
+            .then((result) => {
+                notifyRequestExpired(request);
+                expireInvitations(request.id);
+            })
+            .then((error) => {});
+    }
+}
+
+/**
+ *
+ * @param  {} requestId
+ * @param  {} scheduleTime
+ */
+function notifyRequestExpired(request) {
+    if (request) {
+        if (request.user.tracking != null) {
+            try {
+                const notification = {
+                    id: request.id,
+                    pushToken: request.user.tracking.token,
+                    message: noticeMessages.parentRequestExpired,
+                    title: noticeMessages.titleRequestExpired,
+                };
+                sendSingleMessage(notification);
+            } catch (error) {}
+        }
     }
 }
