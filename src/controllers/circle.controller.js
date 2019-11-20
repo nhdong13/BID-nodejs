@@ -18,9 +18,7 @@ const create = async (req, res) => {
     let newCircle = req.body;
 
     try {
-
         newCircle = await models.circle.create(newCircle);
-
         res.send(newCircle);
     } catch (err) {
         res.status(400);
