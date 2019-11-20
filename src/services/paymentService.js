@@ -8,17 +8,17 @@ const createCharges = async (req, res) => {
         const result = await models.tracking.findOne({
             where: { userId },
         });
-        console.log('PHUC: createCharges -> result', result.customerId);
+        // console.log('PHUC: createCharges -> result', result.customerId);
 
         const charge = await stripe.charges.create({
             amount: amount,
             currency: 'vnd',
             customer: result.customerId,
         });
-        console.log('PHUC: createCharges -> charge', charge);
+        // console.log('PHUC: createCharges -> charge', charge);
         if (charge) {
             const { id: chargeId } = charge;
-            console.log('PHUC: createCharges -> chargeId', chargeId);
+            // console.log('PHUC: createCharges -> chargeId', chargeId);
             const newTransaction = {
                 chargeId,
                 type: 'CHARGE',

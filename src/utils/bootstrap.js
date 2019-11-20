@@ -3,16 +3,14 @@ import moment from 'moment';
 import { hashPassword } from '@utils/hash';
 import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
-import { initScheduler } from '@services/schedulerService';
-
-// const CronJob = require('cron').CronJob;
-const Schedule = require('node-schedule');
+import Scheduler from '@services/schedulerService';
 
 export async function insertDatabase() {
+    Scheduler.getInstance();
+
     const db = models.sequelize.models;
     console.log('inserting records to databse....');
     // muon insert bang nao thi db.ten_model cua bang do ex: db.circle, db.parent
-
     // seed roles
     db.role.bulkCreate([
         {
@@ -51,7 +49,7 @@ export async function insertDatabase() {
         phoneNumber: '02',
         email: 'phuc@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Phuc',
+        nickname: 'Phung Thien Phuc',
         address: '529 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -68,7 +66,7 @@ export async function insertDatabase() {
         phoneNumber: '03',
         email: 'dong3@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'DongPR',
+        nickname: 'DongParent',
         address: '102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -104,7 +102,7 @@ export async function insertDatabase() {
         phoneNumber: '05',
         email: 'dong4@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'DongBS',
+        nickname: 'Hoang Nhat Dong',
         address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -121,7 +119,7 @@ export async function insertDatabase() {
         phoneNumber: '06',
         email: 'ky@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Ky',
+        nickname: 'Ho Tan Ky',
         address: '181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'FEMALE',
         dateOfBirth: moment().set({
@@ -138,7 +136,7 @@ export async function insertDatabase() {
         phoneNumber: '07',
         email: 'duong@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Duong',
+        nickname: 'Duong Chi Dai',
         address: '690 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'FEMALE',
         dateOfBirth: moment().set({
@@ -208,6 +206,13 @@ export async function insertDatabase() {
         .bulkCreate(users)
         // after creating users
         .then((result) => {
+            // db.tracking.create({
+            //     userId: 4,
+            //     token: '',
+            //     customerId: 'cus_GAezypenSHLAud',
+            //     balance: 0,
+            //     cardId: 'card_1FeJf8CfPfiUgoF2bQez8Vnm',
+            // });
             //#region seed parent based on user and seed circle of parent
             // get parents from the result of creating user
             let userParents = result.filter((user) => user.roleId == 2);
@@ -219,7 +224,7 @@ export async function insertDatabase() {
                     userId: el.id,
                     childrenNumber: 3,
                     familyDescription: '',
-                    parentCode: 'A' + el.id
+                    parentCode: 'A' + el.id,
                 };
                 parents.push(parent); // push to array parents
             });
@@ -280,6 +285,18 @@ export async function insertDatabase() {
                             parentId: 1,
                             image: image.img4,
                         },
+                        {
+                            name: 'Vy',
+                            age: 4,
+                            parentId: 2,
+                            image: image.img2,
+                        },
+                        {
+                            name: 'Nguyên',
+                            age: 7,
+                            parentId: 2,
+                            image: image.img3,
+                        },
                     ]);
                 });
             //#endregion
@@ -336,96 +353,6 @@ export async function insertDatabase() {
                 .then((result) => {
                     let sitters = result;
                     let schedules = [];
-
-                    // let schedule = {
-                    //     userId: sitters[0].userId,
-                    //     scheduleTime: '10:01:00 19:00:00 13 11 2019',
-                    //     type: 'FUTURE',
-                    //     requestId: 2,
-                    // };
-
-                    // moment().add(10, 'seconds').toDate(),
-
-                    // schedules.push(schedule);
-
-                    db.schedule.bulkCreate(schedules).then(() => {
-                        // initScheduler();
-
-                        // let c = 0;
-                        // let scheduleTime = '* 16-17 * * * *';
-                        // console.log('Duong: insertDatabase -> Cron 1');
-
-                        // new CronJob({
-                        //     cronTime: scheduleTime,
-                        //     onTick: function() {
-                        //         // console.log(c++);
-                        //         console.log(moment().format('HH:mm:ss'));
-                        //     },
-                        //     start: true,
-                        //     timeZone: 'UTC'
-                        // });
-
-                        // console.log(moment().add('seconds', 10).toDate());
-                        // console.log(moment().set({hour: 11, minute: 21, seconds: 0}).toDate());
-                        // console.log(moment().toDate());
-
-                        // console.log(
-                        //     moment()
-                        //         .set({ hour: 10, minute: 23, second: 0 })
-                        //         .toDate(),
-                        // );
-
-                        // let sche = Schedule.scheduleJob(
-                        //     "* 51-52 10 13 11 *",
-                        //     function() {
-                        //         console.log(
-                        //             'Old ',
-                        //             moment().format('HH:mm:ss'),
-                        //         );
-                        //     }
-                        // );
-                        // sche = Schedule.scheduleJob(
-                        //     "* 53-54 10 13 11 *",
-                        //     function() {
-                        //         console.log(
-                        //             'New ',
-                        //             moment().format('HH:mm:ss'),
-                        //         );
-                        //     }
-                        // );
-
-                        // sche = Schedule.scheduleJob(
-                        //     moment()
-                        //         .set({ hour: 10, minute: 51, second: 0 })
-                        //         .toDate(),
-                        //     function() {
-                        //         console.log(
-                        //             'Old ',
-                        //             moment().format('HH:mm:ss'),
-                        //         );
-                        //     }
-                        // );
-
-                        // console.log(sche);
-
-                        // console.log("Duong: insertDatabase -> End Cron 1")
-
-                        // console.log("Duong: insertDatabase -> Cron 2")
-
-                        // scheduleTime = '* 18-19 * * * *';
-                        // Schedule.scheduleJob('* 18-19 * * * *', function(){
-                        //     console.log('New ', moment().format('HH:mm:ss'));
-                        //   });
-                        // new CronJob({
-                        //     cronTime: scheduleTime,
-                        //     onTick: function() {
-                        //         // console.log(c++);
-                        //         console.log('New cron' , moment().format('HH:mm:ss'));
-                        //     },
-                        //     start: true,
-                        //     timeZone: 'UTC'
-                        // });
-                    });
                 });
             //#endregion
         })
@@ -435,19 +362,19 @@ export async function insertDatabase() {
                 .bulkCreate([
                     {
                         createdUser: 1,
-                        acceptedBabysitter: null,
+                        acceptedBabysitter: 6,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
-                            date: 13,
+                            date: 29,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 12,
-                                minute: 7,
+                                hour: 16,
+                                minute: 40,
                                 second: 0,
                             })
                             .format('HH:mm:ss'),
@@ -462,6 +389,64 @@ export async function insertDatabase() {
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
                         status: 'PENDING',
                     },
+                    // {
+                    //     createdUser: 1,
+                    //     acceptedBabysitter: 6,
+                    //     childrenNumber: 2,
+                    //     minAgeOfChildren: 1,
+                    //     totalPrice: 100000,
+                    //     sittingDate: moment().set({
+                    //         year: 2019,
+                    //         month: 10,
+                    //         date: 14,
+                    //     }),
+                    //     startTime: moment()
+                    //         .set({
+                    //             hour: 16,
+                    //             minute: 40,
+                    //             second: 0,
+                    //         })
+                    //         .format('HH:mm:ss'),
+                    //     endTime: moment()
+                    //         .set({
+                    //             hour: 15,
+                    //             minute: 7,
+                    //             second: 0,
+                    //         })
+                    //         .format('HH:mm:ss'),
+                    //     sittingAddress:
+                    //         '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+                    //     status: 'PENDING',
+                    // },
+                    // {
+                    //     createdUser: 4,
+                    //     acceptedBabysitter: 6,
+                    //     childrenNumber: 2,
+                    //     minAgeOfChildren: 1,
+                    //     totalPrice: 100000,
+                    //     sittingDate: moment().set({
+                    //         year: 2019,
+                    //         month: 10,
+                    //         date: 20,
+                    //     }),
+                    //     startTime: moment()
+                    //         .set({
+                    //             hour: 16,
+                    //             minute: 40,
+                    //             second: 0,
+                    //         })
+                    //         .format('HH:mm:ss'),
+                    //     endTime: moment()
+                    //         .set({
+                    //             hour: 15,
+                    //             minute: 7,
+                    //             second: 0,
+                    //         })
+                    //         .format('HH:mm:ss'),
+                    //     sittingAddress:
+                    //         '682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam',
+                    //     status: 'PENDING',
+                    // },
                     {
                         createdUser: 2,
                         acceptedBabysitter: 5,
@@ -556,24 +541,49 @@ export async function insertDatabase() {
                     result.forEach((el) => {
                         if (el.status === 'PENDING') {
                             db.invitation.bulkCreate([
-                                {
-                                    requestId: el.id,
-                                    receiver: 5,
-                                    status: 'ACCEPTED',
-                                },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'PENDING',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'CONFIRMED',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'OVERLAP',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'PARENT_CANCELED',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'DONE',
+                                // },
+                                // {
+                                //     requestId: el.id,
+                                //     receiver: 6,
+                                //     status: 'ONGOING',
+                                // },
                             ]);
                         }
-                        // #endregion
-                        // #region feedbacks
-                        if (el.status === 'DONE') {
-                            // seed feedback
-                            db.feedback.bulkCreate([
-                                {
-                                    // requestId: el.id,
-                                    // rating: 4,
-                                },
-                            ]);
-                        }
+                        //#endregion
+                        //#region feedbacks
+                        // if (el.status === 'DONE') {
+                        //     // seed feedback
+                        //     db.feedback.bulkCreate([
+                        //         {
+                        //             // requestId: el.id,
+                        //             // rating: 4,
+                        //         },
+                        //     ]);
+                        // }
                     });
                     //#endregion
                 })

@@ -5,38 +5,10 @@ import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
-
-import {
-    getScheduleTime,
-    checkBabysitterSchedule,
-    checkRequestTime,
-} from '@utils/schedule';
-import {
-    createReminder,
-    createCheckoutPoint,
-} from '@services/schedulerService';
+import Scheduler from '@services/schedulerService';
 import { acceptSitter } from '@services/sittingRequestService';
-import Sequelize from 'sequelize';
 
-import env, { checkEnvLoaded } from '@utils/env';
 const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
-
-checkEnvLoaded();
-const { dbHost, dbUser, dbPass, dbName, dbDialect } = env;
-
-const sequelize = new Sequelize(dbName, dbUser, dbPass, {
-    host: dbHost,
-    dialect: dbDialect,
-    define: {
-        paranoid: false,
-        underscored: false,
-        timestamps: false,
-        freezeTableName: false,
-    },
-    logging: false,
-});
-
-// const Sequelize = require('sequelize');
 
 const list = async (req, res, next) => {
     try {
@@ -225,9 +197,10 @@ const recommendBabysitter = async (req, res, next) => {
 const acceptBabysitter = (req, res, next) => {
     const requestId = req.params.requestId;
     const sitterId = req.params.sitterId;
+    const distance = req.params.distance;
 
     try {
-        acceptSitter(requestId, sitterId)
+        acceptSitter(requestId, sitterId, distance)
             .then((result) => {
                 res.send(result);
             })
@@ -260,6 +233,7 @@ const startSittingRequest = async (req, res, next) => {
             request != null &&
             request.status == 'CONFIRMED'
         ) {
+            // if there are requests that started but haven't check out then change their status to 'DONE_BY_NEWSTART'
             const unfinishedRequest = await models.sittingRequest.findOne({
                 where: {
                     acceptedBabysitter: sitterId,
@@ -281,16 +255,9 @@ const startSittingRequest = async (req, res, next) => {
             }
 
             // update sitting request
-            request = await models.sittingRequest.update(
-                { status: 'ONGOING' },
-                {
-                    where: {
-                        id: requestId,
-                    },
-                },
-            );
+            let updated = await request.update({ status: 'ONGOING' });
 
-            if (request) {
+            if (updated) {
                 let schedule = await models.schedule.findOne({
                     where: {
                         requestId: requestId,
@@ -298,14 +265,14 @@ const startSittingRequest = async (req, res, next) => {
                     },
                 });
 
-                schedule.status = 'DONE';
-
-                await models.schedule.update({
-                    schedule,
-                });
-
                 if (schedule) {
-                    createCheckoutPoint(requestId, schedule.scheduleTime);
+                    await schedule.update({
+                        type: 'DONE'
+                    });
+                    Scheduler.createCheckoutPoint(
+                        requestId,
+                        schedule.scheduleTime,
+                    );
                 }
             }
         }
@@ -443,46 +410,20 @@ const destroy = async (req, res) => {
 
 const cancelSittingRequest = async (req, res) => {
     const { requestId: id, status, chargeId, amount } = req.body;
+    console.log('PHUC: cancelSittingRequest -> chargeId', chargeId);
     const refundConfig = 90;
 
     try {
         // make refund request
-        const refund = await stripe.refunds.create({
-            charge: chargeId,
-            amount: (amount * refundConfig) / 100,
-            reason: 'requested_by_customer',
-        });
-        console.log('PHUC: cancelSittingRequest -> refund', refund.amount);
-
-        if (refund.status == 'succeeded') {
-            // update status "CANCEL" to request
+        if (status == 'PENDING' || chargeId == 0) {
             const updatingSittingReq = {
                 id,
-                status,
+                status: 'CANCELED',
             };
 
-            await models.sittingRequest
+            const cancel = await models.sittingRequest
                 .update(updatingSittingReq, {
                     where: { id },
-                })
-                .then(async () => {
-                    const updatingTransaction = {
-                        type: 'REFUND',
-                        description: 'requested_by_customer',
-                        amount: refund.amount,
-                    };
-                    await models.transaction
-                        .update(updatingTransaction, {
-                            where: { chargeId },
-                        })
-                        .catch((error) =>
-                            console.log(
-                                'error in sittingRequestController -> cancelRequest ' +
-                                    error,
-                            ),
-                        );
-                    res.status(200);
-                    res.send(refund);
                 })
                 .catch((error) =>
                     console.log(
@@ -490,7 +431,55 @@ const cancelSittingRequest = async (req, res) => {
                             error,
                     ),
                 );
+            res.status(200);
+            res.send(cancel);
+        } else {
+            const refund = await stripe.refunds.create({
+                charge: chargeId,
+                amount: (amount * refundConfig) / 100,
+                reason: 'requested_by_customer',
+            });
+            console.log('PHUC: cancelSittingRequest -> refund', refund.amount);
+
+            if (refund.status == 'succeeded') {
+                // update status "CANCEL" to request
+                const updatingSittingReq = {
+                    id,
+                    status,
+                };
+
+                await models.sittingRequest
+                    .update(updatingSittingReq, {
+                        where: { id },
+                    })
+                    .then(async () => {
+                        const updatingTransaction = {
+                            type: 'REFUND',
+                            description: 'requested_by_customer',
+                            amount: refund.amount,
+                        };
+                        await models.transaction
+                            .update(updatingTransaction, {
+                                where: { chargeId },
+                            })
+                            .catch((error) =>
+                                console.log(
+                                    'error in sittingRequestController -> cancelRequest ' +
+                                        error,
+                                ),
+                            );
+                        res.status(200);
+                        res.send(refund);
+                    })
+                    .catch((error) =>
+                        console.log(
+                            'error in sittingRequestController -> cancelRequest ' +
+                                error,
+                        ),
+                    );
+            }
         }
+
         // update the refund amount
     } catch (error) {
         res.status(400);

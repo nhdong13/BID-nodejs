@@ -8,107 +8,160 @@ import { handleForgotToCheckout } from '@services/sittingRequestService';
 import { sendSingleMessage } from '@utils/pushNotification';
 
 const CronJob = require('cron').CronJob;
-const Schedule = require('node-schedule');
-const REMIND_BEFORE_DURATION_0 = 7; // remind before 8 hour
-const REMIND_BEFORE_DURATION_1 = 1; // remind before 1 hour
+const CronTime = require('cron').CronTime;
+
+const REMIND_BEFORE_DURATION_0 = 1; // remind before .. hour
+const REMIND_BEFORE_DURATION_1 = 7; // remind before (REMIND_BEFORE_DURATION_0 + ..) hour
 const CHECKOUT_TIMEOUT = 1;
 const TIME_ZONE = 'Asia/Bangkok';
 
-export function initScheduler() {
+//
+var instance;
+
+function createInstance() {
+    var object = [];
+    console.log('Scheduler instance created');
+    return object;
+}
+
+export default {
+    getInstance() {
+        if (!instance) {
+            instance = createInstance();
+        }
+        return instance;
+    },
+
+    addSchedule(schedule) {
+        if (instance) {
+            if (schedule) instance.push(schedule);
+        }
+    },
+
+    createReminder(sitterId, requestId, scheduleTime) {
+        if (sitterId && requestId && scheduleTime) {
+            privateCreateReminder(sitterId, requestId, scheduleTime);
+        } else {
+            throw new Error('Args null');
+        }
+    },
+
+    createCheckoutPoint(requestId, scheduleTime) {
+        if (requestId && scheduleTime) {
+            privateCreateCheckoutPoint(requestId, scheduleTime);
+        } else {
+            throw new Error('Args null');
+        }
+    },
+
+    cancelAllJob() {
+        instance.forEach((element) => {
+            element.stop();
+        });
+    },
+
+    reStartAllJob() {
+        instance.forEach((element) => {
+            restartJob(element);
+        });
+    },
+
+    printInstance() {
+        if (instance) {
+            instance.forEach((element) => {
+                console.log(element);
+            });
+        }
+    },
+};
+
+function initScheduler() {
     loadSchedule().then((schedules) => {
         if (schedules != null && schedules != undefined) {
             schedules.forEach((sche) => {
                 let time = parseStartTime(sche.scheduleTime);
-                console.log('Duong: initScheduler -> time', time.utcOffset());
 
-                let remindTime_1 = time
-                    .subtract(REMIND_BEFORE_DURATION_1, 'hours')
-                    .utc(true);
-                console.log(
-                    'Duong: initScheduler -> remindTime_1',
-                    remindTime_1,
+                let remindTime_0 = time.subtract(
+                    REMIND_BEFORE_DURATION_0,
+                    'hours',
                 );
-                // console.log('Duong: createReminder -> remindTime_1', remindTime_1.format('DD-MM-YYYY HH:mm:ss'));
-                if (remindTime_1.isAfter(moment())) {
-                    console.log('Duong: createReminder -> true');
+                if (remindTime_0.isAfter(moment())) {
                     try {
                         new CronJob({
-                            cronTime: remindTime_1,
+                            cronTime: remindTime_0,
                             onTick: function() {
                                 console.log('đã chạy');
                                 remindBabysitter(sitterId, requestId);
                                 remindParent(requestId);
                             },
                             start: true,
-                            timeZone: 'UTC',
+                            timeZone: TIME_ZONE,
                         });
                         console.log('1 created');
-                    } catch (error) {
-                        console.log('Duong: createReminder -> error', error);
-                    }
+                    } catch (error) {}
                 }
             });
         }
     });
 }
 
-export function createReminder(sitterId, requestId, scheduleTime) {
+function privateCreateReminder(sitterId, requestId, scheduleTime) {
     let time = parseStartTime(scheduleTime);
     console.log(moment().format('DD-MM-YYYY HH:mm:ss'));
-    console.log(
-        'Duong: createReminder -> time',
-        time.format('DD-MM-YYYY HH:mm:ss'),
-    );
-
-    let remindTime_1 = time.subtract(REMIND_BEFORE_DURATION_1, 'hours');
-    console.log(
-        'Duong: createReminder -> remindTime_1',
-        remindTime_1.format('DD-MM-YYYY HH:mm:ss'),
-    );
-    if (remindTime_1.isAfter(moment())) {
-        remindTime_1 = parseToScheduleTime(remindTime_1);
-        console.log(
-            'Duong: createReminder -> remindTime_1.toDate',
-            remindTime_1,
-        );
-        try {
-            schedule = Schedule.scheduleJob(remindTime_1, function() {
-                console.log('đã chạy');
-                remindBabysitter(sitterId, requestId);
-                remindParent(requestId);
-            });
-            console.log('1 created', schedule);
-        } catch (error) {
-            console.log('Duong: createReminder -> error', error);
-        }
-    }
 
     let remindTime_0 = time.subtract(REMIND_BEFORE_DURATION_0, 'hours');
-
     if (remindTime_0.isAfter(moment())) {
-        console.log(
-            'Duong: createReminder -> remindTime_0.todate',
-            remindTime_0.toDate(),
-        );
         try {
-            let schedule = Schedule.scheduleJob(
-                parseToScheduleTime(remindTime_0),
-                function() {
-                    console.log('đã chạy');
+            let newSchedule = new CronJob({
+                cronTime: remindTime_0,
+                onTick: function() {
+                    console.log('Đã chạy remind trước 1 tiếng');
                     remindBabysitter(sitterId, requestId);
                     remindParent(requestId);
                 },
+                start: true,
+                timeZone: TIME_ZONE,
+            });
+
+            instance.push(newSchedule);
+
+            console.log(
+                `A schedule for request with id ${requestId} was created to run at:
+                    ${remindTime_0.format('DD-MM-YYYY HH:mm:ss')}.`,
             );
-            console.log('0 created', schedule);
         } catch (error) {
-            console.log('Duong: createReminder -> error', error);
+            console.log('Duong: error', error);
         }
     }
 
-    console.log('reminder created');
+    let remindTime_1 = time.subtract(REMIND_BEFORE_DURATION_1, 'hours');
+
+    if (remindTime_1.isAfter(moment())) {
+        try {
+            let newSchedule = new CronJob({
+                cronTime: remindTime_1,
+                onTick: function() {
+                    console.log('Đã chạy remind trước 8 tiếng');
+                    remindBabysitter(sitterId, requestId);
+                    remindParent(requestId);
+                },
+                start: true,
+                timeZone: TIME_ZONE,
+            });
+
+            instance.push(newSchedule);
+
+            console.log(
+                `A schedule for request with id ${requestId} was created to run at:
+                    ${remindTime_1.format('DD-MM-YYYY HH:mm:ss')}.`,
+            );
+        } catch (error) {
+            console.log('Duong: privateCreateReminder -> error', error);
+        }
+    }
 }
 
-export function loadSchedule() {
+function loadSchedule() {
     return models.schedule
         .findAll({
             where: {
@@ -155,13 +208,7 @@ function remindBabysitter(sitterId, requestId) {
                             title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
-                        console.log(
-                            'Duong: remindBabysitter -> notification',
-                            notification,
-                        );
-                    } catch (error) {
-                        console.log('Duong: remindBabysitter -> error', error);
-                    }
+                    } catch (error) {}
                 }
             }
         });
@@ -197,13 +244,7 @@ function remindParent(requestId) {
                             title: titleReminderMessages.sitterUpcommingSitting,
                         };
                         sendSingleMessage(notification);
-                        console.log(
-                            'Duong: remindParent -> notification',
-                            notification,
-                        );
-                    } catch (error) {
-                        console.log('Duong: remindParent -> error', error);
-                    }
+                    } catch (error) {}
                 }
             }
         });
@@ -229,25 +270,27 @@ function parseStartTime(scheduleTime) {
  * @param  {} requestId
  * @param  {} scheduleTime
  */
-export function createCheckoutPoint(requestId, scheduleTime) {
+export function privateCreateCheckoutPoint(requestId, scheduleTime) {
     let time = parseEndTime(scheduleTime);
 
     let timeout = time.add(CHECKOUT_TIMEOUT, 'hours');
-    console.log('Duong: createCheckoutPoint -> timeout', timeout);
     if (timeout.isAfter(moment())) {
-        new CronJob(
+        let newSchedule = new CronJob(
             timeout,
             function() {
-                console.log('handling forgot to checkout');
+                console.log('--- Handling forgot to checkout.');
                 handleForgotToCheckout(requestId);
             },
             null,
             true,
             TIME_ZONE,
         );
+        instance.push(newSchedule);
+        console.log(
+            `Check out point for request with id ${requestId} was created to run at:
+                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+        );
     }
-
-    console.log('checkout point created');
 }
 
 function parseEndTime(scheduleTime) {
@@ -277,4 +320,25 @@ function parseToScheduleTime(momentObj) {
     });
 
     return result.toDate();
+}
+
+function restartJob(job) {
+    try {
+        let time = job.nextDate();
+        if (time.isAfter(moment())) {
+            time = new CronTime(time);
+
+            job.stop();
+            job.setTime(time);
+            job.start();
+            console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+            console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
+        } else {
+            console.log('--------- Schedule trong quá khứ !');
+            console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+            console.log('--- Giờ quá khứ:', time.format('HH:mm:ss'));
+        }
+    } catch (error) {
+        console.log(error);
+    }
 }

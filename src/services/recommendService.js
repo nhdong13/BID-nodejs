@@ -178,9 +178,19 @@ async function calRating(listWithRating) {
 // calculate the weight of distance
 async function calDistance(listWithDistance) {
     await asyncForEach(listWithDistance, async el => {
-        let scoreDistance = 10 - el.distance; 
-        let score = scoreDistance * 10;
-        el.distanceW = score;
+        let temp = el.distance.split(' ');
+        
+        let unit = temp[1];
+        
+        if (unit == 'km') {
+            let distanceKM = temp[0];
+            let scoreDistance = 10 - distanceKM; 
+            let score = scoreDistance * 10;
+            el.distanceW = score;
+        } else {
+            // unit is m(meter) mean the distance is very small => score should be max - 100
+            el.distanceW = 100
+        }
     });
 
     return listWithDistance;
