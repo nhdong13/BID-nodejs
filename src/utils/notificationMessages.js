@@ -21,3 +21,11 @@ export const reminderMessages = {
 export const titleReminderMessages = {
     sitterUpcommingSitting: 'Nhắc nhở lịch trông trẻ',
 };
+
+export const noticeMessages = {
+    sitterNotCheckin_Sitter: 'Bạn đã quá giờ check in cho một yêu cầu trông trẻ.',
+    sitterNotCheckin_Parent: 'Người trông trẻ đã quá giờ check in cho một yêu cầu trông trẻ của bạn.',
+    parentRequestExpired: 'Yêu cầu trông trẻ của bạn đã hết hạn do không có lời mời nào được chấp nhận.',
+    titleNotCheckin: 'Quá giờ check in',
+    titleRequestExpired: 'Yêu cầu trông trẻ hết hạn',
+}

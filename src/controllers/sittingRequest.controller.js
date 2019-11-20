@@ -6,7 +6,10 @@ import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
 import Scheduler from '@services/schedulerService';
-import { acceptSitter } from '@services/sittingRequestService';
+import {
+    acceptSitter,
+    checkForSittingTime,
+} from '@services/sittingRequestService';
 
 const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
 
@@ -267,7 +270,7 @@ const startSittingRequest = async (req, res, next) => {
 
                 if (schedule) {
                     await schedule.update({
-                        type: 'DONE'
+                        type: 'DONE',
                     });
                     Scheduler.createCheckoutPoint(
                         requestId,
@@ -487,6 +490,24 @@ const cancelSittingRequest = async (req, res) => {
     }
 };
 
+const getOverlapRequests = async (req, res) => {
+    const request = req.body;
+    try {
+        let overlapRequests = [];
+
+        if (request) {
+            overlapRequests = await checkForSittingTime(request);
+        } else {
+            throw new Error('Sitting request is null');
+        }
+
+        res.send(overlapRequests);
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
+};
+
 export default {
     listByParentId,
     listByParentAndStatus,
@@ -497,6 +518,7 @@ export default {
     startSittingRequest,
     doneSittingRequest,
     cancelSittingRequest,
+    getOverlapRequests,
     list,
     create,
     read,
