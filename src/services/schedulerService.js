@@ -4,7 +4,7 @@ import {
     titleReminderMessages,
 } from '@utils/notificationMessages';
 import moment from 'moment';
-import { handleForgotToCheckout } from '@services/sittingRequestService';
+import { handleForgotToCheckout, handleNotCheckingIn, handleRequestExpired } from '@services/sittingRequestService';
 import { sendSingleMessage } from '@utils/pushNotification';
 
 const CronJob = require('cron').CronJob;
@@ -13,6 +13,7 @@ const CronTime = require('cron').CronTime;
 const REMIND_BEFORE_DURATION_0 = 1; // remind before .. hour
 const REMIND_BEFORE_DURATION_1 = 7; // remind before (REMIND_BEFORE_DURATION_0 + ..) hour
 const CHECKOUT_TIMEOUT = 1;
+const CHECKIN_TIMEOUT = 1;
 const TIME_ZONE = 'Asia/Bangkok';
 
 //
@@ -52,6 +53,18 @@ export default {
         } else {
             throw new Error('Args null');
         }
+    },
+
+    createCheckinPoint(requestId, scheduleTime) {
+        if (requestId && scheduleTime) {
+            privateCreateCheckinPoint(requestId, scheduleTime);
+        } else {
+            throw new Error('Args null');
+        }
+    },
+
+    createRequesExpiredPoint(request) {
+        privateCreateRequestExpiredPoint(request);
     },
 
     cancelAllJob() {
@@ -270,7 +283,7 @@ function parseStartTime(scheduleTime) {
  * @param  {} requestId
  * @param  {} scheduleTime
  */
-export function privateCreateCheckoutPoint(requestId, scheduleTime) {
+function privateCreateCheckoutPoint(requestId, scheduleTime) {
     let time = parseEndTime(scheduleTime);
 
     let timeout = time.add(CHECKOUT_TIMEOUT, 'hours');
@@ -341,4 +354,70 @@ function restartJob(job) {
     } catch (error) {
         console.log(error);
     }
+}
+
+/**
+ * 
+ * @param  {} requestId
+ * @param  {} scheduleTime
+ */
+function privateCreateCheckinPoint(requestId, scheduleTime) {
+    let time = parseStartTime(scheduleTime);
+
+    let timeout = time.add(CHECKIN_TIMEOUT, 'hours');
+    if (timeout.isAfter(moment())) {
+        let newSchedule = new CronJob(
+            timeout,
+            function() {
+                console.log('--- Handling not checking in.');
+                handleNotCheckingIn(requestId);
+            },
+            null,
+            true,
+            TIME_ZONE,
+        );
+        instance.push(newSchedule);
+        console.log(
+            `Check in point for request with id ${requestId} was created to run at:
+                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+        );
+    }
+}
+
+/**
+ * 
+ * @param  {} requestId
+ * @param  {} scheduleTime
+ */
+function privateCreateRequestExpiredPoint(request) {
+    let time = parseExpiredTime(request);
+
+    let timeout = time;
+    if (timeout.isAfter(moment())) {
+        let newSchedule = new CronJob(
+            timeout,
+            function() {
+                console.log('--- Handling request expired.');
+                handleRequestExpired(request.id);
+            },
+            null,
+            true,
+            TIME_ZONE,
+        );
+        instance.push(newSchedule);
+        console.log(
+            `Check in point for request with id ${request.id} was created to run at:
+                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+        );
+    }
+}
+
+
+function parseExpiredTime(request) {
+    const sittingDate = request.sittingDate;
+    const startTime = request.startTime;
+
+    let time = moment(`${sittingDate} ${startTime}`, 'YYYY-MM-DD HH:mm');
+
+    return time;
 }

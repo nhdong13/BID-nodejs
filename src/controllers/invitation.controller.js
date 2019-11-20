@@ -2,6 +2,8 @@ import models from '@models';
 import userController from './user.controller';
 import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages, titleMessages } from '@utils/notificationMessages';
+import Scheduler from '@services/schedulerService';
+
 
 const list = async (req, res, next) => {
     var invitations = await models.invitation.findAll({
@@ -78,7 +80,10 @@ const create = async (req, res) => {
         let newRequest;
         if (requestId == undefined || requestId == null || requestId == 0) {
             newRequest = await models.sittingRequest.create(newRequestItem);
-            newItem.requestId = newRequest.id;
+            if (newRequest) {
+                Scheduler.createRequesExpiredPoint(newRequest);
+                newItem.requestId = newRequest.id;
+            }
         }
         const newInvitation = await models.invitation
             .create(newItem)
