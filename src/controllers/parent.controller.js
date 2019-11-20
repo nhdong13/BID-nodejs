@@ -50,7 +50,9 @@ const findByCode = async (req, res) => {
                 }
             })
 
-            parent.isInvited = true;
+            if (circle) {
+                parent.isInvited = true;
+            }
         }
 
         res.send(parent);
