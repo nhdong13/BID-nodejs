@@ -554,26 +554,26 @@ export async function insertDatabase() {
                 .then((result) => {
                     //#region seed invitations
                     result.forEach((el) => {
-                        // if (el.status === 'PENDING') {
-                        //     db.invitation.bulkCreate([
-                        //         {
-                        //             requestId: el.id,
-                        //             receiver: 5,
-                        //             status: 'ACCEPTED',
-                        //         },
-                        //     ]);
-                        // }
-                        //#endregion
-                        //#region feedbacks
-                        // if (el.status === 'DONE') {
-                        //     // seed feedback
-                        //     db.feedback.bulkCreate([
-                        //         {
-                        //             // requestId: el.id,
-                        //             // rating: 4,
-                        //         },
-                        //     ]);
-                        // }
+                        if (el.status === 'PENDING') {
+                            db.invitation.bulkCreate([
+                                {
+                                    requestId: el.id,
+                                    receiver: 5,
+                                    status: 'ACCEPTED',
+                                },
+                            ]);
+                        }
+                        // #endregion
+                        // #region feedbacks
+                        if (el.status === 'DONE') {
+                            // seed feedback
+                            db.feedback.bulkCreate([
+                                {
+                                    // requestId: el.id,
+                                    // rating: 4,
+                                },
+                            ]);
+                        }
                     });
                     //#endregion
                 })

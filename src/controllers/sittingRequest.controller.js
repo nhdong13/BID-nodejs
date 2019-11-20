@@ -40,7 +40,21 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
 
 const list = async (req, res, next) => {
     try {
-        const listSittings = await models.sittingRequest.findAll({});
+        const listSittings = await models.sittingRequest.findAll({
+            include: [{
+                model: models.invitation,
+                include: [{
+                    model: models.user,
+                    as: 'user'
+                }]
+            },{
+                model: models.user,
+                as: 'user'
+            },{
+                model: models.user,
+                as: 'bsitter'
+            }]
+        });
         testSocketIo();
         res.send(listSittings);
     } catch (err) {

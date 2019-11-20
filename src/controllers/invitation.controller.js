@@ -18,14 +18,14 @@ const list = async (req, res, next) => {
             },
         ],
     });
-    registerPushNotifications(userId).then((response) => {
-        if (response) {
-            console.log(
-                'PHUC: HomeScreen -> registerPushNotifications -> response',
-                response.data,
-            );
-        }
-    });
+    // registerPushNotifications(userId).then((response) => {
+    //     if (response) {
+    //         console.log(
+    //             'PHUC: HomeScreen -> registerPushNotifications -> response',
+    //             response.data,
+    //         );
+    //     }
+    // });
     res.send(invitations);
 };
 
