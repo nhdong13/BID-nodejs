@@ -357,11 +357,11 @@ export async function insertDatabase() {
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
-                            date: 29,
+                            date: 20,
                         }),
                         startTime: moment()
                             .set({
-                                hour: 16,
+                                hour: 13,
                                 minute: 40,
                                 second: 0,
                             })

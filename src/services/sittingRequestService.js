@@ -1,10 +1,6 @@
 import models from '@models';
-import { matching } from '@services/matchingService';
-import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages } from '@utils/notificationMessages';
-import { testSocketIo } from '@utils/socketIo';
-import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
 import {
     getScheduleTime,
     checkBabysitterSchedule,
@@ -12,7 +8,6 @@ import {
 } from '@utils/schedule';
 import Scheduler from '@services/schedulerService';
 import Sequelize from 'sequelize';
-
 import env, { checkEnvLoaded } from '@utils/env';
 
 checkEnvLoaded();
@@ -40,31 +35,25 @@ export function acceptSitter(requestId, sitterId, distance) {
                     if (!available) {
                         throw new Error('OVERLAP');
                     } else {
-                        return confirmRequest(requestId, sitterId, distance, t).then(
-                            (res) => {
-                                // confirm the sitter invitation
-                                confirmInvitaion(requestId, sitterId, t);
-                                // create sitter schedule for this sitting
-                                createSchedule(request, sitterId, requestId, t);
-                                // update any invitations of this babysitter that overlap with this request
-                                updateInvitations(
-                                    sitterId,
-                                    requestId,
-                                    request,
-                                    t,
-                                );
+                        return confirmRequest(
+                            requestId,
+                            sitterId,
+                            distance,
+                            t,
+                        ).then((res) => {
+                            // confirm the sitter invitation
+                            confirmInvitaion(requestId, sitterId, t);
+                            // create sitter schedule for this sitting
+                            createSchedule(request, sitterId, requestId, t);
+                            // update any invitations of this babysitter that overlap with this request
+                            updateInvitations(sitterId, requestId, request, t);
 
-                                // notify to the accepted babysitter
-                                notifyBabysitter(requestId, sitterId, t);
+                            // notify to the accepted babysitter
+                            notifyBabysitter(requestId, sitterId, t);
 
-                                // expire other invitation of this request
-                                return expireInvitations(
-                                    requestId,
-                                    sitterId,
-                                    t,
-                                );
-                            },
-                        );
+                            // expire other invitation of this request
+                            return expireInvitations(requestId, sitterId, t);
+                        });
                     }
                 }
             });
@@ -116,7 +105,7 @@ function confirmRequest(requestId, sitterId, distance, transaction) {
         {
             status: 'CONFIRMED',
             acceptedBabysitter: sitterId,
-            distance: distance
+            distance: distance,
         },
         {
             where: {
@@ -295,5 +284,36 @@ export async function handleForgotToCheckout(requestId) {
                 },
             },
         );
+    }
+}
+
+export async function checkForSittingTime(request) {
+    if (request.id > 0) {
+        throw new Error('Request already created.');
+    }
+
+    let overlapRequests = [];
+
+    try {
+        if (request.createdUser) {
+            const result = await models.sittingRequest.findAll({
+                where: {
+                    createdUser: request.createdUser,
+                    sittingDate: request.sittingDate,
+                },
+            });
+
+            if (result) {
+                result.forEach((oldReq) => {
+                    if (checkRequestTime(oldReq, request)) {
+                        overlapRequests.push(oldReq);
+                    }
+                });
+            }
+        }
+
+        return overlapRequests;
+    } catch (error) {
+        console.log('Duong: checkForSittingTime -> error', error);
     }
 }
