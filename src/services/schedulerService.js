@@ -61,7 +61,9 @@ export default {
     },
 
     reStartAllJob() {
-        instance.forEach((element) => {});
+        instance.forEach((element) => {
+            restartJob(element);
+        });
     },
 
     printInstance() {
