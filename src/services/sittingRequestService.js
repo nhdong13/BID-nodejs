@@ -236,18 +236,19 @@ function expireInvitations(requestId, sitterId, transaction) {
     let selector = {
         where: {
             requestId: requestId,
-            receiver: {
-                [Sequelize.Op.ne]: sitterId,
-            },
         },
-        transaction: transaction,
-        lock: transaction.LOCK.UPDATE,
     };
-    if (typeof sitterId == 'undefined' && typeof transaction == 'undefined') {
+    
+    if (typeof sitterId !== 'undefined' && typeof transaction !== 'undefined') {
         selector = {
             where: {
                 requestId: requestId,
+                receiver: {
+                    [Sequelize.Op.ne]: sitterId,
+                },
             },
+            transaction: transaction,
+            lock: transaction.LOCK.UPDATE,
         };
     }
 
