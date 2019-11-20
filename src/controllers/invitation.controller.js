@@ -4,7 +4,6 @@ import { sendSingleMessage } from '@utils/pushNotification';
 import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import Scheduler from '@services/schedulerService';
 
-
 const list = async (req, res, next) => {
     var invitations = await models.invitation.findAll({
         include: [
