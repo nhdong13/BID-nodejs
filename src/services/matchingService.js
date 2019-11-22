@@ -10,7 +10,7 @@ import env, { checkEnvLoaded } from '@utils/env';
 checkEnvLoaded();
 const { apiKey } = env;
 
-const MAX_TRAVEL_DISTANCE = 1;
+const MAX_TRAVEL_DISTANCE = 3;
 const KEY = apiKey;
 var distance = require('google-distance-matrix');
 
