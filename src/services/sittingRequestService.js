@@ -336,7 +336,7 @@ export async function handleNotCheckingIn(requestId) {
     let request = await models.sittingRequest.findOne({
         where: {
             id: requestId,
-            status: 'ACCEPTED',
+            status: 'CONFIRMED',
         },
     });
 
@@ -353,7 +353,7 @@ export async function handleNotCheckingIn(requestId) {
         );
 
         notifyParentCheckin(requestId);
-        notifyBabysitterCheckin(request.acceptSitter, requestId);
+        notifyBabysitterCheckin(request.acceptedBabysitter, requestId);
     }
 }
 
