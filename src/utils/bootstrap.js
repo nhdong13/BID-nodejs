@@ -50,7 +50,7 @@ export async function insertDatabase() {
         email: 'phuc@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Phung Thien Phuc',
-        address: '529 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
+        address: '214 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),

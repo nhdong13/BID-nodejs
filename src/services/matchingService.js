@@ -10,7 +10,7 @@ import env, { checkEnvLoaded } from '@utils/env';
 checkEnvLoaded();
 const { apiKey } = env;
 
-const MAX_TRAVEL_DISTANCE = 1;
+const MAX_TRAVEL_DISTANCE = 3;
 const KEY = apiKey;
 var distance = require('google-distance-matrix');
 
@@ -34,16 +34,16 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // calculate distance with api Google
-    matchedList = await getBabysitterDistance(
-        sittingRequest.sittingAddress,
-        matchedList,
-    );
-
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
+    // matchedList = await getBabysitterDistance(
     //     sittingRequest.sittingAddress,
     //     matchedList,
     // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
+        sittingRequest.sittingAddress,
+        matchedList,
+    );
 
     // check against babysitter schedules
     matchedList = checkAgainstSchedules(sittingRequest, matchedList);
