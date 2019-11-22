@@ -2,8 +2,8 @@ import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
-import { invitationMessages, titleMessages } from '@utils/notificationMessages';
-import { testSocketIo } from '@utils/socketIo';
+import { cancelMessages, titleMessages } from '@utils/notificationMessages';
+import { testSocketIo, reload } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
 import Scheduler from '@services/schedulerService';
 import {
@@ -434,14 +434,35 @@ const cancelSittingRequest = async (req, res) => {
                 .update(updatingSittingReq, {
                     where: { id },
                 })
+                .then(async (response) => {
+                    //cancel tat ca loi moi
+                    const invitations = await models.invitation.findAll({
+                        where: { requestId: id },
+                    });
+                    if (invitations) {
+                        const updateInvitation = {
+                            status: 'PARENT_CANCELED',
+                        };
+                        invitations.forEach(async (invitation) => {
+                            await models.invitation.update(updateInvitation, {
+                                where: { requestId: id },
+                            });
+                        });
+                        const notification = {
+                            notificationMessage: cancelMessages.parentCancel,
+                            title: titleMessages.parentCancel,
+                        };
+                        reload(notification);
+                        res.status(200);
+                        res.send({ message: 'Cancel successfully' });
+                    }
+                })
                 .catch((error) =>
                     console.log(
                         'error in sittingRequestController -> cancelRequest ' +
                             error,
                     ),
                 );
-            res.status(200);
-            res.send(cancel);
         } else {
             const updatingSittingReq = {
                 id,
@@ -453,14 +474,24 @@ const cancelSittingRequest = async (req, res) => {
                     where: { id },
                 })
                 .then(async (response) => {
-                    console.log(
-                        'response of updating the sittingRequest status',
-                        response,
-                    );
+                    //change status of all the invitation
+                    const invitations = await models.invitation.findAll({
+                        where: { requestId: id },
+                    });
+                    if (invitations) {
+                        const updateInvitation = {
+                            status: 'PARENT_CANCELED',
+                        };
+                        invitations.forEach(async (invitation) => {
+                            await models.invitation.update(updateInvitation, {
+                                where: { requestId: id },
+                            });
+                        });
+                    }
                     const updatingTransaction = {
                         type: 'REFUND',
                         description: 'requested_by_customer',
-                        amount: (amount * refundConfig) / 100,
+                        amount: parseInt((amount * refundConfig) / 100, 10),
                     };
                     await models.transaction
                         .update(updatingTransaction, {
@@ -468,11 +499,15 @@ const cancelSittingRequest = async (req, res) => {
                         })
                         .then(async (response) => {
                             console.log(
-                                'response after change status in transaction ', response
+                                'response after change status in transaction ',
+                                response,
                             );
                             const refund = await stripe.refunds.create({
                                 charge: chargeId,
-                                amount: (amount * refundConfig) / 100,
+                                amount: parseInt(
+                                    (amount * refundConfig) / 100,
+                                    10,
+                                ),
                                 reason: 'requested_by_customer',
                             });
                             console.log(
@@ -481,7 +516,13 @@ const cancelSittingRequest = async (req, res) => {
                             );
 
                             if (refund.status == 'succeeded') {
-                                // update status "CANCEL" to request
+                                // update status "CANCEL" to invitation
+                                const notification = {
+                                    notificationMessage:
+                                        cancelMessages.parentCancel,
+                                    title: titleMessages.parentCancel,
+                                };
+                                reload(notification);
                                 res.status(200);
                                 res.send(refund);
                             }
