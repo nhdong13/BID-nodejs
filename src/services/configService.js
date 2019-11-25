@@ -24,7 +24,6 @@ async function createInstance() {
 }
 
 async function privateUpdateInstance() {
-    var object = {};
     await models.configuration
         .findOne({
             where: {
@@ -33,7 +32,7 @@ async function privateUpdateInstance() {
         })
         .then((result) => {
             if (result) {
-                object = result;
+                instance = result.dataValues;
                 console.log('Configuration updated');
             }
         })
@@ -41,7 +40,6 @@ async function privateUpdateInstance() {
             console.log('Configuration instance update fail!!!');
             console.log('Duong: privateUpdateInstance -> error', error);
         });
-    return object;
 }
 
 export default {
