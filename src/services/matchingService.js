@@ -4,13 +4,14 @@ import {
     checkScheduleTime,
     checkBabysitterSchedule,
 } from '@utils/schedule';
-import { splitTimeRange } from '@utils/common';
+import { checkSittingTime, dateInRange } from '@utils/common';
 import env, { checkEnvLoaded } from '@utils/env';
+import Config from '@services/configService'
 
 checkEnvLoaded();
 const { apiKey } = env;
 
-const MAX_TRAVEL_DISTANCE = 3;
+// const MAX_TRAVEL_DISTANCE = 3;
 const KEY = apiKey;
 var distance = require('google-distance-matrix');
 
@@ -19,6 +20,7 @@ const mapsClient = googleMaps.createClient({
     key: KEY, // api key
     Promise: Promise, // enable promise request
 });
+
 
 /**
  * matching parent's sitting request with available babysitter
@@ -34,16 +36,16 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // calculate distance with api Google
-    // matchedList = await getBabysitterDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
-
-    // calculate distance with magic and stuff you know
-    matchedList = await randomizeDistance(
+    matchedList = await getBabysitterDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
+
+    // calculate distance with magic and stuff you know
+    // matchedList = await randomizeDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
 
     // check against babysitter schedules
     matchedList = checkAgainstSchedules(sittingRequest, matchedList);
@@ -116,7 +118,7 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
             let unit = temp[1];
             if (unit == 'km') {
                 let distanceKm = temp[0];
-                if (distanceKm < MAX_TRAVEL_DISTANCE) {
+                if (distanceKm < Config.getMaxTravelDistance()) {
                     sitter.distance = distance;
                     matchedList.push(sitter);
                 } else {
@@ -315,112 +317,3 @@ function checkAgainstSchedules(request, babysitters) {
     return matchedList;
 }
 
-/**
- * check if the sitting request date are in babysitter weekly schedule
- * @param  {Date} date the sitting date
- * @param  {String} range the babysitter's weekly schedule
- * @returns {Boolean} true or false
- */
-function dateInRange(date, range) {
-    let flag = false;
-
-    let weekDay = getDayOfWeek(date);
-
-    let bsitterWorkDates = getWeekRange(range);
-
-    bsitterWorkDates.forEach((workDate) => {
-        if (workDate == weekDay) {
-            flag = true;
-            return;
-        }
-    });
-
-    return flag;
-}
-
-/**
- * get day of the week of a date
- * @param  {Date} date
- */
-function getDayOfWeek(date) {
-    var dayOfWeek = new Date(date).getDay();
-    return isNaN(dayOfWeek)
-        ? null
-        : ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][dayOfWeek];
-}
-
-/**
- * get array of days of the week of a babysitter schedule
- * @param  {String} range
- * @returns {Array<String>}
- */
-function getWeekRange(range) {
-    if (range == null) {
-        return null;
-    }
-    let arr = [];
-
-    arr = range.split(',');
-
-    return arr;
-}
-
-/**
- * check if the request time and babysitter vailable is matched
- * @param  {String} startTime
- * @param  {String} endTime
- * @param  {String} bDaytime
- * @param  {String} bEvening
- * @returns {Boolean}
- */
-function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
-    let flag = false;
-    let daytime = splitTimeRange(bDaytime);
-    let evening = splitTimeRange(bEvening);
-    let combine = null;
-
-    // if daytime end equal evening time start then combine work time to daytime start and evening end
-    if (daytime[1] == evening[0]) {
-        combine = [daytime[0], evening[1]];
-    }
-
-    // check for combine time if it not null
-    if (combine != undefined && combine != null) {
-        if (timeIsInRange(startTime, combine)) {
-            if (timeIsInRange(endTime, combine)) {
-                flag = true;
-            }
-        }
-    }
-
-    // check for daytime or evening time
-    if (timeIsInRange(startTime, daytime)) {
-        if (timeIsInRange(endTime, daytime)) {
-            flag = true;
-        }
-    } else if (timeIsInRange(startTime, evening)) {
-        if (timeIsInRange(endTime, evening)) {
-            flag = true;
-        }
-    }
-
-    return flag;
-}
-
-/**
- * check if time in range
- * @param  {String} time
- * @param  {Array<String>} range
- * @returns {Boolean}
- */
-function timeIsInRange(time, range) {
-    if (range == null) {
-        return false;
-    }
-
-    if (time >= range[0] && time <= range[1]) {
-        return true;
-    }
-
-    return false;
-}

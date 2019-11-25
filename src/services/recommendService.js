@@ -1,13 +1,14 @@
 import seq from "sequelize";
 import models from "@models/";
 import { asyncForEach } from '@utils/common'
+import Config from '@services/configService'
 
 // CONSTANTS WEIGHTED MULTIPLIER (total = 1)
-const CIRCLE_WEIGHTED = 0.5;
-const RATING_WEIGHTED = 0.4;
-const DISTANCE_WEIGHTED = 0.1;
+// const CIRCLE_WEIGHTED = 0.5;
+// const RATING_WEIGHTED = 0.4;
+// const DISTANCE_WEIGHTED = 0.1;
 // minimum required feedback for rating weighted
-const M = 5;
+// const M = 5;
 
 // recommend to parent
 export async function recommendToParent(request, listMatched) {
@@ -105,15 +106,15 @@ async function calScore(listWithCircle, listWithRating, listWithDistance, listWi
 
         //
         if (c != null && c != undefined) {
-            el.total += c.circleW * CIRCLE_WEIGHTED;
+            el.total += c.circleW * Config.getCircleWeight();
         }
         //
         if (r != null && r != undefined) {
-            el.total += r.ratingW * RATING_WEIGHTED;
+            el.total += r.ratingW * Config.getRatingWeight();
         }
         //
         if (d != null && d != undefined) {
-            el.total += d.distanceW * DISTANCE_WEIGHTED;
+            el.total += d.distanceW * Config.getDistanceWeight();
         }
 
         el.total = Math.round(el.total);
@@ -206,12 +207,12 @@ async function calDistance(listWithDistance) {
 // reference: https://www.datacamp.com/community/tutorials/recommender-systems-python?utm_source=adwords_ppc&utm_campaignid=1455363063&utm_adgroupid=65083631748&utm_device=m&utm_keyword=&utm_matchtype=b&utm_network=g&utm_adpostion=1t1&utm_creative=332602034358&utm_targetid=aud-517318242147:dsa-473406569915&utm_loc_interest_ms=&utm_loc_physical_ms=1028581&gclid=CjwKCAjw2qHsBRAGEiwAMbPoDNQfPEHKIX-J2DC5HoNN_oD7bWBEgXU_Forvnm3x4VWLy2FbZmNGFhoCV9cQAvD_BwE
 async function weightedRating(C, babysitter) {
     let v = babysitter.totalFeedback;
-    if (v < M) {
+    if (v < Config.getMinimumFeedback()) {
         return 0;
     }
     let r = babysitter.averageRating;
 
-    let wR = (v/(v + M) * r) + (M/(M + v) * C);
+    let wR = (v/(v + Config.getMinimumFeedback()) * r) + (Config.getMinimumFeedback()/(Config.getMinimumFeedback() + v) * C);
     let result = Math.round(wR * 20); 
 
     return result;

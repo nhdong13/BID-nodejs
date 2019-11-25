@@ -1,6 +1,7 @@
 import models from '@models';
 import moment from 'moment';
 import Scheduler from '@services/schedulerService';
+import Config from '@services/configService';
 
 const Sequelize = require('sequelize');
 const Spawn = require('child_process').spawn;
@@ -70,6 +71,27 @@ const getPriceByDate = async (req, res) => {
     }
 };
 
+const update = async (req, res) => {
+    const id = req.params.id;
+
+    const updatingConfig = req.body;
+
+    try {
+        await models.configuration.update(updatingConfig, {
+            where: {
+                id: id,
+            },
+        });
+
+        Config.updateInstance();
+
+        res.send();
+    } catch (err) {
+        res.status(422);
+        res.send(err);
+    }
+};
+
 const destroy = async (req, res) => {
     const id = req.params.id;
 
@@ -92,5 +114,6 @@ export default {
     list,
     create,
     destroy,
+    update,
     getPriceByDate,
 };
