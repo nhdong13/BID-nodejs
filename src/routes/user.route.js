@@ -8,5 +8,7 @@ router.route("/").post(controller.create);
 router.route("/:id").get(controller.read);
 router.route("/:id").put(controller.update);
 router.route("/:id").delete(controller.destroy);
+router.route("/bsitterRegister").post(controller.createBsitter);
+router.route("/parentRegister").post(controller.createParent);
 
 export default router;

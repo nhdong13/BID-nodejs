@@ -32,7 +32,7 @@ async function main() {
 
         // Body parseer
         app.use(bodyParser.urlencoded({ extended: false }));
-        app.use(bodyParser.json());
+        app.use(bodyParser.json({limit: '50mb'}));
 
         // CORS
         const corsOptions = {
