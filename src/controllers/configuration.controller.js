@@ -72,7 +72,6 @@ const getPriceByDate = async (req, res) => {
 };
 
 const readFirst = async (req, res) => {
-    console.log('aa')
     try {
         const response = await models.configuration.findOne({where: {id: 1},})
         res.send(response);
