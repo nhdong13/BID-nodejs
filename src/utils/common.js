@@ -99,3 +99,113 @@ export function splitTimeRange(time) {
 
     return arr;
 }
+
+/**
+ * check if the sitting request date are in babysitter weekly schedule
+ * @param  {Date} date the sitting date
+ * @param  {String} range the babysitter's weekly schedule
+ * @returns {Boolean} true or false
+ */
+export function dateInRange(date, range) {
+    let flag = false;
+
+    let weekDay = getDayOfWeek(date);
+
+    let bsitterWorkDates = getWeekRange(range);
+
+    bsitterWorkDates.forEach((workDate) => {
+        if (workDate == weekDay) {
+            flag = true;
+            return;
+        }
+    });
+
+    return flag;
+}
+
+/**
+ * get day of the week of a date
+ * @param  {Date} date
+ */
+function getDayOfWeek(date) {
+    var dayOfWeek = new Date(date).getDay();
+    return isNaN(dayOfWeek)
+        ? null
+        : ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][dayOfWeek];
+}
+
+/**
+ * get array of days of the week of a babysitter schedule
+ * @param  {String} range
+ * @returns {Array<String>}
+ */
+function getWeekRange(range) {
+    if (range == null) {
+        return null;
+    }
+    let arr = [];
+
+    arr = range.split(',');
+
+    return arr;
+}
+
+/**
+ * check if the request time and babysitter vailable is matched
+ * @param  {String} startTime
+ * @param  {String} endTime
+ * @param  {String} bDaytime
+ * @param  {String} bEvening
+ * @returns {Boolean}
+ */
+export function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
+    let flag = false;
+    let daytime = splitTimeRange(bDaytime);
+    let evening = splitTimeRange(bEvening);
+    let combine = null;
+
+    // if daytime end equal evening time start then combine work time to daytime start and evening end
+    if (daytime[1] == evening[0]) {
+        combine = [daytime[0], evening[1]];
+    }
+
+    // check for combine time if it not null
+    if (combine != undefined && combine != null) {
+        if (timeIsInRange(startTime, combine)) {
+            if (timeIsInRange(endTime, combine)) {
+                flag = true;
+            }
+        }
+    }
+
+    // check for daytime or evening time
+    if (timeIsInRange(startTime, daytime)) {
+        if (timeIsInRange(endTime, daytime)) {
+            flag = true;
+        }
+    } else if (timeIsInRange(startTime, evening)) {
+        if (timeIsInRange(endTime, evening)) {
+            flag = true;
+        }
+    }
+
+    return flag;
+}
+
+/**
+ * check if time in range
+ * @param  {String} time
+ * @param  {Array<String>} range
+ * @returns {Boolean}
+ */
+function timeIsInRange(time, range) {
+    if (range == null) {
+        return false;
+    }
+
+    if (time >= range[0] && time <= range[1]) {
+        return true;
+    }
+
+    return false;
+}
