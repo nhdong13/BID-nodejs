@@ -1,5 +1,6 @@
 import models from '@models';
 import { hashPassword } from '@utils/hash';
+import { checkSittingTime, dateInRange } from '@utils/common';
 
 const list = async (req, res, next) => {
     const listSitters = await models.sitter.findAll();
@@ -109,6 +110,62 @@ const update = async (req, res) => {
                 userId: id,
             },
         });
+
+        let pendingInvitations = await models.invitation.findAll({
+            where: {
+                receiver: id,
+                status: 'PENDING',
+            },
+            include: {
+                model: models.sittingRequest,
+                as: 'sittingRequest',
+            },
+        });
+
+        // Expiring invitations from sittingRequests that not suitable annymore because babysitter schedule changed
+        if (pendingInvitations) {
+            const promises = pendingInvitations.map(async (invite) => {
+                if (
+                    dateInRange(
+                        invite.sittingRequest.sittingDate,
+                        updatingSitter.weeklySchedule,
+                    )
+                ) {
+                    if (
+                        !checkSittingTime(
+                            invite.sittingRequest.startTime,
+                            invite.sittingRequest.endTime,
+                            updatingSitter.daytime,
+                            updatingSitter.evening,
+                        )
+                    ) {
+                        await models.invitation.update(
+                            {
+                                status: 'EXPIRED',
+                            },
+                            {
+                                where: {
+                                    id: invite.id,
+                                },
+                            },
+                        );
+                    }
+                } else {
+                    await models.invitation.update(
+                        {
+                            status: 'EXPIRED',
+                        },
+                        {
+                            where: {
+                                id: invite.id,
+                            },
+                        },
+                    );
+                }
+            });
+            await Promise.all(promises);
+        }
+
         res.send();
     } catch (err) {
         res.status(422);

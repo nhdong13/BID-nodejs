@@ -4,6 +4,7 @@ import { hashPassword } from '@utils/hash';
 import { randomInt, randomFloat } from '@utils/common';
 import Images from '@utils/image';
 import Scheduler from '@services/schedulerService';
+import Config from '@services/configService';
 
 export async function insertDatabase() {
     Scheduler.getInstance();
@@ -593,34 +594,54 @@ export async function insertDatabase() {
 
             console.log('Finish insert to database.');
         });
-    db.configuration.bulkCreate([
-        {
-            price: 100000,
-            description: 'Base',
-        },
-        {
+
+    let configs = [];
+
+    let config = {
+        price: 100000,
+        description: 'Base',
+        remindBeforeDuration_0: 1,
+        remindBeforeDuration_1: 7,
+        checkinTimeout: 1,
+        checkoutTimeout: 1,
+        timezone: 'Asia/Bangkok',
+        maxTravelDistance: 3,
+        circleWeight: 0.5,
+        ratingWeight: 0.4,
+        distanceWeight: 0.1,
+        minimumFeedback: 5,
+    };
+
+    configs.push(config);
+
+    config = {
+        price: 150000,
+        date: moment().set({ year: 2019, month: 9, date: 24 }),
+        startTime: moment()
+            .set({ hour: 17, minute: 0, second: 0 })
+            .format('HH:mm:ss'),
+        endTime: moment()
+            .set({ hour: 18, minute: 0, second: 0 })
+            .format('HH:mm:ss'),
+    };
+
+    configs.push(config);
+
+    for (let index = 20; index < 30; index++) {
+        let config = {
             price: 150000,
-            date: moment().set({ year: 2019, month: 9, date: 24 }),
+            date: moment().set({ year: 2019, month: 9, date: index }),
             startTime: moment()
                 .set({ hour: 17, minute: 0, second: 0 })
                 .format('HH:mm:ss'),
             endTime: moment()
                 .set({ hour: 18, minute: 0, second: 0 })
                 .format('HH:mm:ss'),
-        },
-    ]);
-    for (var i = 20; i < 30; i++) {
-        db.configuration.bulkCreate([
-            {
-                price: 150000,
-                date: moment().set({ year: 2019, month: 9, date: i }),
-                startTime: moment()
-                    .set({ hour: 17, minute: 0, second: 0 })
-                    .format('HH:mm:ss'),
-                endTime: moment()
-                    .set({ hour: 18, minute: 0, second: 0 })
-                    .format('HH:mm:ss'),
-            },
-        ]);
+        };
+
+        configs.push(config);
     }
+    db.configuration.bulkCreate(configs).then(async () => {
+        console.log(await Config.getInstance());
+    });
 }
