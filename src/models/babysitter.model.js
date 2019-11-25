@@ -60,15 +60,6 @@ export default function(sequelize, DataTypes) {
             as: "user"
         });
 
-        // babysitter - wishlist
-        babysitter.hasMany(models.wishlist, {
-            foreignKey: {
-                name: "sittertId",
-                allowNull: false
-            },
-            as: "wishlists",
-            onDelete: "CASCADE"
-        });
     };
 
     return babysitter;
