@@ -6,15 +6,16 @@ import {
 import moment from 'moment';
 import { handleForgotToCheckout, handleNotCheckingIn, handleRequestExpired } from '@services/sittingRequestService';
 import { sendSingleMessage } from '@utils/pushNotification';
+import Config from '@services/configService'
 
 const CronJob = require('cron').CronJob;
 const CronTime = require('cron').CronTime;
 
-const REMIND_BEFORE_DURATION_0 = 1; // remind before .. hour
-const REMIND_BEFORE_DURATION_1 = 7; // remind before (REMIND_BEFORE_DURATION_0 + ..) hour
-const CHECKOUT_TIMEOUT = 1;
-const CHECKIN_TIMEOUT = 1;
-const TIME_ZONE = 'Asia/Bangkok';
+// const REMIND_BEFORE_DURATION_0 = 1; // remind before .. hour
+// const REMIND_BEFORE_DURATION_1 = 7; // remind before (REMIND_BEFORE_DURATION_0 + ..) hour
+// const CHECKOUT_TIMEOUT = 1;
+// const CHECKIN_TIMEOUT = 1;
+// const TIME_ZONE = 'Asia/Bangkok';
 
 //
 var instance;
@@ -95,7 +96,7 @@ function initScheduler() {
                 let time = parseStartTime(sche.scheduleTime);
 
                 let remindTime_0 = time.subtract(
-                    REMIND_BEFORE_DURATION_0,
+                    Config.getRemindBeforeDuration_0(),
                     'hours',
                 );
                 if (remindTime_0.isAfter(moment())) {
@@ -108,7 +109,7 @@ function initScheduler() {
                                 remindParent(requestId);
                             },
                             start: true,
-                            timeZone: TIME_ZONE,
+                            timeZone: Config.getTimezone(),
                         });
                         console.log('1 created');
                     } catch (error) {}
@@ -122,7 +123,7 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
     let time = parseStartTime(scheduleTime);
     console.log(moment().format('DD-MM-YYYY HH:mm:ss'));
 
-    let remindTime_0 = time.subtract(REMIND_BEFORE_DURATION_0, 'hours');
+    let remindTime_0 = time.subtract(Config.getRemindBeforeDuration_0(), 'hours');
     if (remindTime_0.isAfter(moment())) {
         try {
             let newSchedule = new CronJob({
@@ -133,7 +134,7 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
                     remindParent(requestId);
                 },
                 start: true,
-                timeZone: TIME_ZONE,
+                timeZone: Config.getTimezone(),
             });
 
             instance.push(newSchedule);
@@ -147,7 +148,7 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
         }
     }
 
-    let remindTime_1 = time.subtract(REMIND_BEFORE_DURATION_1, 'hours');
+    let remindTime_1 = time.subtract(Config.getRemindBeforeDuration_1(), 'hours');
 
     if (remindTime_1.isAfter(moment())) {
         try {
@@ -159,7 +160,7 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
                     remindParent(requestId);
                 },
                 start: true,
-                timeZone: TIME_ZONE,
+                timeZone: Config.getTimezone(),
             });
 
             instance.push(newSchedule);
@@ -286,7 +287,7 @@ function parseStartTime(scheduleTime) {
 function privateCreateCheckoutPoint(requestId, scheduleTime) {
     let time = parseEndTime(scheduleTime);
 
-    let timeout = time.add(CHECKOUT_TIMEOUT, 'hours');
+    let timeout = time.add(Config.getCheckoutTimeout(), 'hours');
     if (timeout.isAfter(moment())) {
         let newSchedule = new CronJob(
             timeout,
@@ -296,7 +297,7 @@ function privateCreateCheckoutPoint(requestId, scheduleTime) {
             },
             null,
             true,
-            TIME_ZONE,
+            Config.getTimezone(),
         );
         instance.push(newSchedule);
         console.log(
@@ -364,7 +365,7 @@ function restartJob(job) {
 function privateCreateCheckinPoint(requestId, scheduleTime) {
     let time = parseStartTime(scheduleTime);
 
-    let timeout = time.add(CHECKIN_TIMEOUT, 'hours');
+    let timeout = time.add(Config.getCheckinTimeout(), 'hours');
     if (timeout.isAfter(moment())) {
         let newSchedule = new CronJob(
             timeout,
@@ -374,7 +375,7 @@ function privateCreateCheckinPoint(requestId, scheduleTime) {
             },
             null,
             true,
-            TIME_ZONE,
+            Config.getTimezone(),
         );
         instance.push(newSchedule);
         console.log(
@@ -402,7 +403,7 @@ function privateCreateRequestExpiredPoint(request) {
             },
             null,
             true,
-            TIME_ZONE,
+            Config.getTimezone(),
         );
         instance.push(newSchedule);
         console.log(

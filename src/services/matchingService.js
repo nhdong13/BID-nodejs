@@ -6,11 +6,12 @@ import {
 } from '@utils/schedule';
 import { splitTimeRange } from '@utils/common';
 import env, { checkEnvLoaded } from '@utils/env';
+import Config from '@services/configService'
 
 checkEnvLoaded();
 const { apiKey } = env;
 
-const MAX_TRAVEL_DISTANCE = 3;
+// const MAX_TRAVEL_DISTANCE = 3;
 const KEY = apiKey;
 var distance = require('google-distance-matrix');
 
@@ -19,6 +20,7 @@ const mapsClient = googleMaps.createClient({
     key: KEY, // api key
     Promise: Promise, // enable promise request
 });
+
 
 /**
  * matching parent's sitting request with available babysitter
@@ -34,16 +36,16 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // calculate distance with api Google
-    // matchedList = await getBabysitterDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
-
-    // calculate distance with magic and stuff you know
-    matchedList = await randomizeDistance(
+    matchedList = await getBabysitterDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
+
+    // calculate distance with magic and stuff you know
+    // matchedList = await randomizeDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
 
     // check against babysitter schedules
     matchedList = checkAgainstSchedules(sittingRequest, matchedList);
@@ -116,7 +118,7 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
             let unit = temp[1];
             if (unit == 'km') {
                 let distanceKm = temp[0];
-                if (distanceKm < MAX_TRAVEL_DISTANCE) {
+                if (distanceKm < Config.getMaxTravelDistance()) {
                     sitter.distance = distance;
                     matchedList.push(sitter);
                 } else {
