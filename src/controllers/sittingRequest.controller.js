@@ -1,7 +1,6 @@
 import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
-import { sendSingleMessage } from '@utils/pushNotification';
 import { cancelMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo, reload } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
