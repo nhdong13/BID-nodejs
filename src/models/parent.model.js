@@ -51,16 +51,6 @@ export default function(sequelize, DataTypes) {
             onDelete: "CASCADE"
         });
 
-        // parent - wishlist
-        parent.hasMany(models.wishlist, {
-            foreignKey: {
-                name: "parentId",
-                allowNull: false
-            },
-            as: "wishlists",
-            onDelete: "CASCADE"
-        });
-
         // parent - children
         parent.hasMany(models.children, {
             foreignKey: {

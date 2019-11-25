@@ -7,6 +7,7 @@ router.route("/changeSystemTime").post(controller.changeSystemTime);
 router.route("/").get(controller.list);
 router.route("/:id").get(controller.getPriceByDate);
 router.route("/").post(controller.create);
+router.route("/:id").put(controller.update);
 router.route("/:id").delete(controller.destroy);
 
 export default router;
