@@ -80,15 +80,6 @@ export default function(sequelize, DataTypes) {
             sourceKey: "id"
         });
 
-        // request - report
-        sittingRequest.hasMany(models.report, {
-            foreignKey: {
-                name: "requestId",
-                allowNull: false
-            },
-            sourceKey: "id"
-        });
-
         // request - feedback
         sittingRequest.hasMany(models.feedback, {
             foreignKey: {
