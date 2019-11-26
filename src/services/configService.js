@@ -55,11 +55,11 @@ export default {
     },
 
     getRemindBeforeDuration_0() {
-        return instance.remindBeforeDUration_0;
+        return instance.remindBeforeDuration_0;
     },
 
     getRemindBeforeDuration_1() {
-        return instance.remindBeforeDUration_1;
+        return instance.remindBeforeDuration_1;
     },
 
     getCheckinTimeout() {

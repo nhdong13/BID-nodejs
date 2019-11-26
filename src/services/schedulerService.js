@@ -4,9 +4,13 @@ import {
     titleReminderMessages,
 } from '@utils/notificationMessages';
 import moment from 'moment';
-import { handleForgotToCheckout, handleNotCheckingIn, handleRequestExpired } from '@services/sittingRequestService';
+import {
+    handleForgotToCheckout,
+    handleNotCheckingIn,
+    handleRequestExpired,
+} from '@services/sittingRequestService';
 import { sendSingleMessage } from '@utils/pushNotification';
-import Config from '@services/configService'
+import Config from '@services/configService';
 
 const CronJob = require('cron').CronJob;
 const CronTime = require('cron').CronTime;
@@ -123,7 +127,14 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
     let time = parseStartTime(scheduleTime);
     console.log(moment().format('DD-MM-YYYY HH:mm:ss'));
 
-    let remindTime_0 = time.subtract(Config.getRemindBeforeDuration_0(), 'hours');
+    let remindTime_0 = time.subtract(
+        Config.getRemindBeforeDuration_0(),
+        'hours',
+    );
+    console.log(
+        'PHUC: privateCreateReminder -> Config.getRemindBeforeDuration_0()',
+        Config.getRemindBeforeDuration_0(),
+    );
     if (remindTime_0.isAfter(moment())) {
         try {
             let newSchedule = new CronJob({
@@ -148,7 +159,15 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
         }
     }
 
-    let remindTime_1 = time.subtract(Config.getRemindBeforeDuration_1(), 'hours');
+    console.log(
+        'PHUC: privateCreateReminder -> Config.getRemindBeforeDuration_1()',
+        Config.getRemindBeforeDuration_1(),
+    );
+
+    let remindTime_1 = time.subtract(
+        Config.getRemindBeforeDuration_1(),
+        'hours',
+    );
 
     if (remindTime_1.isAfter(moment())) {
         try {
@@ -358,7 +377,7 @@ function restartJob(job) {
 }
 
 /**
- * 
+ *
  * @param  {} requestId
  * @param  {} scheduleTime
  */
@@ -386,7 +405,7 @@ function privateCreateCheckinPoint(requestId, scheduleTime) {
 }
 
 /**
- * 
+ *
  * @param  {} requestId
  * @param  {} scheduleTime
  */
@@ -407,12 +426,13 @@ function privateCreateRequestExpiredPoint(request) {
         );
         instance.push(newSchedule);
         console.log(
-            `Check in point for request with id ${request.id} was created to run at:
+            `Check in point for request with id ${
+                request.id
+            } was created to run at:
                 ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
         );
     }
 }
-
 
 function parseExpiredTime(request) {
     const sittingDate = request.sittingDate;
