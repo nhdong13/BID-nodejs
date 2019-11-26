@@ -37,6 +37,10 @@ export default function(sequelize, DataTypes) {
                 allowNull: false,
                 defaultValue: true,
             },
+            image: {
+                type: DataTypes.TEXT,
+                allowNull: true
+            },
         },
         {
             timestamps: true,

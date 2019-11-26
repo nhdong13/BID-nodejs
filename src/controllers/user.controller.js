@@ -115,4 +115,46 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { list, create, read, update, destroy };
+const createBsitter = async (req, res) => {
+    let newItem = req.body;
+    try {
+        // Hash password
+        newItem.password = await hashPassword(newItem.password);
+
+        const newUser = await models.user.create(newItem).then((res) => {
+            newItem.userId = res.id;
+            const newBabysitter = models.babysitter.create(newItem).then(res => {
+            });
+        });
+        res.send(newItem);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+const createParent = async (req, res) => {
+    let newItem = req.body;
+    try {
+        // Hash password
+        newItem.password = await hashPassword(newItem.password);
+
+        const newUser = await models.user.create(newItem).then((res) => {
+            newItem.userId = res.id;
+            newItem.parentCode = 'A' + res.id.toString();
+            const newParent = models.parent.create(newItem).then((res)=>{
+                let child = newItem.children;
+                child.forEach(element => {
+                    element.parentId = newItem.userId;
+                    const newChild = models.children.create(element);
+                });
+            });
+        });
+        res.send(newItem);
+    } catch (err) {
+        console.log(err)
+        res.status(400);
+        res.send(err);
+    }
+};
+
+export default { list, create, read, update, destroy, createBsitter, createParent };

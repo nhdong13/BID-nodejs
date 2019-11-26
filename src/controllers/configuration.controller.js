@@ -71,6 +71,17 @@ const getPriceByDate = async (req, res) => {
     }
 };
 
+const readFirst = async (req, res) => {
+    try {
+        const response = await models.configuration.findOne({where: {id: 1},})
+        res.send(response);
+    } catch (err) {
+        // console.log(err)
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const update = async (req, res) => {
     const id = req.params.id;
 
@@ -85,7 +96,7 @@ const update = async (req, res) => {
 
         Config.updateInstance();
 
-        res.send();
+        res.send(updatingConfig);
     } catch (err) {
         res.status(422);
         res.send(err);
@@ -114,6 +125,6 @@ export default {
     list,
     create,
     destroy,
-    update,
+    update,readFirst,
     getPriceByDate,
 };
