@@ -47,6 +47,9 @@ export default function(sequelize, DataTypes) {
             minimumFeedback: {
                 type: DataTypes.INTEGER,
             },
+            refundPercentage: {
+                type: DataTypes.INTEGER,
+            },
         },
         {
             timestamps: true,

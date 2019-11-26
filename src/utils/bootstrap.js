@@ -610,6 +610,7 @@ export async function insertDatabase() {
         ratingWeight: 0.4,
         distanceWeight: 0.1,
         minimumFeedback: 5,
+        refundPercentage: 90,
     };
 
     configs.push(config);

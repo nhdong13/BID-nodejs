@@ -1,7 +1,6 @@
 import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
-import { sendSingleMessage } from '@utils/pushNotification';
 import { cancelMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo, reload } from '@utils/socketIo';
 import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
@@ -419,11 +418,11 @@ const destroy = async (req, res) => {
 
 const cancelSittingRequest = async (req, res) => {
     const { requestId: id, status, chargeId, amount } = req.body;
-    console.log('PHUC: cancelSittingRequest -> chargeId', chargeId);
-    const refundConfig = 90;
 
     try {
         // make refund request
+        const { refundPercentage } = await models.configuration.findOne();
+
         if (status == 'PENDING' || chargeId == 0) {
             const updatingSittingReq = {
                 id,
@@ -491,7 +490,10 @@ const cancelSittingRequest = async (req, res) => {
                     const updatingTransaction = {
                         type: 'REFUND',
                         description: 'requested_by_customer',
-                        amount: parseInt((amount * refundConfig) / 100, 10),
+                        amount: parseInt(
+                            (amount * refundPercentage) / 100,
+                            10 || parseInt((amount * 90) / 1000),
+                        ),
                     };
                     await models.transaction
                         .update(updatingTransaction, {
@@ -505,8 +507,8 @@ const cancelSittingRequest = async (req, res) => {
                             const refund = await stripe.refunds.create({
                                 charge: chargeId,
                                 amount: parseInt(
-                                    (amount * refundConfig) / 100,
-                                    10,
+                                    (amount * refundPercentage) / 100,
+                                    10 || parseInt((amount * 90) / 1000),
                                 ),
                                 reason: 'requested_by_customer',
                             });
