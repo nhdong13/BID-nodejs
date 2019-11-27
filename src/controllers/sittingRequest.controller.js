@@ -266,24 +266,7 @@ const startSittingRequest = async (req, res, next) => {
             // update sitting request
             let updated = await request.update({ status: 'ONGOING' });
 
-            if (updated) {
-                let schedule = await models.schedule.findOne({
-                    where: {
-                        requestId: requestId,
-                        userId: sitterId,
-                    },
-                });
-
-                if (schedule) {
-                    await schedule.update({
-                        type: 'DONE',
-                    });
-                    Scheduler.createCheckoutPoint(
-                        requestId,
-                        schedule.scheduleTime,
-                    );
-                }
-            }
+            
         }
 
         res.send(request);
@@ -311,7 +294,7 @@ const doneSittingRequest = async (req, res, next) => {
             request.status == 'ONGOING'
         ) {
             // update sitting request
-            request = await models.sittingRequest.update(
+            let updated = await models.sittingRequest.update(
                 { status: 'DONE' },
                 {
                     where: {
@@ -319,6 +302,25 @@ const doneSittingRequest = async (req, res, next) => {
                     },
                 },
             );
+
+            if (updated) {
+                let schedule = await models.schedule.findOne({
+                    where: {
+                        requestId: requestId,
+                        userId: sitterId,
+                    },
+                });
+
+                if (schedule) {
+                    await schedule.update({
+                        type: 'DONE',
+                    });
+                    Scheduler.createCheckoutPoint(
+                        requestId,
+                        schedule.scheduleTime,
+                    );
+                }
+            }
         }
 
         res.send(request);

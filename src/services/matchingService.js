@@ -29,23 +29,23 @@ const mapsClient = googleMaps.createClient({
  */
 export async function matching(sittingRequest) {
     console.log('------------------------Matching------------------------');
-    // find any babysitter in 1 km travel distance of the sitting address
+    
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
 
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // calculate distance with api Google
-    matchedList = await getBabysitterDistance(
-        sittingRequest.sittingAddress,
-        matchedList,
-    );
-
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
+    // matchedList = await getBabysitterDistance(
     //     sittingRequest.sittingAddress,
     //     matchedList,
     // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
+        sittingRequest.sittingAddress,
+        matchedList,
+    );
 
     // check against babysitter schedules
     matchedList = checkAgainstSchedules(sittingRequest, matchedList);
@@ -250,7 +250,7 @@ async function matchingCriteria(request, babysitters) {
             );
             return;
         }
-        //check minimum age of childer
+        //check minimum age of children
         if (request.minAgeOfChildren < bsitter.minAgeOfChildren) {
             console.log('MIN AGE NOT MATCHED');
             console.log(
