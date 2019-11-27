@@ -55,7 +55,7 @@ export default function(sequelize, DataTypes) {
         parent.hasMany(models.children, {
             foreignKey: {
                 name: "parentId",
-                allowNull: false
+                allowNull: true
             },
             as: "children",
             onDelete: "CASCADE"
