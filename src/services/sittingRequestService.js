@@ -10,7 +10,7 @@ import {
     checkRequestTime,
 } from '@utils/schedule';
 import Scheduler from '@services/schedulerService';
-import Sequelize from 'sequelize';
+import Sequelize, { Op } from 'sequelize';
 import env, { checkEnvLoaded } from '@utils/env';
 
 checkEnvLoaded();
@@ -314,6 +314,9 @@ export async function checkForSittingTime(request) {
                 where: {
                     createdUser: request.createdUser,
                     sittingDate: request.sittingDate,
+                    status: {
+                        [Op.or]: ['PENDING', 'ACCEPTED']
+                    }
                 },
             });
 

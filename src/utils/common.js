@@ -96,6 +96,8 @@ export function splitTimeRange(time) {
     let arr = [];
 
     arr = time.split('-');
+    arr[0] = arr[0] + ':00:00';
+    arr[1] = arr[1] + ':00:00';
 
     return arr;
 }
