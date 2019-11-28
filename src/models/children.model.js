@@ -11,7 +11,7 @@ export default function(sequelize, DataTypes) {
                 allowNull: false
             },
             image: {
-                type: DataTypes.TEXT,
+                type: DataTypes.TEXT('long'),
                 allowNull: true
             },
         },

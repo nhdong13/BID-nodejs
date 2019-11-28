@@ -38,7 +38,7 @@ export default function(sequelize, DataTypes) {
                 defaultValue: true,
             },
             image: {
-                type: DataTypes.TEXT,
+                type: DataTypes.TEXT('long'),
                 allowNull: true
             },
         },

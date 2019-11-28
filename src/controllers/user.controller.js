@@ -143,9 +143,9 @@ const createParent = async (req, res) => {
             newItem.parentCode = 'A' + res.id.toString();
             const newParent = models.parent.create(newItem).then((res)=>{
                 let child = newItem.children;
-                child.forEach(element => {
-                    element.parentId = newItem.userId;
-                    const newChild = models.children.create(element);
+                child.map(async(element) => {
+                    element.parentId = await newItem.userId;
+                    await models.children.create(element);
                 });
             });
         });
