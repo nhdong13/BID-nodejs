@@ -312,7 +312,7 @@ export async function checkForSittingTime(request) {
                     createdUser: request.createdUser,
                     sittingDate: request.sittingDate,
                     status: {
-                        [Op.or]: ['PENDING', 'ACCEPTED']
+                        [Op.or]: ['PENDING', 'CONFIRMED', 'ONGOING']
                     }
                 },
             });

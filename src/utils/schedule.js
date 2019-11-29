@@ -70,8 +70,8 @@ export function checkRequestTime(firstRequest, secondRequest) {
         flag = true;
     }
     if (
-        secondRequest.startTime < firstRequest.startTime &&
-        secondRequest.endTime < firstRequest.endTime
+        firstRequest.startTime > secondRequest.startTime &&
+        firstRequest.endTime < secondRequest.endTime
     ) {
         flag = true;
     }
