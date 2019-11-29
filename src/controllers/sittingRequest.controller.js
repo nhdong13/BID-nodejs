@@ -3,7 +3,11 @@ import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
 import { cancelMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo, reload } from '@utils/socketIo';
-import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
+import {
+    checkCheckInStatus,
+    checkCheckOutStatus,
+    checkTime,
+} from '@utils/common';
 import Scheduler from '@services/schedulerService';
 import {
     acceptSitter,
@@ -264,8 +268,6 @@ const startSittingRequest = async (req, res, next) => {
 
             // update sitting request
             let updated = await request.update({ status: 'ONGOING' });
-
-            
         }
 
         res.send(request);
@@ -333,9 +335,9 @@ const doneSittingRequest = async (req, res, next) => {
 const create = async (req, res) => {
     let newItem = req.body;
     // initial status is PENDING
-    newItem.status = 'PENDING';
 
     try {
+        newItem.status = 'PENDING';
         const newSittingReq = await models.sittingRequest.create(newItem);
         // ghi charge vao transaction
         res.send(newSittingReq);
@@ -558,16 +560,25 @@ const getOverlapRequests = async (req, res) => {
     try {
         let overlapRequests = [];
 
-        if (request) {
-            overlapRequests = await checkForSittingTime(request);
-        } else {
-            throw new Error('Sitting request is null');
+        if (checkTime(request)) {
+            // check for sitting time in the past
+            if (request) {
+                overlapRequests = await checkForSittingTime(request); // check for overlapt request
+            } else {
+                throw new Error('Sitting request is null');
+            }
         }
 
         res.send(overlapRequests);
     } catch (error) {
-        res.status(400);
-        res.send(error);
+        if (error.message == "Date time in the past.") {
+            res.status(409);
+            res.send(error);
+        }
+        else {
+            res.status(400);
+            res.send(error);
+        }
     }
 };
 

@@ -44,17 +44,14 @@ export function acceptSitter(requestId, sitterId, distance) {
                             distance,
                             t,
                         ).then((res) => {
-                            //
                             // confirm the sitter invitation
                             confirmInvitaion(requestId, sitterId, t);
                             // create sitter schedule for this sitting
                             createSchedule(request, sitterId, requestId, t);
                             // update any invitations of this babysitter that overlap with this request
                             updateInvitations(sitterId, requestId, request, t);
-
                             // notify to the accepted babysitter
                             notifyBabysitter(requestId, sitterId, t);
-
                             // expire other invitation of this request
                             return expireInvitations(requestId, sitterId, t);
                         });
@@ -315,7 +312,7 @@ export async function checkForSittingTime(request) {
                     createdUser: request.createdUser,
                     sittingDate: request.sittingDate,
                     status: {
-                        [Op.or]: ['PENDING', 'ACCEPTED']
+                        [Op.or]: ['PENDING', 'CONFIRMED', 'ONGOING']
                     }
                 },
             });
