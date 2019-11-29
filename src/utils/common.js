@@ -211,3 +211,21 @@ function timeIsInRange(time, range) {
 
     return false;
 }
+
+export function checkTime(request) {
+    if (!request) {
+        throw new Error('Invalid request.');
+    }
+
+    let start = parseToMoment(request.sittingDate, request.startTime);
+    if (start.isBefore(moment())) {
+        throw new Error('Date time in the past.');
+    }
+
+    return true;
+}
+
+function parseToMoment(date, time) {
+    let result = moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm:ss');
+    return result;
+}

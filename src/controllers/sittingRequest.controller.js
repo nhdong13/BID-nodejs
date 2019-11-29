@@ -4,7 +4,7 @@ import { recommendToParent } from '@services/recommendService';
 import { sendSingleMessage } from '@utils/pushNotification';
 import { cancelMessages, titleMessages } from '@utils/notificationMessages';
 import { testSocketIo, reload } from '@utils/socketIo';
-import { checkCheckInStatus, checkCheckOutStatus } from '@utils/common';
+import { checkCheckInStatus, checkCheckOutStatus, checkTime } from '@utils/common';
 import Scheduler from '@services/schedulerService';
 import {
     acceptSitter,
@@ -334,12 +334,14 @@ const doneSittingRequest = async (req, res, next) => {
 const create = async (req, res) => {
     let newItem = req.body;
     // initial status is PENDING
-    newItem.status = 'PENDING';
-
+    
     try {
-        const newSittingReq = await models.sittingRequest.create(newItem);
-        // ghi charge vao transaction
-        res.send(newSittingReq);
+        if (checkTime(newItem)) {
+            newItem.status = 'PENDING';
+            const newSittingReq = await models.sittingRequest.create(newItem);
+            // ghi charge vao transaction
+            res.send(newSittingReq);
+        }
     } catch (err) {
         res.status(400);
         res.send(err);
