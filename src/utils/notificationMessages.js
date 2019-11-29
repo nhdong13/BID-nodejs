@@ -34,6 +34,9 @@ export const noticeMessages = {
         'Người trông trẻ đã quá giờ check in cho một yêu cầu trông trẻ của bạn.',
     parentRequestExpired:
         'Yêu cầu trông trẻ của bạn đã hết hạn do không có lời mời nào được chấp nhận.',
+    sitterForgotToCheckout_Sitter: 'Bạn đã chưa nhận hoàn thành công việc.',
+    sitterForgotToCheckout_Parent: 'Người giữ trẻ chưa xác nhận hoàn thành công việc.',
     titleNotCheckin: 'Quá giờ check in',
     titleRequestExpired: 'Yêu cầu trông trẻ hết hạn',
+    titleForgotCheckout: 'Công việc đã kết thúc do quá giờ.',
 };

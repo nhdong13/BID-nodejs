@@ -295,7 +295,95 @@ export async function handleForgotToCheckout(requestId) {
                 },
             },
         );
+
+        notifyForgotToCheckoutParent(requestId);
+        notifyForgotToCheckoutSitter(request.acceptedBabysitter, requestId);
     }
+}
+
+async function notifyForgotToCheckoutParent(requestId) {
+    models.sittingRequest
+        .findOne({
+            where: {
+                id: requestId,
+            },
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                    include: [
+                        {
+                            model: models.tracking,
+                            as: 'tracking',
+                        },
+                    ],
+                },
+            ],
+        })
+        .then((request) => {
+            if (request) {
+                if (request.user.tracking != null) {
+                    try {
+                        const notification = {
+                            id: request.id,
+                            pushToken: request.user.tracking.token,
+                            message: noticeMessages.sitterForgotToCheckout_Parent,
+                            title: noticeMessages.titleForgotCheckout,
+                            option: {
+                                showConfirm: false,
+                                textConfirm: '',
+                                showCancel: true,
+                                textCancel: 'Đóng',
+                            }
+                        };
+                        sendSingleMessage(notification);
+                    } catch (error) {}
+                }
+            }
+        });
+}
+
+async function notifyForgotToCheckoutSitter(sitterId, requestId) {
+    models.invitation
+        .findOne({
+            where: {
+                receiver: sitterId,
+                requestId: requestId,
+            },
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                    include: [
+                        {
+                            model: models.tracking,
+                            as: 'tracking',
+                        },
+                    ],
+                },
+            ],
+        })
+        .then((invitation) => {
+            if (invitation) {
+                if (invitation.user.tracking != null) {
+                    try {
+                        const notification = {
+                            id: invitation.id,
+                            pushToken: invitation.user.tracking.token,
+                            message: noticeMessages.sitterForgotToCheckout_Sitter,
+                            title: noticeMessages.titleForgotCheckout,
+                            option: {
+                                showConfirm: false,
+                                textConfirm: '',
+                                showCancel: true,
+                                textCancel: 'Đóng',
+                            }
+                        };
+                        sendSingleMessage(notification);
+                    } catch (error) {}
+                }
+            }
+        });
 }
 
 export async function checkForSittingTime(request) {
@@ -385,6 +473,12 @@ async function notifyParentCheckin(requestId) {
                             pushToken: request.user.tracking.token,
                             message: noticeMessages.sitterNotCheckin_Parent,
                             title: noticeMessages.titleNotCheckin,
+                            option: {
+                                showConfirm: false,
+                                textConfirm: '',
+                                showCancel: true,
+                                textCancel: 'Đóng',
+                            }
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -422,6 +516,12 @@ async function notifyBabysitterCheckin(sitterId, requestId) {
                             pushToken: invitation.user.tracking.token,
                             message: noticeMessages.sitterNotCheckin_Sitter,
                             title: noticeMessages.titleNotCheckin,
+                            option: {
+                                showConfirm: false,
+                                textConfirm: '',
+                                showCancel: true,
+                                textCancel: 'Đóng',
+                            }
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -484,6 +584,12 @@ function notifyRequestExpired(request) {
                     pushToken: request.user.tracking.token,
                     message: noticeMessages.parentRequestExpired,
                     title: noticeMessages.titleRequestExpired,
+                    options: {
+                        showConfirm: false,
+                        textConfirm: '',
+                        showCancel: true,
+                        textCancel: 'Đóng',
+                    }
                 };
                 sendSingleMessage(notification);
             } catch (error) {}
