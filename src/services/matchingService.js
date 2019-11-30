@@ -6,7 +6,7 @@ import {
 } from '@utils/schedule';
 import { checkSittingTime, dateInRange } from '@utils/common';
 import env, { checkEnvLoaded } from '@utils/env';
-import Config from '@services/configService'
+import Config from '@services/configService';
 
 checkEnvLoaded();
 const { apiKey } = env;
@@ -21,7 +21,6 @@ const mapsClient = googleMaps.createClient({
     Promise: Promise, // enable promise request
 });
 
-
 /**
  * matching parent's sitting request with available babysitter
  * @param  {sittingRequest} sittingRequestresponse
@@ -29,11 +28,14 @@ const mapsClient = googleMaps.createClient({
  */
 export async function matching(sittingRequest) {
     console.log('------------------------Matching------------------------');
-    
+
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
 
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
+
+    // check against babysitter schedules
+    matchedList = checkAgainstSchedules(sittingRequest, matchedList);
 
     // calculate distance with api Google
     // matchedList = await getBabysitterDistance(
@@ -46,9 +48,6 @@ export async function matching(sittingRequest) {
         sittingRequest.sittingAddress,
         matchedList,
     );
-
-    // check against babysitter schedules
-    matchedList = checkAgainstSchedules(sittingRequest, matchedList);
 
     // only run if this request is created (has id)
     if (
@@ -316,4 +315,3 @@ function checkAgainstSchedules(request, babysitters) {
 
     return matchedList;
 }
-
