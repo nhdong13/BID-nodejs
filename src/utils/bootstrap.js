@@ -129,6 +129,8 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
+        firstTime: false,
+        secret: 'KRUHQODBKI6GQKTFGFXFGT2FNM7D6SZJ',
     };
     users.push(user);
 

@@ -268,6 +268,22 @@ const startSittingRequest = async (req, res, next) => {
 
             // update sitting request
             let updated = await request.update({ status: 'ONGOING' });
+
+            if (updated) {
+                let schedule = await models.schedule.findOne({
+                    where: {
+                        requestId: requestId,
+                        userId: sitterId,
+                    },
+                });
+
+                if (schedule) {
+                    Scheduler.createCheckoutPoint(
+                        requestId,
+                        schedule.scheduleTime,
+                    );
+                }
+            }
         }
 
         res.send(request);
@@ -316,10 +332,6 @@ const doneSittingRequest = async (req, res, next) => {
                     await schedule.update({
                         type: 'DONE',
                     });
-                    Scheduler.createCheckoutPoint(
-                        requestId,
-                        schedule.scheduleTime,
-                    );
                 }
             }
         }
@@ -571,11 +583,10 @@ const getOverlapRequests = async (req, res) => {
 
         res.send(overlapRequests);
     } catch (error) {
-        if (error.message == "Date time in the past.") {
+        if (error.message == 'Date time in the past.') {
             res.status(409);
             res.send(error);
-        }
-        else {
+        } else {
             res.status(400);
             res.send(error);
         }

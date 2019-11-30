@@ -4,7 +4,7 @@ const list = async (req, res, next) => {
     const listTrackings = await models.tracking.findAll();
     res.send(listTrackings);
 };
-
+// xu ly o day dem so token voi async token
 const create = async (req, res) => {
     const newItem = req.body;
 
@@ -21,6 +21,7 @@ const create = async (req, res) => {
                 },
             })
             .then((result) => {
+                console.log('PHUC: create -> result', result);
                 const created = result[1];
                 if (!created) {
                     res.status(400);
