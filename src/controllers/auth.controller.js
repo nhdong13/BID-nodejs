@@ -10,12 +10,6 @@ const login = async (req, res) => {
             where: {
                 phoneNumber,
             },
-            include: [
-                {
-                    model: models.tracking,
-                    as: 'tracking',
-                },
-            ],
         });
 
         if (user) {
