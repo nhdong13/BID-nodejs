@@ -27,6 +27,7 @@ export async function insertDatabase() {
             roleName: 'staff',
         },
     ]);
+    let image = new Images();
 
     // seed users
     let users = [];
@@ -34,7 +35,7 @@ export async function insertDatabase() {
     //#region seed parents here
     // parent
     let user = {
-        phoneNumber: '01',
+        phoneNumber: '0965474201',
         email: 'phduongse@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Pham Hai Duong',
@@ -47,7 +48,7 @@ export async function insertDatabase() {
 
     // parent
     user = {
-        phoneNumber: '02',
+        phoneNumber: '0965474202',
         email: 'phuc@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Phung Thien Phuc',
@@ -59,12 +60,13 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
+        image: image.user4,
     };
     users.push(user);
 
     // parent
     user = {
-        phoneNumber: '03',
+        phoneNumber: '0965474203',
         email: 'dong3@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'DongParent',
@@ -81,7 +83,7 @@ export async function insertDatabase() {
 
     // Mr Khanh
     user = {
-        phoneNumber: '04',
+        phoneNumber: '0965474204',
         email: 'Khanh@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'MR.Khanh',
@@ -93,6 +95,7 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
+        image: image.user3,
     };
     users.push(user);
     //#endregion
@@ -100,7 +103,7 @@ export async function insertDatabase() {
     //#region seed babysitter here
     // sitter
     user = {
-        phoneNumber: '05',
+        phoneNumber: '0965474205',
         email: 'dong4@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Hoang Nhat Dong',
@@ -114,12 +117,13 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
+        image: image.user2,
     };
     users.push(user);
 
     // sitter
     user = {
-        phoneNumber: '06',
+        phoneNumber: '0965474206',
         email: 'ky@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Ho Tan Ky',
@@ -133,12 +137,13 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
+        image: image.user4,
     };
     users.push(user);
 
     // sitter
     user = {
-        phoneNumber: '07',
+        phoneNumber: '0965474207',
         email: 'duong@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Duong Chi Dai',
@@ -177,35 +182,6 @@ export async function insertDatabase() {
         'Tô Ký, Quận 12, Hồ Chí Minh, Vietnam',
     ];
 
-    //
-    // for (let index = 0; index < 5; index++) {
-    //     let firstName =
-    //         listName[Math.floor(Math.random() * (listName.length - 1))];
-    //     let lastName =
-    //         listName[Math.floor(Math.random() * (listName.length - 1))];
-    //     let address =
-    //         listAddress[Math.floor(Math.random() * (listAddress.length - 1))];
-    //     let houseNumber = Math.floor(Math.random() * 200);
-
-    //     let user = {
-    //         phoneNumber: index + 5,
-    //         email: lastName + firstName + index + "@gmail.com",
-    //         password: await hashPassword("12341234"),
-    //         nickname: lastName + " " + firstName,
-    //         address: houseNumber + ", " + address,
-    //         gender: index%2 ? "FEMALE": 'MALE',
-    //         dateOfBirth: moment().set({
-    //             year: Math.floor(Math.random() * (2000 - 1980)) + 1980,
-    //             month: Math.floor(Math.random() * 11),
-    //             date: Math.floor(Math.random() * 28)
-    //         }),
-    //         roleId: 3
-    //     };
-
-    //     users.push(user);
-    // }
-    //#endregion
-
     // start seeding users
     db.user
         .bulkCreate(users)
@@ -215,9 +191,9 @@ export async function insertDatabase() {
                 {
                     userId: 2,
                     token: 'ExponentPushToken[3GB2hTGpcFzIRHCKEJJqwm]',
-                    customerId: 'cus_GHMMT2unSU5vaS',
-                    balance: 0,
-                    cardId: 'card_1FkndSCfPfiUgoF22sEZ02Fn',
+                    // customerId: '',
+                    // balance: 0,
+                    // cardId: '',
                 },
                 {
                     userId: 4,
