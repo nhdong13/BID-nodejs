@@ -4,6 +4,7 @@ import io from 'socket.io-client';
 let expo = new Expo();
 
 export async function sendSingleMessage(notification) {
+    console.log('PHUC: sendSingleMessage -> notification', notification);
     if (!Expo.isExpoPushToken(notification.pushToken.trim())) {
         console.error(
             `Push token ${notification.pushToken} is not a valid Expo push token`,
@@ -19,6 +20,7 @@ export async function sendSingleMessage(notification) {
             id: notification.id,
             message: notification.message,
             title: notification.title,
+            option: notification.option,
         },
     };
 

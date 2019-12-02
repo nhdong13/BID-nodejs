@@ -239,6 +239,12 @@ function remindBabysitter(sitterId, requestId) {
                             pushToken: invitation.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
                             title: titleReminderMessages.sitterUpcommingSitting,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -275,6 +281,12 @@ function remindParent(requestId) {
                             pushToken: request.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
                             title: titleReminderMessages.sitterUpcommingSitting,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}

@@ -112,6 +112,8 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
+        firstTime: false,
+        secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
     };
     users.push(user);
 
@@ -130,7 +132,7 @@ export async function insertDatabase() {
         }),
         roleId: 3,
         firstTime: false,
-        secret: 'KRUHQODBKI6GQKTFGFXFGT2FNM7D6SZJ',
+        secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
     };
     users.push(user);
 
@@ -209,13 +211,30 @@ export async function insertDatabase() {
         .bulkCreate(users)
         // after creating users
         .then((result) => {
-            // db.tracking.create({
-            //     userId: 4,
-            //     token: '',
-            //     customerId: 'cus_GAezypenSHLAud',
-            //     balance: 0,
-            //     cardId: 'card_1FeJf8CfPfiUgoF2bQez8Vnm',
-            // });
+            db.tracking.bulkCreate([
+                {
+                    userId: 2,
+                    token: 'ExponentPushToken[3GB2hTGpcFzIRHCKEJJqwm]',
+                    customerId: 'cus_GHMMT2unSU5vaS',
+                    balance: 0,
+                    cardId: 'card_1FkndSCfPfiUgoF22sEZ02Fn',
+                },
+                {
+                    userId: 4,
+                    token: 'ExponentPushToken[c2MUnqCLiIEKIuiPo3Xfip]',
+                    customerId: 'cus_GHMQ9bCgS16EpV',
+                    balance: 0,
+                    cardId: 'card_1FknhMCfPfiUgoF2J7QkLlJO',
+                },
+                {
+                    userId: 5,
+                    token: 'ExponentPushToken[k6-UsUIE9oT2Zr8R2qbIlC]',
+                },
+                {
+                    userId: 6,
+                    token: 'ExponentPushToken[fyRIwRHp3ZajYB-b1odwGb]',
+                },
+            ]);
             //#region seed parent based on user and seed circle of parent
             // get parents from the result of creating user
             let userParents = result.filter((user) => user.roleId == 2);

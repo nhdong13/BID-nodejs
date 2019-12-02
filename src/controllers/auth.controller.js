@@ -69,16 +69,13 @@ const checkOtp = async (req, res) => {
             where: {
                 phoneNumber,
             },
-            include: [
-                {
-                    model: models.tracking,
-                    as: 'tracking',
-                },
-            ],
         });
 
         if (user) {
             const { id: userId, roleId, secret } = user;
+            console.log('PHUC: checkOtp -> user', user);
+            console.log('PHUC: checkOtp -> secret', secret);
+            console.log('PHUC: checkOtp -> otp', otp);
 
             const tokenValidates = speakeasy.totp.verify({
                 secret: secret,
