@@ -2,12 +2,21 @@ export default function(sequelize, DataTypes) {
     const pricing = sequelize.define(
         'pricing', // Model Name
         {
-            amount: {
+            baseAmount: {
                 type: DataTypes.FLOAT,
             },
-            type: {
-                type: DataTypes.ENUM,
+            overtime: {
+                type: DataTypes.FLOAT,
             },
+            holiday: {
+                type: DataTypes.FLOAT,
+            },
+            type: DataTypes.ENUM(
+                'BASE',
+                'UNDER_6_MONTHS',
+                'UNDER_18_MONTHS',
+                'UNDER_6_YEARS',
+            ),
         },
         {
             timestamps: true,

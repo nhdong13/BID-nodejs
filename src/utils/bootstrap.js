@@ -593,8 +593,6 @@ export async function insertDatabase() {
     let configs = [];
 
     let config = {
-        price: 100000,
-        description: 'Base',
         remindBeforeDuration_0: 1,
         remindBeforeDuration_1: 7,
         checkinTimeout: 1,
@@ -610,34 +608,46 @@ export async function insertDatabase() {
 
     configs.push(config);
 
-    config = {
-        price: 150000,
-        date: moment().set({ year: 2019, month: 9, date: 24 }),
-        startTime: moment()
-            .set({ hour: 17, minute: 0, second: 0 })
-            .format('HH:mm:ss'),
-        endTime: moment()
-            .set({ hour: 18, minute: 0, second: 0 })
-            .format('HH:mm:ss'),
-    };
-
-    configs.push(config);
-
-    for (let index = 20; index < 30; index++) {
-        let config = {
-            price: 150000,
-            date: moment().set({ year: 2019, month: 9, date: index }),
-            startTime: moment()
-                .set({ hour: 17, minute: 0, second: 0 })
-                .format('HH:mm:ss'),
-            endTime: moment()
-                .set({ hour: 18, minute: 0, second: 0 })
-                .format('HH:mm:ss'),
-        };
-
-        configs.push(config);
-    }
     db.configuration.bulkCreate(configs).then(async () => {
-        console.log(await Config.getInstance());
+        await Config.getInstance();
     });
+
+
+    //#region PRICING
+    let pricings = [];
+
+    let pricing = {
+        baseAmount: '100000', // 100,000 VND
+        overtime: 2,
+        holiday: 3,
+        type: 'BASE'
+    };
+    pricings.push(pricing);
+
+    pricing = {
+        baseAmount: '100000', // 100,000 VND
+        overtime: 2,
+        holiday: 3,
+        type: 'UNDER_6_YEARS'
+    }
+    pricings.push(pricing);
+
+    pricing = {
+        baseAmount: '150000', // 150,000 VND
+        overtime: 2,
+        holiday: 3,
+        type: 'UNDER_18_MONTHS'
+    }
+    pricings.push(pricing);
+
+    pricing = {
+        baseAmount: '200000', // 200,000 VND
+        overtime: 2,
+        holiday: 3,
+        type: 'UNDER_6_MONTHS'
+    }
+    pricings.push(pricing);
+
+    db.pricing.bulkCreate(pricings);
+    //#endregion
 }

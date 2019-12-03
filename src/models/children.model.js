@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
                 allowNull: true
             },
             age: {
-                type: DataTypes.INTEGER,
+                type: DataTypes.FLOAT,
                 allowNull: false
             },
             image: {
