@@ -161,9 +161,13 @@ function getWeekRange(range) {
  * @returns {Boolean}
  */
 export function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
+    // neu co thoi gian thi sua lai cho nay su dung moment de kiem tra
+    // so string ko biet la no co so dung ko
     let flag = false;
     let daytime = splitTimeRange(bDaytime);
+    // console.log('PHUC: checkSittingTime -> daytime', daytime);
     let evening = splitTimeRange(bEvening);
+    // console.log('PHUC: checkSittingTime -> evening', evening);
     let combine = null;
 
     // if daytime end equal evening time start then combine work time to daytime start and evening end
@@ -201,6 +205,8 @@ export function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
  * @returns {Boolean}
  */
 function timeIsInRange(time, range) {
+    console.log('PHUC: timeIsInRange -> range', range);
+    console.log('PHUC: timeIsInRange -> time', time);
     if (range == null) {
         return false;
     }

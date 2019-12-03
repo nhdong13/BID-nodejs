@@ -13,6 +13,7 @@ import {
     acceptSitter,
     checkForSittingTime,
 } from '@services/sittingRequestService';
+import moment from 'moment';
 
 const stripe = require('stripe')('sk_test_ZW2xmoQCisq5XvosIf4zW2aU00GaOtz9q3');
 
@@ -257,6 +258,7 @@ const startSittingRequest = async (req, res, next) => {
                 models.sittingRequest.update(
                     {
                         status: 'DONE_BY_NEWSTART',
+                        checkoutTime: new moment(),
                     },
                     {
                         where: {
@@ -267,7 +269,10 @@ const startSittingRequest = async (req, res, next) => {
             }
 
             // update sitting request
-            let updated = await request.update({ status: 'ONGOING' });
+            let updated = await request.update({
+                status: 'ONGOING',
+                checkinTime: new moment(),
+            });
 
             if (updated) {
                 let schedule = await models.schedule.findOne({
@@ -312,7 +317,7 @@ const doneSittingRequest = async (req, res, next) => {
         ) {
             // update sitting request
             let updated = await models.sittingRequest.update(
-                { status: 'DONE' },
+                { status: 'DONE', checkoutTime: new moment() },
                 {
                     where: {
                         id: requestId,
