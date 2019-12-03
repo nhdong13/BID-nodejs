@@ -38,16 +38,16 @@ export async function matching(sittingRequest) {
     matchedList = checkAgainstSchedules(sittingRequest, matchedList);
 
     // calculate distance with api Google
-    matchedList = await getBabysitterDistance(
-        sittingRequest.sittingAddress,
-        matchedList,
-    );
-
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
+    // matchedList = await getBabysitterDistance(
     //     sittingRequest.sittingAddress,
     //     matchedList,
     // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
+        sittingRequest.sittingAddress,
+        matchedList,
+    );
 
     // only run if this request is created (has id)
     if (
@@ -153,7 +153,8 @@ async function randomizeDistance(sittingAddress, listOfSitter) {
         let distance = await parseFloat(sitter.userId / 10).toFixed(1);
 
         if (distance < 1) {
-            sitter.distance = distance;
+            sitter.distance = `${distance} km`;
+            // sitter.distance = distance;
             matchedList.push(sitter);
         }
     });
