@@ -12,6 +12,7 @@ import {
 import Scheduler from '@services/schedulerService';
 import Sequelize, { Op } from 'sequelize';
 import env, { checkEnvLoaded } from '@utils/env';
+import { titleMessages } from '@utils/notificationMessages';
 
 checkEnvLoaded();
 const { dbHost, dbUser, dbPass, dbName, dbDialect } = env;
@@ -218,8 +219,15 @@ function notifyBabysitter(requestId, sitterId, transaction) {
                         const notification = {
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
+                            title: titleMessages.parentAcceptedBabysitter,
                             message:
                                 invitationMessages.parentAcceptedBabysitter,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
                         };
                         sendSingleMessage(notification);
                     }
@@ -235,7 +243,7 @@ function expireInvitations(requestId, sitterId, transaction) {
             requestId: requestId,
         },
     };
-    
+
     if (typeof sitterId !== 'undefined' && typeof transaction !== 'undefined') {
         selector = {
             where: {
@@ -327,14 +335,15 @@ async function notifyForgotToCheckoutParent(requestId) {
                         const notification = {
                             id: request.id,
                             pushToken: request.user.tracking.token,
-                            message: noticeMessages.sitterForgotToCheckout_Parent,
+                            message:
+                                noticeMessages.sitterForgotToCheckout_Parent,
                             title: noticeMessages.titleForgotCheckout,
                             option: {
                                 showConfirm: false,
                                 textConfirm: '',
                                 showCancel: true,
                                 textCancel: 'Đóng',
-                            }
+                            },
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -370,14 +379,15 @@ async function notifyForgotToCheckoutSitter(sitterId, requestId) {
                         const notification = {
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
-                            message: noticeMessages.sitterForgotToCheckout_Sitter,
+                            message:
+                                noticeMessages.sitterForgotToCheckout_Sitter,
                             title: noticeMessages.titleForgotCheckout,
                             option: {
                                 showConfirm: false,
                                 textConfirm: '',
                                 showCancel: true,
                                 textCancel: 'Đóng',
-                            }
+                            },
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -400,8 +410,8 @@ export async function checkForSittingTime(request) {
                     createdUser: request.createdUser,
                     sittingDate: request.sittingDate,
                     status: {
-                        [Op.or]: ['PENDING', 'CONFIRMED', 'ONGOING']
-                    }
+                        [Op.or]: ['PENDING', 'CONFIRMED', 'ONGOING'],
+                    },
                 },
             });
 
@@ -478,7 +488,7 @@ async function notifyParentCheckin(requestId) {
                                 textConfirm: '',
                                 showCancel: true,
                                 textCancel: 'Đóng',
-                            }
+                            },
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -521,7 +531,7 @@ async function notifyBabysitterCheckin(sitterId, requestId) {
                                 textConfirm: '',
                                 showCancel: true,
                                 textCancel: 'Đóng',
-                            }
+                            },
                         };
                         sendSingleMessage(notification);
                     } catch (error) {}
@@ -584,12 +594,12 @@ function notifyRequestExpired(request) {
                     pushToken: request.user.tracking.token,
                     message: noticeMessages.parentRequestExpired,
                     title: noticeMessages.titleRequestExpired,
-                    options: {
+                    option: {
                         showConfirm: false,
                         textConfirm: '',
                         showCancel: true,
                         textCancel: 'Đóng',
-                    }
+                    },
                 };
                 sendSingleMessage(notification);
             } catch (error) {}
