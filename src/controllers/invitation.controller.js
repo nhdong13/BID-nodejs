@@ -103,6 +103,12 @@ const create = async (req, res) => {
                         pushToken: tracking.token,
                         message: invitationMessages.parentSendInvitation,
                         title: titleMessages.parentSendInvitation,
+                        option: {
+                            showConfirm: true,
+                            textConfirm: 'Tiếp tục',
+                            showCancel: true,
+                            textCancel: 'Ẩn',
+                        },
                     };
                     console.log(
                         'PHUC: Invitation.controller -> create -> notification',
@@ -205,6 +211,12 @@ const update = async (req, res) => {
                     message: invitationMessages.babysitterAccepted,
                     id: invitation.requestId,
                     title: titleMessages.babysitterAccepted,
+                    option: {
+                        showConfirm: true,
+                        textConfirm: 'Tiếp tục',
+                        showCancel: true,
+                        textCancel: 'Ẩn',
+                    },
                 };
 
                 sendSingleMessage(notification);

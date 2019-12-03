@@ -39,7 +39,15 @@ export default function(sequelize, DataTypes) {
             },
             image: {
                 type: DataTypes.TEXT('long'),
-                allowNull: true
+                allowNull: true,
+            },
+            firstTime: {
+                type: DataTypes.BOOLEAN,
+                defaultValue: true,
+            },
+            secret: {
+                type: DataTypes.STRING,
+                allowNull: true,
             },
         },
         {
