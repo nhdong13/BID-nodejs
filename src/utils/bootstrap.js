@@ -27,7 +27,6 @@ export async function insertDatabase() {
             roleName: 'staff',
         },
     ]);
-    let image = new Images();
 
     // seed users
     let users = [];
@@ -60,7 +59,7 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
-        image: image.user4,
+        image: Images.user4,
     };
     users.push(user);
 
@@ -95,7 +94,7 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
-        image: image.user3,
+        image: Images.user3,
     };
     users.push(user);
     //#endregion
@@ -117,7 +116,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
-        image: image.user2,
+        image: Images.user2,
     };
     users.push(user);
 
@@ -137,7 +136,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
-        image: image.user4,
+        image: Images.user4,
     };
     users.push(user);
 
@@ -251,49 +250,48 @@ export async function insertDatabase() {
                     ]);
                     //#endregion
                     //seed children
-                    let image = new Images();
                     db.children.bulkCreate([
                         {
                             name: 'Phong',
                             age: 1,
                             parentId: 4,
-                            image: image.img1,
+                            image: Images.img1,
                         },
                         {
                             name: 'Quân',
                             age: 2,
                             parentId: 4,
-                            image: image.img2,
+                            image: Images.img2,
                         },
                         {
                             name: 'Trang',
                             age: 3,
                             parentId: 4,
-                            image: image.img3,
+                            image: Images.img3,
                         },
                         {
                             name: 'Linh',
                             age: 1,
                             parentId: 3,
-                            image: image.img4,
+                            image: Images.img4,
                         },
                         {
                             name: 'Dương Jr',
                             age: 1,
                             parentId: 1,
-                            image: image.img4,
+                            image: Images.img4,
                         },
                         {
                             name: 'Vy',
                             age: 4,
                             parentId: 2,
-                            image: image.img2,
+                            image: Images.img2,
                         },
                         {
                             name: 'Nguyên',
                             age: 7,
                             parentId: 2,
-                            image: image.img3,
+                            image: Images.img3,
                         },
                     ]);
                 });
