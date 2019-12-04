@@ -604,6 +604,8 @@ export async function insertDatabase() {
         distanceWeight: 0.1,
         minimumFeedback: 5,
         refundPercentage: 90,
+        officeHourStart: '08:00',
+        officeHourEnd: '17:00',
     };
 
     configs.push(config);
@@ -612,7 +614,6 @@ export async function insertDatabase() {
         await Config.getInstance();
     });
 
-
     //#region PRICING
     let pricings = [];
 
@@ -620,7 +621,7 @@ export async function insertDatabase() {
         baseAmount: '100000', // 100,000 VND
         overtime: 2,
         holiday: 3,
-        type: 'BASE'
+        type: 'BASE',
     };
     pricings.push(pricing);
 
@@ -628,26 +629,104 @@ export async function insertDatabase() {
         baseAmount: '100000', // 100,000 VND
         overtime: 2,
         holiday: 3,
-        type: 'UNDER_6_YEARS'
-    }
+        type: 'UNDER_6_YEARS',
+    };
     pricings.push(pricing);
 
     pricing = {
         baseAmount: '150000', // 150,000 VND
         overtime: 2,
         holiday: 3,
-        type: 'UNDER_18_MONTHS'
-    }
+        type: 'UNDER_18_MONTHS',
+    };
     pricings.push(pricing);
 
     pricing = {
         baseAmount: '200000', // 200,000 VND
         overtime: 2,
         holiday: 3,
-        type: 'UNDER_6_MONTHS'
-    }
+        type: 'UNDER_6_MONTHS',
+    };
     pricings.push(pricing);
 
     db.pricing.bulkCreate(pricings);
+    //#endregion
+
+    //#region holiday
+    let holidays = [];
+
+    let holiday = {
+        date: '01/01',
+        description: 'Tết Dương Lịch',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '30/04',
+        description: 'Ngày Chiến thắng 30/04',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '01/05',
+        description: 'Ngày quốc tế lao động',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '02/09',
+        description: 'Ngày Quốc Khánh',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '23/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '24/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '25/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '26/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '27/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '28/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '29/01',
+        description: 'Tết Âm 2020',
+    };
+    holidays.push(holiday);
+
+    holiday = {
+        date: '02/04',
+        description: 'Giỗ tổ Hùng Vương 2020',
+    };
+    holidays.push(holiday);
+
+    db.holiday.bulkCreate(holidays);
     //#endregion
 }

@@ -35,6 +35,12 @@ export default function(sequelize, DataTypes) {
             refundPercentage: {
                 type: DataTypes.INTEGER,
             },
+            officeHourStart: {
+                type: DataTypes.STRING,
+            },
+            officeHourEnd: {
+                type: DataTypes.STRING,
+            },
         },
         {
             timestamps: true,
