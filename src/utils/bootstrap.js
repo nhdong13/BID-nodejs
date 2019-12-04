@@ -30,9 +30,23 @@ export async function insertDatabase() {
 
     // seed users
     let users = [];
+    // images
+    // user 1 - nu -
+    // user 2 - nu - dong parent
+    // user 3 - nam - pham hai duong
+    // user 4 - nu
+    // user 5 - nu - Duong Chi dai
+    // user 6 - nu - Ho Tan Ky
+    // user 7 - nam - Huynh minh tu
+    // user 8 - nu -
+    // user 9 - nu - phung thien phuc
+    // user 10 - nam
+    // user 11 - nam - Hoang Nhat dong
+    // user 12 - nam - Mr.K
 
     //#region seed parents here
     // parent
+
     let user = {
         phoneNumber: '0965474201',
         email: 'phduongse@gmail.com',
@@ -69,9 +83,9 @@ export async function insertDatabase() {
         phoneNumber: '0965474203',
         email: 'dong3@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'DongParent',
+        nickname: 'Dong Parent',
         address: '102 Tran Thi Co, Phường 16, Q12, Hồ Chí Minh, Vietnam',
-        gender: 'MALE',
+        gender: 'FEMALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
             month: randomInt(0, 11),
@@ -103,17 +117,7 @@ export async function insertDatabase() {
 
     //#region seed babysitter here
     // sitter
-    //user 1 - nu
-    //user 2 - nu
-    //user 3 - nam 
-    //user 4 - nu
-    //user 5 - nu
-    //user 6 - nu
-    //user 7 - nam
-    //user 8 - nu
-    //user 9 - nu
-    //user 10 - nam
-    //user 11 - nam
+
     user = {
         phoneNumber: '0965474205',
         email: 'dong4@gmail.com',
@@ -129,44 +133,6 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
-        image: Images.user11,
-    };
-    users.push(user);
-
-    user = {
-        phoneNumber: '096547420tt',
-        email: 'dong4@gmail.comtt',
-        password: await hashPassword('12341234'),
-        nickname: 'Hoang Nhat Dongtt',
-        address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnamtt',
-        gender: 'MALE',
-        dateOfBirth: moment().set({
-            year: randomInt(1990, 2000),
-            month: randomInt(0, 11),
-            date: randomInt(1, 28),
-        }),
-        roleId: 3,
-        firstTime: false,
-        secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BWt',
-        image: Images.user11,
-    };
-    users.push(user);
-
-    user = {
-        phoneNumber: '096547420t',
-        email: 'dong4@gmail.comt',
-        password: await hashPassword('12341234'),
-        nickname: 'Hoang Nhat Dongt',
-        address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnamt',
-        gender: 'MALE',
-        dateOfBirth: moment().set({
-            year: randomInt(1990, 2000),
-            month: randomInt(0, 11),
-            date: randomInt(1, 28),
-        }),
-        roleId: 3,
-        firstTime: false,
-        secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BWt',
         image: Images.user11,
     };
     users.push(user);
@@ -206,6 +172,42 @@ export async function insertDatabase() {
         }),
         roleId: 3,
         image: Images.user5,
+    };
+    users.push(user);
+
+    user = {
+        phoneNumber: '0965474208',
+        email: 'vyvly@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'Vy Le Yen Vy',
+        address: '300 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'FEMALE',
+        dateOfBirth: moment().set({
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28),
+        }),
+        roleId: 3,
+        firstTime: true,
+        image: Images.user4,
+    };
+    users.push(user);
+
+    user = {
+        phoneNumber: '0965474209',
+        email: 'mrhmt@gmail.com',
+        password: await hashPassword('12341234'),
+        nickname: 'Huynh Minh Tu',
+        address: '1002 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        gender: 'MALE',
+        dateOfBirth: moment().set({
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28),
+        }),
+        roleId: 3,
+        firstTime: true,
+        image: Images.user7,
     };
     users.push(user);
     //#endregion
