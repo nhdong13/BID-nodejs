@@ -1,11 +1,11 @@
 import express from "express";
-import controller from "@controllers/configuration.controller";
+import controller from "@controllers/holiday.controller";
 
 const router = express.Router();
 
-router.route("/changeSystemTime").post(controller.changeSystemTime);
-router.route("/").get(controller.readFirst);
+router.route("/").get(controller.list);
 router.route("/").post(controller.create);
+router.route("/:id").get(controller.read);
 router.route("/:id").put(controller.update);
 router.route("/:id").delete(controller.destroy);
 

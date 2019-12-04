@@ -2,21 +2,6 @@ export default function(sequelize, DataTypes) {
     const configuration = sequelize.define(
         'configuration', // Model Name
         {
-            date: {
-                type: DataTypes.DATEONLY,
-            },
-            startTime: {
-                type: DataTypes.TIME,
-            },
-            endTime: {
-                type: DataTypes.TIME,
-            },
-            description: {
-                type: DataTypes.STRING,
-            },
-            price: {
-                type: DataTypes.INTEGER,
-            },
             remindBeforeDuration_0: {
                 type: DataTypes.INTEGER,
             },
@@ -49,6 +34,12 @@ export default function(sequelize, DataTypes) {
             },
             refundPercentage: {
                 type: DataTypes.INTEGER,
+            },
+            officeHourStart: {
+                type: DataTypes.STRING,
+            },
+            officeHourEnd: {
+                type: DataTypes.STRING,
             },
         },
         {
