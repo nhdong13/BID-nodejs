@@ -44,36 +44,11 @@ const create = async (req, res) => {
     }
 };
 
-const getPriceByDate = async (req, res) => {
-    let date = req.params.id;
-    try {
-        let response = {};
-        const prices = await models.configuration
-            .findAll({
-                where: {
-                    [Sequelize.Op.or]: [{ date: date }, { date: null }],
-                },
-            })
-            .then((res) => {
-                res.forEach((item) => {
-                    if (item.date == null) response['base'] = item.price;
-                    else {
-                        let key = item.startTime[0] + item.startTime[1];
-                        response[key] = item.price;
-                    }
-                });
-            });
-        res.send(response);
-    } catch (err) {
-        console.log(err);
-        res.status(400);
-        res.send(err);
-    }
-};
-
 const readFirst = async (req, res) => {
     try {
-        const response = await models.configuration.findOne({where: {id: 1},})
+        const response = await models.configuration.findOne({
+            where: { id: 1 },
+        });
         res.send(response);
     } catch (err) {
         // console.log(err)
@@ -125,6 +100,6 @@ export default {
     list,
     create,
     destroy,
-    update,readFirst,
-    getPriceByDate,
+    update,
+    readFirst,
 };
