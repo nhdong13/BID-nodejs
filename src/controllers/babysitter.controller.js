@@ -3,7 +3,16 @@ import { hashPassword } from '@utils/hash';
 import { checkSittingTime, dateInRange } from '@utils/common';
 
 const list = async (req, res, next) => {
-    const listSitters = await models.sitter.findAll();
+    const listSitters = await models.babysitter.findAll({
+        where: {},
+        include: [
+            {
+                model: models.user,
+                as: 'user',
+            },
+        ],
+    });
+    res.status(200);
     res.send(listSitters);
 };
 

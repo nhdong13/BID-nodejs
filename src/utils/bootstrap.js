@@ -42,6 +42,7 @@ export async function insertDatabase() {
         gender: 'MALE',
         dateOfBirth: moment().set({ year: 1997, month: 7, date: 19 }),
         roleId: 2,
+        image: Images.user3,
     };
     users.push(user);
 
@@ -59,7 +60,7 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
-        image: Images.user4,
+        image: Images.user9,
     };
     users.push(user);
 
@@ -77,6 +78,7 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
+        image: Images.user2,
     };
     users.push(user);
 
@@ -85,7 +87,7 @@ export async function insertDatabase() {
         phoneNumber: '0965474204',
         email: 'Khanh@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'MR.Khanh',
+        nickname: 'Mr.K',
         address: '682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -94,13 +96,24 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 2,
-        image: Images.user3,
+        image: Images.user12,
     };
     users.push(user);
     //#endregion
 
     //#region seed babysitter here
     // sitter
+    //user 1 - nu
+    //user 2 - nu
+    //user 3 - nam 
+    //user 4 - nu
+    //user 5 - nu
+    //user 6 - nu
+    //user 7 - nam
+    //user 8 - nu
+    //user 9 - nu
+    //user 10 - nam
+    //user 11 - nam
     user = {
         phoneNumber: '0965474205',
         email: 'dong4@gmail.com',
@@ -116,7 +129,45 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
-        image: Images.user2,
+        image: Images.user11,
+    };
+    users.push(user);
+
+    user = {
+        phoneNumber: '096547420tt',
+        email: 'dong4@gmail.comtt',
+        password: await hashPassword('12341234'),
+        nickname: 'Hoang Nhat Dongtt',
+        address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnamtt',
+        gender: 'MALE',
+        dateOfBirth: moment().set({
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28),
+        }),
+        roleId: 3,
+        firstTime: false,
+        secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BWt',
+        image: Images.user11,
+    };
+    users.push(user);
+
+    user = {
+        phoneNumber: '096547420t',
+        email: 'dong4@gmail.comt',
+        password: await hashPassword('12341234'),
+        nickname: 'Hoang Nhat Dongt',
+        address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnamt',
+        gender: 'MALE',
+        dateOfBirth: moment().set({
+            year: randomInt(1990, 2000),
+            month: randomInt(0, 11),
+            date: randomInt(1, 28),
+        }),
+        roleId: 3,
+        firstTime: false,
+        secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BWt',
+        image: Images.user11,
     };
     users.push(user);
 
@@ -136,7 +187,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
-        image: Images.user4,
+        image: Images.user6,
     };
     users.push(user);
 
@@ -154,6 +205,7 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
+        image: Images.user5,
     };
     users.push(user);
     //#endregion
@@ -598,7 +650,7 @@ export async function insertDatabase() {
         checkinTimeout: 1,
         checkoutTimeout: 1,
         timezone: 'Asia/Bangkok',
-        maxTravelDistance: 3,
+        maxTravelDistance: 5,
         circleWeight: 0.5,
         ratingWeight: 0.4,
         distanceWeight: 0.1,

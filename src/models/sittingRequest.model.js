@@ -1,118 +1,126 @@
 export default function(sequelize, DataTypes) {
     const sittingRequest = sequelize.define(
-        "sittingRequest", // Model Name
+        'sittingRequest', // Model Name
         {
             acceptedBabysitter: {
                 type: DataTypes.INTEGER,
-                allowNull: true
+                allowNull: true,
             },
             childrenNumber: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
             },
             minAgeOfChildren: {
                 type: DataTypes.INTEGER,
-                allowNull: false
+                allowNull: false,
             },
             sittingDate: {
                 type: DataTypes.DATEONLY,
-                allowNull: false
+                allowNull: false,
             },
             startTime: {
                 type: DataTypes.TIME,
-                allowNull: false
+                allowNull: false,
             },
             endTime: {
                 type: DataTypes.TIME,
-                allowNull: false
+                allowNull: false,
             },
             sittingAddress: {
                 type: DataTypes.STRING,
-                allowNull: false
+                allowNull: false,
             },
             totalPrice: {
                 type: DataTypes.INTEGER,
             },
             status: {
                 type: DataTypes.ENUM(
-                    "PENDING",
-                    "CONFIRMED",
-                    "CANCELED",
-                    "ONGOING",
-                    "DONE",
-                    "DONE_UNCONFIMRED",
-                    "DONE_BY_NEWSTART",
-                    "SITTER_NOT_CHECKIN",
-                    "EXPIRED",
+                    'PENDING',
+                    'CONFIRMED',
+                    'CANCELED',
+                    'ONGOING',
+                    'DONE',
+                    'DONE_UNCONFIMRED',
+                    'DONE_BY_NEWSTART',
+                    'SITTER_NOT_CHECKIN',
+                    'EXPIRED',
                 ),
-                allowNull: false
+                allowNull: false,
             },
             distance: {
                 type: DataTypes.STRING,
-                allowNull: true
+                allowNull: true,
             },
             canCheckIn: DataTypes.VIRTUAL,
             canCheckOut: DataTypes.VIRTUAL,
+            checkinTime: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
+            checkoutTime: {
+                type: DataTypes.DATE,
+                allowNull: true,
+            },
         },
         {
             timestamps: true,
-            charset: "utf8",
-            collate: "utf8_general_ci"
-        }
+            charset: 'utf8',
+            collate: 'utf8_general_ci',
+        },
     );
 
     sittingRequest.associate = function(models) {
         // request - invitation
         sittingRequest.hasMany(models.invitation, {
             foreignKey: {
-                name: "requestId",
-                allowNull: false
+                name: 'requestId',
+                allowNull: false,
             },
-            sourceKey: "id"
+            sourceKey: 'id',
         });
 
         // request - transaction
         sittingRequest.hasMany(models.transaction, {
             foreignKey: {
-                name: "requestId",
-                allowNull: false
+                name: 'requestId',
+                allowNull: false,
             },
-            sourceKey: "id"
+            sourceKey: 'id',
         });
 
         // request - feedback
         sittingRequest.hasMany(models.feedback, {
             foreignKey: {
-                name: "requestId",
-                allowNull: false
+                name: 'requestId',
+                allowNull: false,
             },
-            sourceKey: "id"
+            sourceKey: 'id',
         });
 
         // request - user(parent)
         sittingRequest.belongsTo(models.user, {
             foreignKey: {
-                name: "createdUser"
+                name: 'createdUser',
             },
-            sourceKey: "id",
-            as: "user"
+            sourceKey: 'id',
+            as: 'user',
         });
 
         // request - user(sitter)
         sittingRequest.belongsTo(models.user, {
             foreignKey: {
-                name: "acceptedBabysitter"
+                name: 'acceptedBabysitter',
             },
-            sourceKey: "id",
-            as: "bsitter"
+            sourceKey: 'id',
+            as: 'bsitter',
         });
 
         // request - schedule
         sittingRequest.hasMany(models.schedule, {
             foreignKey: {
-                name: "requestId"
+                name: 'requestId',
             },
-            sourceKey: "id",
+            sourceKey: 'id',
         });
     };
 
