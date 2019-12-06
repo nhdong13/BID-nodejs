@@ -31,8 +31,8 @@ async function main() {
         app.use(compression());
 
         // Body parseer
-        app.use(bodyParser.urlencoded({ extended: false }));
-        app.use(bodyParser.json({limit: '50mb'}));
+        app.use(bodyParser.urlencoded({ extended: true }));
+        app.use(bodyParser.json({ limit: '50mb' }));
 
         // CORS
         const corsOptions = {

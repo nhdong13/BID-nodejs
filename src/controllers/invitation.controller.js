@@ -72,32 +72,27 @@ const listInvitationBySitterId = async (req, res, next) => {
 
 const create = async (req, res) => {
     const requestId = req.params.requestId;
-    const newItem = JSON.parse(req.body.newInvite);
-    const newRequestItem = JSON.parse(req.body.newRequest);
-    console.log('PHUC: create -> newItem', newItem);
+    const invitation = req.body.invitation;
+    const request = req.body.request;
     try {
         let newRequest;
         if (requestId == undefined || requestId == null || requestId == 0) {
-            newRequest = await models.sittingRequest.create(newRequestItem);
+            newRequest = await models.sittingRequest.create(request);
             if (newRequest) {
                 Scheduler.createRequesExpiredPoint(newRequest);
-                newItem.requestId = newRequest.id;
+                invitation.requestId = newRequest.id;
             }
         }
         const newInvitation = await models.invitation
-            .create(newItem)
+            .create(invitation)
             .then(async (res) => {
                 const tracking = await models.tracking.findOne({
                     where: {
-                        userId: newItem.receiver,
+                        userId: invitation.receiver,
                     },
                 });
 
                 if (tracking) {
-                    console.log(
-                        'PHUC: create -> invitations.user',
-                        tracking.token,
-                    );
                     const notification = {
                         id: res.id,
                         pushToken: tracking.token,
@@ -110,10 +105,6 @@ const create = async (req, res) => {
                             textCancel: 'Ẩn',
                         },
                     };
-                    console.log(
-                        'PHUC: Invitation.controller -> create -> notification',
-                        notification,
-                    );
                     sendSingleMessage(notification);
                 } else {
                     console.log(
