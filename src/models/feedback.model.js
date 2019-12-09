@@ -33,6 +33,10 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.TEXT('long'),
                 allowNull: true
             },
+            order: {
+                type: DataTypes.INTEGER,
+                allowNull: false
+            }
         },
         {
             timestamps: true,
