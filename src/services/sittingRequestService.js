@@ -44,15 +44,25 @@ export function acceptSitter(requestId, sitterId, distance) {
                             sitterId,
                             distance,
                             t,
-                        ).then((res) => {
+                        ).then(async (res) => {
                             // confirm the sitter invitation
-                            confirmInvitaion(requestId, sitterId, t);
+                            await confirmInvitaion(requestId, sitterId, t);
                             // create sitter schedule for this sitting
-                            createSchedule(request, sitterId, requestId, t);
+                            await createSchedule(
+                                request,
+                                sitterId,
+                                requestId,
+                                t,
+                            );
                             // update any invitations of this babysitter that overlap with this request
-                            updateInvitations(sitterId, requestId, request, t);
+                            await updateInvitations(
+                                sitterId,
+                                requestId,
+                                request,
+                                t,
+                            );
                             // notify to the accepted babysitter
-                            notifyBabysitter(requestId, sitterId, t);
+                            await notifyBabysitter(requestId, sitterId, t);
                             // expire other invitation of this request
                             return expireInvitations(requestId, sitterId, t);
                         });
@@ -116,6 +126,24 @@ function confirmRequest(requestId, sitterId, distance, transaction) {
             transaction: transaction,
             lock: transaction.LOCK.UPDATE,
         },
+    );
+}
+
+function confirmInvitaion(requestId, sitterId, transaction) {
+    // update the accepted babysitter's invitation status to CONFIRMED
+    let selector = {
+        where: {
+            requestId: requestId,
+            receiver: sitterId,
+        },
+        transaction: transaction,
+        lock: transaction.LOCK.UPDATE,
+    };
+    models.invitation.update(
+        {
+            status: 'CONFIRMED',
+        },
+        selector,
     );
 }
 
@@ -260,24 +288,6 @@ function expireInvitations(requestId, sitterId, transaction) {
     return models.invitation.update(
         {
             status: 'EXPIRED',
-        },
-        selector,
-    );
-}
-
-function confirmInvitaion(requestId, sitterId, transaction) {
-    // update the accepted babysitter's invitation status to CONFIRMED
-    let selector = {
-        where: {
-            requestId: requestId,
-            receiver: sitterId,
-        },
-        transaction: transaction,
-        lock: transaction.LOCK.UPDATE,
-    };
-    models.invitation.update(
-        {
-            status: 'CONFIRMED',
         },
         selector,
     );

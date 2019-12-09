@@ -4,6 +4,7 @@ import {
     titleReminderMessages,
 } from '@utils/notificationMessages';
 import moment from 'moment';
+require('moment-recur');
 import {
     handleForgotToCheckout,
     handleNotCheckingIn,
@@ -22,76 +23,13 @@ const CronTime = require('cron').CronTime;
 // const TIME_ZONE = 'Asia/Bangkok';
 
 //
-var instance;
+let instance;
 
 function createInstance() {
-    var object = [];
+    let object = [];
     console.log('Scheduler instance created');
     return object;
 }
-
-export default {
-    getInstance() {
-        if (!instance) {
-            instance = createInstance();
-        }
-        return instance;
-    },
-
-    addSchedule(schedule) {
-        if (instance) {
-            if (schedule) instance.push(schedule);
-        }
-    },
-
-    createReminder(sitterId, requestId, scheduleTime) {
-        if (sitterId && requestId && scheduleTime) {
-            privateCreateReminder(sitterId, requestId, scheduleTime);
-        } else {
-            throw new Error('Args null');
-        }
-    },
-
-    createCheckoutPoint(requestId, scheduleTime) {
-        if (requestId && scheduleTime) {
-            privateCreateCheckoutPoint(requestId, scheduleTime);
-        } else {
-            throw new Error('Args null');
-        }
-    },
-
-    createCheckinPoint(requestId, scheduleTime) {
-        if (requestId && scheduleTime) {
-            privateCreateCheckinPoint(requestId, scheduleTime);
-        } else {
-            throw new Error('Args null');
-        }
-    },
-
-    createRequesExpiredPoint(request) {
-        privateCreateRequestExpiredPoint(request);
-    },
-
-    cancelAllJob() {
-        instance.forEach((element) => {
-            element.stop();
-        });
-    },
-
-    reStartAllJob() {
-        instance.forEach((element) => {
-            restartJob(element);
-        });
-    },
-
-    printInstance() {
-        if (instance) {
-            instance.forEach((element) => {
-                console.log(element);
-            });
-        }
-    },
-};
 
 function initScheduler() {
     loadSchedule().then((schedules) => {
@@ -108,7 +46,9 @@ function initScheduler() {
                         new CronJob({
                             cronTime: remindTime_0,
                             onTick: function() {
-                                console.log('đã chạy');
+                                console.log(
+                                    '-------------------  đã chạy -> initScheduler  --------------------',
+                                );
                                 remindBabysitter(sitterId, requestId);
                                 remindParent(requestId);
                             },
@@ -131,16 +71,18 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
         Config.getRemindBeforeDuration_0(),
         'hours',
     );
-    console.log(
-        'PHUC: privateCreateReminder -> Config.getRemindBeforeDuration_0()',
-        Config.getRemindBeforeDuration_0(),
-    );
+    // console.log(
+    // 'PHUC: privateCreateReminder -> Config.getRemindBeforeDuration_0()',
+    // Config.getRemindBeforeDuration_0(),
+    // );
     if (remindTime_0.isAfter(moment())) {
         try {
             let newSchedule = new CronJob({
                 cronTime: remindTime_0,
                 onTick: function() {
-                    console.log('Đã chạy remind trước 1 tiếng');
+                    console.log(
+                        '---------------------  Đã chạy remind trước 1 tiếng  -------------------------',
+                    );
                     remindBabysitter(sitterId, requestId);
                     remindParent(requestId);
                 },
@@ -151,18 +93,20 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
             instance.push(newSchedule);
 
             console.log(
-                `A schedule for request with id ${requestId} was created to run at:
-                    ${remindTime_0.format('DD-MM-YYYY HH:mm:ss')}.`,
+                `--------------------------  A schedule for request with id ${requestId} was created to run at:
+                    ${remindTime_0.format(
+                        'DD-MM-YYYY HH:mm:ss',
+                    )}. --------------------------------------------`,
             );
         } catch (error) {
             console.log('Duong: error', error);
         }
     }
 
-    console.log(
-        'PHUC: privateCreateReminder -> Config.getRemindBeforeDuration_1()',
-        Config.getRemindBeforeDuration_1(),
-    );
+    // console.log(
+    // 'PHUC: privateCreateReminder -> Config.getRemindBeforeDuration_1()',
+    // Config.getRemindBeforeDuration_1(),
+    // );
 
     let remindTime_1 = time.subtract(
         Config.getRemindBeforeDuration_1(),
@@ -174,7 +118,9 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
             let newSchedule = new CronJob({
                 cronTime: remindTime_1,
                 onTick: function() {
-                    console.log('Đã chạy remind trước 8 tiếng');
+                    console.log(
+                        '---------------------- Đã chạy remind trước 8 tiếng  ----------------------',
+                    );
                     remindBabysitter(sitterId, requestId);
                     remindParent(requestId);
                 },
@@ -185,8 +131,10 @@ function privateCreateReminder(sitterId, requestId, scheduleTime) {
             instance.push(newSchedule);
 
             console.log(
-                `A schedule for request with id ${requestId} was created to run at:
-                    ${remindTime_1.format('DD-MM-YYYY HH:mm:ss')}.`,
+                `----------------------  A schedule for request with id ${requestId} was created to run at:
+                    ${remindTime_1.format(
+                        'DD-MM-YYYY HH:mm:ss',
+                    )}.  ----------------------`,
             );
         } catch (error) {
             console.log('Duong: privateCreateReminder -> error', error);
@@ -323,7 +271,9 @@ function privateCreateCheckoutPoint(requestId, scheduleTime) {
         let newSchedule = new CronJob(
             timeout,
             function() {
-                console.log('--- Handling forgot to checkout.');
+                console.log(
+                    '---------------------- Handling forgot to checkout.  ----------------------',
+                );
                 handleForgotToCheckout(requestId);
             },
             null,
@@ -332,8 +282,10 @@ function privateCreateCheckoutPoint(requestId, scheduleTime) {
         );
         instance.push(newSchedule);
         console.log(
-            `Check out point for request with id ${requestId} was created to run at:
-                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+            `----------------------  Check out point for request with id ${requestId} was created to run at:
+                ${timeout.format(
+                    'DD-MM-YYYY HH:mm:ss',
+                )}.  ----------------------`,
         );
     }
 }
@@ -368,23 +320,38 @@ function parseToScheduleTime(momentObj) {
 }
 
 function restartJob(job) {
-    try {
-        let time = job.nextDate();
-        if (time.isAfter(moment())) {
-            time = new CronTime(time);
+    // console.log('PHUC: restartJob -> job', job);
+    if (job.runOnce) {
+        try {
+            let time = job.nextDate();
+            // console.log('PHUC: restartJob -> time', time);
 
+            if (time.isAfter(moment())) {
+                time = new CronTime(time);
+
+                job.stop();
+                job.setTime(time);
+                job.start();
+                console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+                console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
+            } else {
+                console.log('--------- Schedule trong quá khứ !');
+                console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+                console.log('--- Giờ quá khứ:', time.format('HH:mm:ss'));
+            }
+        } catch (error) {
+            // console.log('PHUC: restartJob -> error', error);
+        }
+    } else {
+        try {
             job.stop();
-            job.setTime(time);
+
             job.start();
             console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
             console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
-        } else {
-            console.log('--------- Schedule trong quá khứ !');
-            console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
-            console.log('--- Giờ quá khứ:', time.format('HH:mm:ss'));
+        } catch (error) {
+            // console.log('PHUC: restartJob -> not run once', error);
         }
-    } catch (error) {
-        console.log(error);
     }
 }
 
@@ -401,7 +368,9 @@ function privateCreateCheckinPoint(requestId, scheduleTime) {
         let newSchedule = new CronJob(
             timeout,
             function() {
-                console.log('--- Handling not checking in.');
+                console.log(
+                    '----------------------  Handling not checking in.  ----------------------',
+                );
                 handleNotCheckingIn(requestId);
             },
             null,
@@ -410,8 +379,10 @@ function privateCreateCheckinPoint(requestId, scheduleTime) {
         );
         instance.push(newSchedule);
         console.log(
-            `Check in point for request with id ${requestId} was created to run at:
-                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+            `----------------------  Check in point for request with id ${requestId} was created to run at:
+                ${timeout.format(
+                    'DD-MM-YYYY HH:mm:ss',
+                )}.  ----------------------`,
         );
     }
 }
@@ -426,22 +397,143 @@ function privateCreateRequestExpiredPoint(request) {
 
     let timeout = time;
     if (timeout.isAfter(moment())) {
-        let newSchedule = new CronJob(
+        const newSchedule = new CronJob(
             timeout,
             function() {
-                console.log('--- Handling request expired.');
+                console.log(
+                    '----------------------  Handling request expired.  ----------------------',
+                );
                 handleRequestExpired(request.id);
             },
             null,
             true,
             Config.getTimezone(),
         );
+        // console.log(
+        //     'PHUC: privateCreateRequestExpiredPoint -> newSchedule',
+        //     newSchedule,
+        // );
         instance.push(newSchedule);
         console.log(
-            `Check in point for request with id ${
-                request.id
-            } was created to run at:
-                ${timeout.format('DD-MM-YYYY HH:mm:ss')}.`,
+            `----------------------  Expired point for request with id 
+            ${request.id}
+             was created to run at:
+            ${timeout.format('DD-MM-YYYY HH:mm:ss')}.  
+            ----------------------`,
+        );
+    }
+}
+
+export async function createRepeatedSchedule(request) {
+    // tao cron chay moi ngay neu co lich thi chay ko co lich thi thoi
+    try {
+        const foundRequests = await models.repeatedRequest.findAll();
+        // console.log('PHUC: createRepeatedRequest -> foundRequests');
+
+        if (foundRequests && foundRequests.length > 0) {
+            foundRequests.forEach((foundRequest) => {
+                // console.log(
+                // 'PHUC: createRepeatedRequest -> startDate',
+                // foundRequest.startDate,
+                // );
+                const startDate = moment(foundRequest.startDate).format(
+                    'YYYY-MM-DD',
+                );
+                const currentDate = moment().format('YYYY-MM-DD');
+                // console.log(
+                // 'PHUC: createRepeatedRequest -> currentDate',
+                // currentDate,
+                // );
+                if (moment(currentDate).isSameOrBefore(startDate)) {
+                    const scheduleTime = '0 0 0 * * *';
+
+                    let newSchedule = new CronJob(
+                        scheduleTime,
+                        async () => {
+                            console.log(
+                                '----------------------  Create a daily check for RepeatedSchedule.  ----------------------',
+                            );
+                            await createRepeatedRequest(foundRequest, request);
+                        },
+                        null,
+                        true,
+                        Config.getTimezone(),
+                    );
+                    console.log(
+                        '----------------------  Finish create daily check for RepeatedSchedule.  ----------------------',
+                    );
+                    instance.push(newSchedule);
+                } else {
+                    console.log(
+                        '--------------  its suck man you are before my date  ----------------',
+                    );
+                    console.log(
+                        'PHUC: createRepeatedRequest -> startDate',
+                        foundRequest.startDate,
+                    );
+                    console.log(
+                        'PHUC: createRepeatedRequest -> currentDate',
+                        currentDate,
+                    );
+                }
+            });
+        }
+    } catch (error) {
+        // console.log(
+        //     'PHUC: createRepeatedSchedule -> probably some cron error',
+        //     error,
+        // );
+    }
+}
+
+async function createRepeatedRequest(foundRequest, request) {
+    try {
+        const repeatedDays = foundRequest.repeatedDays.split(',');
+        const rules = repeatedDays.map((day) => day.toLowerCase());
+        const startDate = moment(foundRequest.startDate);
+        const actualDate = moment();
+        const recurrence = startDate
+            .recur()
+            .every(rules)
+            .dayOfWeek();
+
+        const nextDates = recurrence.next(3, 'YYYY-MM-DD');
+        // console.log('PHUC: nextDates', nextDates);
+        const today = moment().format('YYYY-MM-DD');
+        // console.log('PHUC: createRepeatedRequest -> currentDay', today);
+
+        if (nextDates.includes(today)) {
+            console.log('tao request voi ngay nay');
+            if (request) {
+                const newRequest = await models.sittingRequest.create({
+                    createdUser: request.createdUser,
+                    sittingDate: today,
+                    startTime: request.startTime,
+                    endTime: request.endTime,
+                    sittingAddress: request.sittingAddress,
+                    childrenNumber: request.childrenNumber,
+                    minAgeOfChildren: request.minAgeOfChildren,
+                    status: 'PENDING',
+                    totalPrice: request.totalPrice,
+                });
+                // console.log(
+                // 'PHUC: createRepeatedRequest -> newRequest',
+                // newRequest.dataValues,
+                // );
+                if (newRequest) {
+                    privateCreateRequestExpiredPoint(newRequest);
+                }
+            } else {
+                console.log(
+                    `------------------  No request found to create  ---------------------
+                                ScheduleService -> createRepeatedReques`,
+                );
+            }
+        }
+    } catch (error) {
+        console.log(
+            '!!!!!!!!!!  PHUC: createRepeatedRequest -> error  !!!!!!!!!!!',
+            error,
         );
     }
 }
@@ -454,3 +546,66 @@ function parseExpiredTime(request) {
 
     return time;
 }
+
+export default {
+    getInstance() {
+        if (!instance) {
+            instance = createInstance();
+        }
+        return instance;
+    },
+
+    addSchedule(schedule) {
+        if (instance) {
+            if (schedule) instance.push(schedule);
+        }
+    },
+
+    createReminder(sitterId, requestId, scheduleTime) {
+        if (sitterId && requestId && scheduleTime) {
+            privateCreateReminder(sitterId, requestId, scheduleTime);
+        } else {
+            throw new Error('Args null');
+        }
+    },
+
+    createCheckoutPoint(requestId, scheduleTime) {
+        if (requestId && scheduleTime) {
+            privateCreateCheckoutPoint(requestId, scheduleTime);
+        } else {
+            throw new Error('Args null');
+        }
+    },
+
+    createCheckinPoint(requestId, scheduleTime) {
+        if (requestId && scheduleTime) {
+            privateCreateCheckinPoint(requestId, scheduleTime);
+        } else {
+            throw new Error('Args null');
+        }
+    },
+
+    createRequesExpiredPoint(request) {
+        privateCreateRequestExpiredPoint(request);
+    },
+
+    cancelAllJob() {
+        instance.forEach((element) => {
+            element.stop();
+        });
+    },
+
+    reStartAllJob() {
+        instance.forEach((element) => {
+            restartJob(element);
+        });
+    },
+
+    printInstance() {
+        if (instance) {
+            instance.forEach((element) => {
+                console.log(element);
+            });
+        }
+    },
+};

@@ -61,6 +61,10 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            repeatedRequestId: {
+                type: DataTypes.INTEGER,
+                allowNull: true,
+            },
         },
         {
             timestamps: true,
@@ -121,6 +125,16 @@ export default function(sequelize, DataTypes) {
                 name: 'requestId',
             },
             sourceKey: 'id',
+        });
+
+        sittingRequest.belongsTo(models.repeatedRequest, {
+            foreignKey: {
+                name: 'repeatedRequestId',
+                allowNull: true,
+            },
+            sourceKey: 'id',
+            as: 'repeatedRequest',
+            onDelete: 'CASCADE',
         });
     };
 
