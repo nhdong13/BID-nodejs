@@ -4,15 +4,33 @@ export default function(sequelize, DataTypes) {
         {
             requestId: {
                 type: DataTypes.INTEGER,
-                unique: true,
-                primaryKey: true,
+                allowNull: false,
+                unique: 'uniqueTag',
+            },
+            reporter: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                unique: 'uniqueTag',
             },
             rating: {
                 type: DataTypes.INTEGER,
-                allowNull: true
+                allowNull: false
             },
             description: {
                 type: DataTypes.STRING,
+                allowNull: true
+            },
+            isReport: {
+                type: DataTypes.BOOLEAN,
+                allowNull: false,
+                unique: 'uniqueTag',
+            },
+            status: {
+                type: DataTypes.ENUM('Solved', 'Unsolve'),
+                allowNull: true
+            },
+            image: {
+                type: DataTypes.TEXT('long'),
                 allowNull: true
             },
         },
