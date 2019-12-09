@@ -4,7 +4,7 @@ import io from 'socket.io-client';
 let expo = new Expo();
 
 export async function sendSingleMessage(notification) {
-    console.log('PHUC: sendSingleMessage -> notification', notification);
+    // console.log('PHUC: sendSingleMessage -> notification', notification);
     if (!Expo.isExpoPushToken(notification.pushToken.trim())) {
         console.error(
             `Push token ${notification.pushToken} is not a valid Expo push token`,
@@ -29,9 +29,9 @@ export async function sendSingleMessage(notification) {
         .catch((error) => {
             console.log('PHUC: sendSingleMessage -> error -> backend', error);
         });
-    if (ticket) {
-        console.log('PHUC: sendSingleMessage -> ticket', ticket);
-    }
+    // if (ticket) {
+    //     console.log('PHUC: sendSingleMessage -> ticket', ticket);
+    // }
 }
 
 export async function sendNotificationWithSocket(notification) {

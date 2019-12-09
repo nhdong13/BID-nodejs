@@ -205,8 +205,8 @@ export function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
  * @returns {Boolean}
  */
 function timeIsInRange(time, range) {
-    console.log('PHUC: timeIsInRange -> range', range);
-    console.log('PHUC: timeIsInRange -> time', time);
+    // console.log('PHUC: timeIsInRange -> range', range);
+    // console.log('PHUC: timeIsInRange -> time', time);
     if (range == null) {
         return false;
     }

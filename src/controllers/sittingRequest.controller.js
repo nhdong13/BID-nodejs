@@ -207,13 +207,13 @@ const recommendBabysitter = async (req, res, next) => {
 };
 
 //
-const acceptBabysitter = (req, res, next) => {
+const acceptBabysitter = async (req, res, next) => {
     const requestId = req.params.requestId;
     const sitterId = req.params.sitterId;
     const distance = req.params.distance;
 
     try {
-        acceptSitter(requestId, sitterId, distance)
+        await acceptSitter(requestId, sitterId, distance)
             .then((result) => {
                 res.send(result);
             })

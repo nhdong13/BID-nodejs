@@ -133,7 +133,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
-        image: Images.user11,
+        // image: Images.user11,
     };
     users.push(user);
 
@@ -153,7 +153,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
-        image: Images.user6,
+        // image: Images.user6,
     };
     users.push(user);
 
@@ -171,7 +171,9 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
-        image: Images.user5,
+        firstTime: false,
+        secret: 'NZBSMZLOIRLWYYZSKRQW4UKPNBYTOVBI',
+        // image: Images.user5,
     };
     users.push(user);
 
@@ -189,7 +191,7 @@ export async function insertDatabase() {
         }),
         roleId: 3,
         firstTime: true,
-        image: Images.user4,
+        // image: Images.user4,
     };
     users.push(user);
 
@@ -207,7 +209,7 @@ export async function insertDatabase() {
         }),
         roleId: 3,
         firstTime: true,
-        image: Images.user7,
+        // image: Images.user7,
     };
     users.push(user);
     //#endregion
@@ -244,9 +246,9 @@ export async function insertDatabase() {
                 {
                     userId: 2,
                     token: 'ExponentPushToken[3GB2hTGpcFzIRHCKEJJqwm]',
-                    // customerId: '',
-                    // balance: 0,
-                    // cardId: '',
+                    customerId: 'cus_GJZaRe3DrvsY6m',
+                    balance: 0,
+                    cardId: 'card_1FmwRSCfPfiUgoF2Up4QoyUc',
                 },
                 {
                     userId: 4,
@@ -360,7 +362,7 @@ export async function insertDatabase() {
                 if (index < 1) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: 'MON,TUE,WED,THU,FRI',
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI,SUN',
                         daytime: '08-17',
                         evening: '17-20',
                         minAgeOfChildren: 1,
@@ -372,7 +374,7 @@ export async function insertDatabase() {
                 } else if (index < 2) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: 'MON,TUE,WED,THU,FRI',
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI,SUN',
                         daytime: '08-17',
                         evening: '17-21',
                         minAgeOfChildren: 1,
@@ -384,7 +386,7 @@ export async function insertDatabase() {
                 } else {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: 'TUE,THU,SAT',
+                        weeklySchedule: 'TUE,THU,SAT,SUN',
                         daytime: '08-17',
                         evening: '17-22',
                         minAgeOfChildren: 1,
