@@ -171,6 +171,8 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
+        firstTime: false,
+        secret: 'J5SEI3RMEVXEO2K5NRIUWR2DPASSGZJD',
         // image: Images.user5,
     };
     users.push(user);
@@ -262,6 +264,10 @@ export async function insertDatabase() {
                 {
                     userId: 6,
                     token: 'ExponentPushToken[fyRIwRHp3ZajYB-b1odwGb]',
+                },
+                {
+                    userId: 7,
+                    token: 'ExponentPushToken[pVfxIfJ1nktR_IIMPWFn7U]',
                 },
             ]);
             //#region seed parent based on user and seed circle of parent
