@@ -20,9 +20,6 @@ const list = async (req, res, next) => {
 
 const create = async (req, res) => {
     let newItem = req.body;
-    const { request } = req.body;
-    console.log('PHUC: create -> request', request);
-    // console.log('PHUC: create -> newItem', newItem);
 
     try {
         const foundRepeated = await models.repeatedRequest.findOne({
@@ -35,15 +32,9 @@ const create = async (req, res) => {
             },
         });
         if (foundRepeated) {
-            console.log('PHUC: create -> foundRepeated');
-            await createRepeatedSchedule(request);
             res.send(foundRepeated);
-
-            //
         } else {
             const newRepeated = await models.repeatedRequest.create(newItem);
-            console.log('PHUC: create -> newRepeated');
-            await createRepeatedSchedule(request);
             res.send(newRepeated);
         }
     } catch (err) {

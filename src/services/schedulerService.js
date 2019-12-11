@@ -490,15 +490,19 @@ async function createRepeatedRequest(foundRequest, request) {
     try {
         const repeatedDays = foundRequest.repeatedDays.split(',');
         const rules = repeatedDays.map((day) => day.toLowerCase());
+        // rules sẽ lấy trong bảng repeatedRequest ra la 1 chuoi array lowwer case vi du:  ['mon', 'tue', 'fri']
         const startDate = moment(foundRequest.startDate);
-        const actualDate = moment();
         const recurrence = startDate
             .recur()
             .every(rules)
             .dayOfWeek();
+        // cho nay nen dung .startDate.recur().every(rules).daysOfMonth(); thi no se tra ve tat cac cac ngay recurr cua thang do == 4 tuan :))
 
+        // cai nay se lay nhieu lan lap coi trong doc se ro nghia hon
         const nextDates = recurrence.next(3, 'YYYY-MM-DD');
-        // console.log('PHUC: nextDates', nextDates);
+
+
+        // sau khi co nhung ngay lap lai roi chi can tao requeset voi tung ngay thoi la xong
         const today = moment().format('YYYY-MM-DD');
         // console.log('PHUC: createRepeatedRequest -> currentDay', today);
 
@@ -507,7 +511,12 @@ async function createRepeatedRequest(foundRequest, request) {
             if (request) {
                 const newRequest = await models.sittingRequest.create({
                     createdUser: request.createdUser,
-                    sittingDate: today,
+
+                    // kieu for each recurrence thi tao sittingDate: recurrence
+
+                    sittingDate: today, // thay ngay ne, voi ca lay thang acceptedBabysitter nuwa 
+
+                    //   
                     startTime: request.startTime,
                     endTime: request.endTime,
                     sittingAddress: request.sittingAddress,
