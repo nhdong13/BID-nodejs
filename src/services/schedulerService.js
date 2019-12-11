@@ -424,69 +424,7 @@ function privateCreateRequestExpiredPoint(request) {
     }
 }
 
-export async function createRepeatedSchedule(request) {
-    // tao cron chay moi ngay neu co lich thi chay ko co lich thi thoi
-    try {
-        const foundRequests = await models.repeatedRequest.findAll();
-        // console.log('PHUC: createRepeatedRequest -> foundRequests');
-
-        if (foundRequests && foundRequests.length > 0) {
-            foundRequests.forEach((foundRequest) => {
-                // console.log(
-                // 'PHUC: createRepeatedRequest -> startDate',
-                // foundRequest.startDate,
-                // );
-                const startDate = moment(foundRequest.startDate).format(
-                    'YYYY-MM-DD',
-                );
-                const currentDate = moment().format('YYYY-MM-DD');
-                // console.log(
-                // 'PHUC: createRepeatedRequest -> currentDate',
-                // currentDate,
-                // );
-                if (moment(currentDate).isSameOrBefore(startDate)) {
-                    const scheduleTime = '0 0 0 * * *';
-
-                    let newSchedule = new CronJob(
-                        scheduleTime,
-                        async () => {
-                            console.log(
-                                '----------------------  Create a daily check for RepeatedSchedule.  ----------------------',
-                            );
-                            await createRepeatedRequest(foundRequest, request);
-                        },
-                        null,
-                        true,
-                        Config.getTimezone(),
-                    );
-                    console.log(
-                        '----------------------  Finish create daily check for RepeatedSchedule.  ----------------------',
-                    );
-                    instance.push(newSchedule);
-                } else {
-                    console.log(
-                        '--------------  its suck man you are before my date  ----------------',
-                    );
-                    console.log(
-                        'PHUC: createRepeatedRequest -> startDate',
-                        foundRequest.startDate,
-                    );
-                    console.log(
-                        'PHUC: createRepeatedRequest -> currentDate',
-                        currentDate,
-                    );
-                }
-            });
-        }
-    } catch (error) {
-        // console.log(
-        //     'PHUC: createRepeatedSchedule -> probably some cron error',
-        //     error,
-        // );
-    }
-}
-
-async function createRepeatedRequest(foundRequest, request) {
+async function privateCreateRepeatedRequest(foundRequest, request) {
     try {
         const repeatedDays = foundRequest.repeatedDays.split(',');
         const rules = repeatedDays.map((day) => day.toLowerCase());
@@ -499,46 +437,28 @@ async function createRepeatedRequest(foundRequest, request) {
         // cho nay nen dung .startDate.recur().every(rules).daysOfMonth(); thi no se tra ve tat cac cac ngay recurr cua thang do == 4 tuan :))
 
         // cai nay se lay nhieu lan lap coi trong doc se ro nghia hon
-        const nextDates = recurrence.next(3, 'YYYY-MM-DD');
-
+        const nextDates = recurrence.next(rules.length * 4, 'YYYY-MM-DD');
 
         // sau khi co nhung ngay lap lai roi chi can tao requeset voi tung ngay thoi la xong
-        const today = moment().format('YYYY-MM-DD');
-        // console.log('PHUC: createRepeatedRequest -> currentDay', today);
+        const promises = nextDates.map(async (date) => {
+            const newDate = date;
+            const newRequest = await models.sittingRequest.create({
+                createdUser: request.createdUser,
+                acceptedBabysitter: request.acceptedBabysitter,
+                sittingDate: newDate, // thay ngay ne, voi ca lay thang acceptedBabysitter nuwa
+                startTime: request.startTime,
+                endTime: request.endTime,
+                sittingAddress: request.sittingAddress,
+                childrenNumber: request.childrenNumber,
+                minAgeOfChildren: request.minAgeOfChildren,
+                status: 'CONFIRMED',
+                totalPrice: request.totalPrice,
+            });
 
-        if (nextDates.includes(today)) {
-            console.log('tao request voi ngay nay');
-            if (request) {
-                const newRequest = await models.sittingRequest.create({
-                    createdUser: request.createdUser,
+            await createSchedule(newRequest, request.acceptedBabysitter, newRequest.id);
+        });
 
-                    // kieu for each recurrence thi tao sittingDate: recurrence
-
-                    sittingDate: today, // thay ngay ne, voi ca lay thang acceptedBabysitter nuwa 
-
-                    //   
-                    startTime: request.startTime,
-                    endTime: request.endTime,
-                    sittingAddress: request.sittingAddress,
-                    childrenNumber: request.childrenNumber,
-                    minAgeOfChildren: request.minAgeOfChildren,
-                    status: 'PENDING',
-                    totalPrice: request.totalPrice,
-                });
-                // console.log(
-                // 'PHUC: createRepeatedRequest -> newRequest',
-                // newRequest.dataValues,
-                // );
-                if (newRequest) {
-                    privateCreateRequestExpiredPoint(newRequest);
-                }
-            } else {
-                console.log(
-                    `------------------  No request found to create  ---------------------
-                                ScheduleService -> createRepeatedReques`,
-                );
-            }
-        }
+        await Promise.all(promises);
     } catch (error) {
         console.log(
             '!!!!!!!!!!  PHUC: createRepeatedRequest -> error  !!!!!!!!!!!',
@@ -554,6 +474,44 @@ function parseExpiredTime(request) {
     let time = moment(`${sittingDate} ${startTime}`, 'YYYY-MM-DD HH:mm');
 
     return time;
+}
+
+async function createSchedule(request, sitterId, requestId) {
+    // create a schedule for the accepted babysitter'schedules
+    try {
+        let scheduleTime = getScheduleTime(request);
+        let schedule = {
+            userId: sitterId,
+            requestId: requestId,
+            scheduleTime: scheduleTime,
+            type: 'FUTURE',
+        };
+
+        await models.schedule.create(schedule);
+
+        privateCreateReminder(sitterId, requestId, scheduleTime);
+        privateCreateCheckinPoint(requestId, scheduleTime);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+/**
+ * @param  {sittingRequest} sittingRequest
+ * @returns {String} the string represent schedule time
+ */
+export function getScheduleTime(request) {
+    let scheduleTime = '';
+    let sittingDate = moment(request.sittingDate, 'YYYY-MM-DD');
+    let startTime = request.startTime;
+    let endTime = request.endTime;
+    scheduleTime += startTime;
+    scheduleTime += ' ' + endTime;
+    scheduleTime += ' ' + sittingDate.format('DD');
+    scheduleTime += ' ' + sittingDate.format('MM');
+    scheduleTime += ' ' + sittingDate.format('YYYY');
+
+    return scheduleTime;
 }
 
 export default {
@@ -617,4 +575,8 @@ export default {
             });
         }
     },
+
+    createRepeatedRequest(foundRequest, request) {
+        privateCreateRepeatedRequest(foundRequest, request);
+    }
 };

@@ -29,10 +29,6 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false
             },
-            maxTravelDistance: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
             averageRating: {
                 type: DataTypes.FLOAT,
                 allowNull: true

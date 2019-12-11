@@ -45,15 +45,32 @@ export function acceptSitter(requestId, sitterId, distance) {
                             distance,
                             t,
                         ).then(async (res) => {
+                            if (request.repeatedRequestId) {
+                                request.acceptedBabysitter = sitterId;
+                                const repeatedRequest = await models.repeatedRequest.findOne(
+                                    {
+                                        where: {
+                                            id: request.repeatedRequestId,
+                                        },
+                                    },
+                                );
+
+                                Scheduler.createRepeatedRequest(
+                                    repeatedRequest,
+                                    request,
+                                );
+                            } else {
+                                // create sitter schedule for this sitting
+                                await createSchedule(
+                                    request,
+                                    sitterId,
+                                    requestId,
+                                    t,
+                                );
+                            }
                             // confirm the sitter invitation
                             await confirmInvitaion(requestId, sitterId, t);
-                            // create sitter schedule for this sitting
-                            await createSchedule(
-                                request,
-                                sitterId,
-                                requestId,
-                                t,
-                            );
+
                             // update any invitations of this babysitter that overlap with this request
                             await updateInvitations(
                                 sitterId,
