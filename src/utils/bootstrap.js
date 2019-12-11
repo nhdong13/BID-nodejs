@@ -75,6 +75,8 @@ export async function insertDatabase() {
         }),
         roleId: 2,
         image: Images.user9,
+        token: 'ExponentPushToken[3GB2hTGpcFzIRHCKEJJqwm]',
+        cardId: 'card_1FmwRSCfPfiUgoF2Up4QoyUc',
     };
     users.push(user);
 
@@ -111,6 +113,8 @@ export async function insertDatabase() {
         }),
         roleId: 2,
         image: Images.user12,
+        token: 'ExponentPushToken[c2MUnqCLiIEKIuiPo3Xfip]',
+        cardId: 'card_1FknhMCfPfiUgoF2J7QkLlJO',
     };
     users.push(user);
     //#endregion
@@ -134,6 +138,7 @@ export async function insertDatabase() {
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
         // image: Images.user11,
+        token: 'ExponentPushToken[k6-UsUIE9oT2Zr8R2qbIlC]',
     };
     users.push(user);
 
@@ -154,6 +159,7 @@ export async function insertDatabase() {
         firstTime: false,
         secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
         // image: Images.user6,
+        token: 'ExponentPushToken[fyRIwRHp3ZajYB-b1odwGb]',
     };
     users.push(user);
 
@@ -174,6 +180,7 @@ export async function insertDatabase() {
         firstTime: false,
         secret: 'J5SEI3RMEVXEO2K5NRIUWR2DPASSGZJD',
         // image: Images.user5,
+        token: 'ExponentPushToken[pVfxIfJ1nktR_IIMPWFn7U]',
     };
     users.push(user);
 
@@ -252,8 +259,8 @@ export async function insertDatabase() {
                 {
                     userId: 4,
                     token: 'ExponentPushToken[c2MUnqCLiIEKIuiPo3Xfip]',
-                    customerId: 'cus_GHMQ9bCgS16EpV',
                     cardId: 'card_1FknhMCfPfiUgoF2J7QkLlJO',
+                    customerId: 'cus_GHMQ9bCgS16EpV',
                 },
                 {
                     userId: 5,
