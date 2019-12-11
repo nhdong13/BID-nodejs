@@ -17,10 +17,6 @@ export default function(sequelize, DataTypes) {
                 allowNull: true,
                 unique: true,
             },
-            balance: {
-                type: DataTypes.INTEGER,
-                allowNull: true,
-            },
             cardId: {
                 type: DataTypes.STRING,
                 allowNull: true,
