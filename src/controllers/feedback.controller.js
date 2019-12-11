@@ -3,7 +3,23 @@ import models from '@models';
 const Sequelize = require('sequelize');
 const list = async (req, res, next) => {
     try {
-        const list = await models.feedback.findAll({});
+        const list = await models.feedback.findAll({
+          include: [
+            {
+              model: models.sittingRequest,
+              as: 'sitting',
+              include: [
+                {
+                  model: models.user,
+                  as: 'user',
+                },
+                {
+                  model: models.user,
+                  as: 'bsitter',
+                },
+              ],
+            }]
+        });
         res.send(list);
     } catch (err) {
         res.status(400);
