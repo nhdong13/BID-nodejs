@@ -3,7 +3,7 @@ import controller from '@controllers/repeatedRequest.controller';
 
 const router = express.Router();
 
-router.route('/listRepeatedRequest').get(controller.list);
+router.route('/listRepeatedRequest/:id').get(controller.list);
 router.route('/createRepeatedRequest').post(controller.create);
 router.route('/updateRepeatedRequest').put(controller.update);
 

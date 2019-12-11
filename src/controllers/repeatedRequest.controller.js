@@ -3,8 +3,14 @@ import moment from 'moment';
 import { createRepeatedSchedule } from 'services/schedulerService';
 
 const list = async (req, res, next) => {
+    const userId = req.params.id;
+    console.log('PHUC: list -> userId', userId);
     try {
-        const list = await models.repeatedRequest.findAll({});
+        const list = await models.repeatedRequest.findAll({
+            where: {
+                createdUser: userId,
+            },
+        });
         res.send(list);
     } catch (err) {
         res.status(400);
