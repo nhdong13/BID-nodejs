@@ -247,14 +247,12 @@ export async function insertDatabase() {
                     userId: 2,
                     token: 'ExponentPushToken[3GB2hTGpcFzIRHCKEJJqwm]',
                     customerId: 'cus_GJZaRe3DrvsY6m',
-                    balance: 0,
                     cardId: 'card_1FmwRSCfPfiUgoF2Up4QoyUc',
                 },
                 {
                     userId: 4,
                     token: 'ExponentPushToken[c2MUnqCLiIEKIuiPo3Xfip]',
                     customerId: 'cus_GHMQ9bCgS16EpV',
-                    balance: 0,
                     cardId: 'card_1FknhMCfPfiUgoF2J7QkLlJO',
                 },
                 {

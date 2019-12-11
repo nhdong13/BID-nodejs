@@ -23,7 +23,6 @@ const createCharges = async (req, res) => {
                 chargeId,
                 type: 'CHARGE',
                 description: '',
-                amount: amount,
                 userId: userId,
                 requestId: requestId,
             };
@@ -43,19 +42,19 @@ const createCustomer = async (req, res) => {
     const { email, token, userId, name, cardId } = req.body;
 
     try {
-        const { id: customerId, balance } = await stripe.customers.create({
+        const { id: customerId } = await stripe.customers.create({
             source: token,
             email: email,
             name: name,
         });
 
         await models.tracking.update(
-            { customerId: customerId, balance: balance, cardId: cardId },
+            { customerId: customerId, cardId: cardId },
             {
                 where: { userId },
             },
         );
-        res.send({ customerId, balance });
+        res.send({ customerId });
     } catch (error) {
         res.status(400);
         res.send(error);
