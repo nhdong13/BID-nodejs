@@ -93,22 +93,39 @@ const create = async (req, res) => {
                 });
 
                 if (tracking) {
-                    const notification = {
-                        id: res.id,
-                        pushToken: tracking.token,
-                        message: invitationMessages.parentSendInvitation,
-                        title: titleMessages.parentSendInvitation,
-                        option: {
-                            showConfirm: true,
-                            textConfirm: 'Tiếp tục',
-                            showCancel: true,
-                            textCancel: 'Ẩn',
-                        },
-                    };
-                    sendSingleMessage(notification);
+                    if (request.repeatedRequestId) {
+                        const notification = {
+                            id: res.id,
+                            pushToken: tracking.token,
+                            message:
+                                invitationMessages.parentSendRepeatedRequest,
+                            title: titleMessages.parentSendRepeatedRequest,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
+                        };
+                        sendSingleMessage(notification);
+                    } else {
+                        const notification = {
+                            id: res.id,
+                            pushToken: tracking.token,
+                            message: invitationMessages.parentSendInvitation,
+                            title: titleMessages.parentSendInvitation,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
+                        };
+                        sendSingleMessage(notification);
+                    }
                 } else {
                     console.log(
-                        'Duong: Invitation.controller create -> notification fail, tracking data not found',
+                        'Duong: Invitation.controller create -> notification not send, tracking data not found',
                     );
                 }
             });

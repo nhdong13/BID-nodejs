@@ -5,6 +5,8 @@ export const invitationMessages = {
     babysitterAccepted:
         'Người trông trẻ đã chấp nhận lời mời từ bạn, bạn có muốn xem thông tin chi tiết ?',
     parentAcceptedBabysitter: 'Phụ huynh đã xác nhận yêu cầu trông trẻ với bạn',
+    parentSendRepeatedRequest:
+        'Bạn vừa nhận được lời mời lặp lại, bấm vào để xem thông tin chi tiết',
 };
 
 export const cancelMessages = {
@@ -14,6 +16,7 @@ export const cancelMessages = {
 export const titleMessages = {
     parentSendSuccess: ' ',
     parentSendInvitation: 'Bạn có lời mời mới',
+    parentSendRepeatedRequest: 'Ban có lời mời lặp lại',
     babysitterAccepted: 'Người trông trẻ đã chấp nhận',
     parentAcceptedBabysitter: 'Phụ huynh xác nhận',
     parentCancel: 'Yêu cầu trong trẻ đã bị hủy',
