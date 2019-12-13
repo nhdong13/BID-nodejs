@@ -137,7 +137,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
-        // image: Images.user11,
+        image: Images.user11,
         token: 'ExponentPushToken[k6-UsUIE9oT2Zr8R2qbIlC]',
     };
     users.push(user);
@@ -158,7 +158,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
-        // image: Images.user6,
+        image: Images.user6,
         token: 'ExponentPushToken[fyRIwRHp3ZajYB-b1odwGb]',
     };
     users.push(user);
@@ -179,7 +179,7 @@ export async function insertDatabase() {
         roleId: 3,
         firstTime: false,
         secret: 'J5SEI3RMEVXEO2K5NRIUWR2DPASSGZJD',
-        // image: Images.user5,
+        image: Images.user5,
         token: 'ExponentPushToken[pVfxIfJ1nktR_IIMPWFn7U]',
     };
     users.push(user);
@@ -198,7 +198,7 @@ export async function insertDatabase() {
         }),
         roleId: 3,
         firstTime: true,
-        // image: Images.user4,
+        image: Images.user4,
     };
     users.push(user);
 
@@ -216,7 +216,7 @@ export async function insertDatabase() {
         }),
         roleId: 3,
         firstTime: true,
-        // image: Images.user7,
+        image: Images.user7,
     };
     users.push(user);
     //#endregion
@@ -354,7 +354,7 @@ export async function insertDatabase() {
                         },
                         {
                             name: 'Nguyên',
-                            age: 7,
+                            age: 6,
                             parentId: 2,
                             image: Images.img3,
                         },
@@ -392,6 +392,30 @@ export async function insertDatabase() {
                         averageRating: 5,
                         totalFeedback: 1,
                     };
+                } else if (index < 3) {
+                    babysitter = {
+                        userId: el.id,
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI,SAT,SUN',
+                        daytime: '08-17',
+                        evening: '17-21',
+                        minAgeOfChildren: 1,
+                        maxNumOfChildren: 2,
+                        maxTravelDistance: 10,
+                        averageRating: 5,
+                        totalFeedback: 1,
+                    };
+                } else if (index < 4) {
+                    babysitter = {
+                        userId: el.id,
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI,SAT,SUN',
+                        daytime: '08-17',
+                        evening: '17-21',
+                        minAgeOfChildren: 1,
+                        maxNumOfChildren: 2,
+                        maxTravelDistance: 10,
+                        averageRating: 5,
+                        totalFeedback: 1,
+                    };
                 } else {
                     babysitter = {
                         userId: el.id,
@@ -401,8 +425,8 @@ export async function insertDatabase() {
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
-                        averageRating: 0, //4,
-                        totalFeedback: 0, //1,
+                        averageRating: 5, //4,
+                        totalFeedback: 13, //1,
                     };
                 }
 
@@ -598,25 +622,27 @@ export async function insertDatabase() {
                     //#endregion
                 ])
                 .then((result) => {
-                    //#region 
+                    //#region
                     result.forEach((el) => {
                         if (el.status === 'PENDING') {
-                            db.repeatedRequest.bulkCreate([
-                                {
-                                    startDate: el.sittingDate,
-                                    startTime: el.startTime,
-                                    endTime: el.endTime,
-                                    sittingAddress: el.sittingAddress,
-                                    repeatedDays: ['mon'],
-                                    status: 'ACTIVE'
-                                }
-                            ]).then((result) => {
-                                el.update({
-                                    repeatedRequestId: result[0].id
-                                })
-                            })
+                            db.repeatedRequest
+                                .bulkCreate([
+                                    {
+                                        startDate: el.sittingDate,
+                                        startTime: el.startTime,
+                                        endTime: el.endTime,
+                                        sittingAddress: el.sittingAddress,
+                                        repeatedDays: ['mon'],
+                                        status: 'ACTIVE',
+                                    },
+                                ])
+                                .then((result) => {
+                                    el.update({
+                                        repeatedRequestId: result[0].id,
+                                    });
+                                });
                         }
-                    })
+                    });
                     //#endregion
                     //#region seed invitations
                     result.forEach((el) => {
