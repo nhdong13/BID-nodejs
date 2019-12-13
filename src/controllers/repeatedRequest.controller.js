@@ -18,6 +18,29 @@ const list = async (req, res, next) => {
     }
 };
 
+const getRepeatedRequest = async (req, res, next) => {
+    const requestId = req.params.id;
+    console.log('PHUC: getRepeatedRequest -> requestId', requestId);
+
+    try {
+        const list = await models.sittingRequest.findAll({
+            where: {
+                id: requestId,
+            },
+            include: [
+                {
+                    model: models.repeatedRequest,
+                    as: 'repeatedRequest',
+                },
+            ],
+        });
+        res.send(list);
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const create = async (req, res) => {
     let newItem = req.body;
 
@@ -98,6 +121,7 @@ const destroy = async (req, res) => {
 
 export default {
     list,
+    getRepeatedRequest,
     create,
     read,
     update,
