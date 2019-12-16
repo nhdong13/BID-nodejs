@@ -175,3 +175,19 @@ function parseToMoment(date, time) {
     let result = moment(`${date} ${time}`, 'YYYY-MM-DD HH:mm:ss');
     return result;
 }
+
+export function getRepeatedDates(repeatedRequest) {
+    const repeatedDays = repeatedRequest.repeatedDays.split(',');
+    const rules = repeatedDays.map((day) => day.toLowerCase());
+    // rules sẽ lấy trong bảng repeatedRequest ra la 1 chuoi array lowwer case vi du:  ['mon', 'tue', 'fri']
+    const startDate = moment(repeatedRequest.startDate);
+    const recurrence = startDate
+        .recur()
+        .every(rules)
+        .dayOfWeek();
+
+    // cai nay se lay nhieu lan lap coi trong doc se ro nghia hon
+    const nextDates = recurrence.next(rules.length * 4, 'YYYY-MM-DD');
+
+    return nextDates;
+}
