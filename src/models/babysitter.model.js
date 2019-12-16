@@ -11,13 +11,11 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            // available time in the daytime 05 - 17 ex: "hh-hh"
-            daytime: {
+            startTime: {
                 type: DataTypes.STRING,
                 allowNull: true
             },
-            // available time in the evening 17 - 05 ex: "hh-hh"
-            evening: {
+            endTime: {
                 type: DataTypes.STRING,
                 allowNull: true
             },

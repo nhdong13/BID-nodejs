@@ -277,8 +277,8 @@ async function matchingCriteria(request, babysitters) {
             !checkSittingTime(
                 request.startTime,
                 request.endTime,
-                bsitter.daytime,
-                bsitter.evening,
+                bsitter.startTime,
+                bsitter.endTime,
             )
         ) {
             console.log('SITTING TIME NOT MATCHED');
@@ -286,8 +286,7 @@ async function matchingCriteria(request, babysitters) {
             console.log('--- start time: ' + request.startTime);
             console.log('--- end time: ' + request.endTime);
             console.log('bsitter: ');
-            console.log('--- daytime: ' + bsitter.daytime);
-            console.log('--- evening: ' + bsitter.evening);
+            console.log('--- Work Time: ' + bsitter.startTime + ' - ' +bsitter.endTime);
             return;
         }
 

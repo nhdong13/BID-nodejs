@@ -85,24 +85,6 @@ export function checkCheckOutStatus(sittingRequest) {
 }
 
 /**
- * convert a time range into an array of 2 elements
- * @param  {String} time 'HH-HH'
- * @returns {Array<String}
- */
-export function splitTimeRange(time) {
-    if (time == null) {
-        return null;
-    }
-    let arr = [];
-
-    arr = time.split('-');
-    arr[0] = arr[0] + ':00:00';
-    arr[1] = arr[1] + ':00:00';
-
-    return arr;
-}
-
-/**
  * check if the sitting request date are in babysitter weekly schedule
  * @param  {Date} date the sitting date
  * @param  {String} range the babysitter's weekly schedule
@@ -156,66 +138,24 @@ function getWeekRange(range) {
  * check if the request time and babysitter vailable is matched
  * @param  {String} startTime
  * @param  {String} endTime
- * @param  {String} bDaytime
- * @param  {String} bEvening
+ * @param  {String} bStartTime
+ * @param  {String} bEndTime
  * @returns {Boolean}
  */
-export function checkSittingTime(startTime, endTime, bDaytime, bEvening) {
-    // neu co thoi gian thi sua lai cho nay su dung moment de kiem tra
-    // so string ko biet la no co so dung ko
+export function checkSittingTime(startTime, endTime, bStartTime, bEndTime) {
     let flag = false;
-    let daytime = splitTimeRange(bDaytime);
-    // console.log('PHUC: checkSittingTime -> daytime', daytime);
-    let evening = splitTimeRange(bEvening);
-    // console.log('PHUC: checkSittingTime -> evening', evening);
-    let combine = null;
 
-    // if daytime end equal evening time start then combine work time to daytime start and evening end
-    if (daytime[1] == evening[0]) {
-        combine = [daytime[0], evening[1]];
+    if (startTime <= bStartTime && bStartTime <= endTime) {
+        flag = true;
     }
-
-    // check for combine time if it not null
-    if (combine != undefined && combine != null) {
-        if (timeIsInRange(startTime, combine)) {
-            if (timeIsInRange(endTime, combine)) {
-                flag = true;
-            }
-        }
+    if (startTime <= bEndTime && bEndTime <= endTime) {
+        flag = true;
     }
-
-    // check for daytime or evening time
-    if (timeIsInRange(startTime, daytime)) {
-        if (timeIsInRange(endTime, daytime)) {
-            flag = true;
-        }
-    } else if (timeIsInRange(startTime, evening)) {
-        if (timeIsInRange(endTime, evening)) {
-            flag = true;
-        }
+    if (startTime > bStartTime && endTime < bEndTime) {
+        flag = true;
     }
 
     return flag;
-}
-
-/**
- * check if time in range
- * @param  {String} time
- * @param  {Array<String>} range
- * @returns {Boolean}
- */
-function timeIsInRange(time, range) {
-    // console.log('PHUC: timeIsInRange -> range', range);
-    // console.log('PHUC: timeIsInRange -> time', time);
-    if (range == null) {
-        return false;
-    }
-
-    if (time >= range[0] && time <= range[1]) {
-        return true;
-    }
-
-    return false;
 }
 
 export function checkTime(request) {
