@@ -108,6 +108,10 @@ async function findFriendSittersInCircle(circle) {
         // }
     });
 
+    if (friendSitterIds.length <= 0) {
+        return [];
+    }
+
     friendSitterIds = friendSitterIds.map((id) => {
         return id.acceptedBabysitter;
     });
