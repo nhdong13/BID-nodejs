@@ -76,6 +76,9 @@ export async function recommendToParent(request, listMatched) {
         return a.total < b.total;
     });
 
+    // only top 5 babysitters
+    listWithTotal = listWithTotal.slice(0, 5);
+
     // push to recommendList
     listWithTotal.forEach(el => {
         let found = listMatched.find(sitter => sitter.userId == el.id);
