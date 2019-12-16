@@ -14,6 +14,7 @@ import transactionRoutes from '@routes/transaction.route';
 import pricingRoutes from '@routes/pricing.route';
 import holidayRoutes from '@routes/holiday.route';
 import repeatedRoutes from '@routes/repeatedRequest.route';
+import childrenRoutes from '@routes/children.route';
 import { jwtAuthentication } from '../middlewares/jwt.middleware';
 
 const router = express.Router();
@@ -35,5 +36,6 @@ router.use('/transactions', transactionRoutes);
 router.use('/pricings', pricingRoutes);
 router.use('/holidays', holidayRoutes);
 router.use('/repeatedRequests', repeatedRoutes);
+router.use('/childrens', childrenRoutes);
 
 export default router;

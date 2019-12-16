@@ -48,6 +48,30 @@ const listByRequestAndStatus = async (req, res) => {
     res.send(invitations);
 };
 
+const listAllRequestInvitation = async (req, res) => {
+    const requestId = req.params.requestId;
+    const status = req.params.status;
+
+    var invitations = await models.invitation.findAll({
+        where: {
+            requestId: requestId,
+        },
+        include: [
+            {
+                model: models.user,
+                as: 'user',
+                include: [
+                    {
+                        model: models.babysitter,
+                        as: 'babysitter',
+                    },
+                ],
+            },
+        ],
+    });
+    res.send(invitations);
+};
+
 const listInvitationBySitterId = async (req, res, next) => {
     const sitterId = req.body.id;
     var invitations = await models.invitation.findAll({
@@ -93,22 +117,39 @@ const create = async (req, res) => {
                 });
 
                 if (tracking) {
-                    const notification = {
-                        id: res.id,
-                        pushToken: tracking.token,
-                        message: invitationMessages.parentSendInvitation,
-                        title: titleMessages.parentSendInvitation,
-                        option: {
-                            showConfirm: true,
-                            textConfirm: 'Tiếp tục',
-                            showCancel: true,
-                            textCancel: 'Ẩn',
-                        },
-                    };
-                    sendSingleMessage(notification);
+                    if (request.repeatedRequestId) {
+                        const notification = {
+                            id: res.id,
+                            pushToken: tracking.token,
+                            message:
+                                invitationMessages.parentSendRepeatedRequest,
+                            title: titleMessages.parentSendRepeatedRequest,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
+                        };
+                        sendSingleMessage(notification);
+                    } else {
+                        const notification = {
+                            id: res.id,
+                            pushToken: tracking.token,
+                            message: invitationMessages.parentSendInvitation,
+                            title: titleMessages.parentSendInvitation,
+                            option: {
+                                showConfirm: true,
+                                textConfirm: 'Tiếp tục',
+                                showCancel: true,
+                                textCancel: 'Ẩn',
+                            },
+                        };
+                        sendSingleMessage(notification);
+                    }
                 } else {
                     console.log(
-                        'Duong: Invitation.controller create -> notification fail, tracking data not found',
+                        'Duong: Invitation.controller create -> notification not send, tracking data not found',
                     );
                 }
             });
@@ -197,20 +238,37 @@ const update = async (req, res) => {
                 });
 
                 // notify the parent with the request
-                const notification = {
-                    pushToken: invitation.sittingRequest.user.tracking.token,
-                    message: invitationMessages.babysitterAccepted,
-                    id: invitation.requestId,
-                    title: titleMessages.babysitterAccepted,
-                    option: {
-                        showConfirm: true,
-                        textConfirm: 'Tiếp tục',
-                        showCancel: true,
-                        textCancel: 'Ẩn',
-                    },
-                };
-
-                sendSingleMessage(notification);
+                if (updatingInvitation.status == 'ACCEPTED') {
+                    const notification = {
+                        pushToken:
+                            invitation.sittingRequest.user.tracking.token,
+                        message: invitationMessages.babysitterAccepted,
+                        id: invitation.requestId,
+                        title: titleMessages.babysitterAccepted,
+                        option: {
+                            showConfirm: true,
+                            textConfirm: 'Tiếp tục',
+                            showCancel: true,
+                            textCancel: 'Ẩn',
+                        },
+                    };
+                    sendSingleMessage(notification);
+                } else {
+                    const notification = {
+                        pushToken:
+                            invitation.sittingRequest.user.tracking.token,
+                        message: invitationMessages.sitterDecline,
+                        id: invitation.requestId,
+                        title: titleMessages.sitterDecline,
+                        option: {
+                            showConfirm: true,
+                            textConfirm: 'Tiếp tục',
+                            showCancel: true,
+                            textCancel: 'Ẩn',
+                        },
+                    };
+                    sendSingleMessage(notification);
+                }
             });
         res.send(updatingInvitation);
     } catch (err) {
@@ -245,4 +303,5 @@ export default {
     destroy,
     listInvitationBySitterId,
     listByRequestAndStatus,
+    listAllRequestInvitation,
 };
