@@ -1,5 +1,6 @@
 import Expo from 'expo-server-sdk';
-import io from 'socket.io-client';
+
+var io = require('socket.io-client')('http://localhost:5000/api/v1/socket');
 
 let expo = new Expo();
 
@@ -35,23 +36,11 @@ export async function sendSingleMessage(notification) {
 }
 
 export async function sendNotificationWithSocket(notification) {
-    const socket = io(apiUrl.socket, {
-        transports: ['websocket'],
-    });
-
-    socket.on('connect_error', (error) => {
-        console.log('QR connection error  ', error);
-    });
-
-    socket.on('error', (error) => {
-        console.log('QR just some normal error, error in general ', error);
-    });
-
-    const message = {
-        data: {
-            userId: notification.userId,
-            message: notification.message,
-            title: notification.title,
-        },
+    const data = {
+        userId: notification.userId,
+        message: notification.message,
+        title: notification.title,
     };
+
+    io.emit('notification', data);
 }
