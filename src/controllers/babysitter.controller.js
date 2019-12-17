@@ -136,6 +136,7 @@ const update = async (req, res) => {
     const id = req.params.id;
 
     const updatingSitter = req.body;
+    console.log('PHUC: update -> updatingSitter', updatingSitter);
 
     try {
         await models.babysitter.update(updatingSitter, {

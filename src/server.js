@@ -51,7 +51,9 @@ async function main() {
             socket.on('userId', (userId) => {
                 if (userId != null) {
                     socket.join('user_room_' + userId);
-                    console.log(`room created for user ${userId}`);
+                    console.log(
+                        `user ${userId} has join room: user_room_${userId}`,
+                    );
                 }
             });
 
@@ -73,6 +75,13 @@ async function main() {
 
             socket.on('update', ({ message }) => {
                 socketIO.emit('updateSignal', { message });
+            });
+
+            socket.on('notification', (data) => {
+                console.log('PHUC: main -> data', data);
+                socketIO
+                    .to('user_room_' + data.userId)
+                    .emit('pushNotification', data);
             });
         });
 
