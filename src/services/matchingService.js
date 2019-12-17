@@ -35,7 +35,7 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
 
     // check against babysitter schedules
-    matchedList = checkAgainstSchedules(sittingRequest, matchedList);
+    matchedList = await checkAgainstSchedules(sittingRequest, matchedList);
 
     // calculate distance with api Google
     // matchedList = await getBabysitterDistance(
@@ -277,8 +277,8 @@ async function matchingCriteria(request, babysitters) {
             !checkSittingTime(
                 request.startTime,
                 request.endTime,
-                bsitter.daytime,
-                bsitter.evening,
+                bsitter.startTime,
+                bsitter.endTime,
             )
         ) {
             console.log('SITTING TIME NOT MATCHED');
@@ -286,8 +286,9 @@ async function matchingCriteria(request, babysitters) {
             console.log('--- start time: ' + request.startTime);
             console.log('--- end time: ' + request.endTime);
             console.log('bsitter: ');
-            console.log('--- daytime: ' + bsitter.daytime);
-            console.log('--- evening: ' + bsitter.evening);
+            console.log(
+                '--- Work Time: ' + bsitter.startTime + ' - ' + bsitter.endTime,
+            );
             return;
         }
 
@@ -305,14 +306,32 @@ async function matchingCriteria(request, babysitters) {
  * @param  {Array<babysitter>} babysitters the list of babysitters to check
  * @returns {Array} matchedList
  */
-function checkAgainstSchedules(request, babysitters) {
+async function checkAgainstSchedules(request, babysitters) {
     let matchedList = [];
 
-    babysitters.forEach((sitter) => {
-        if (checkBabysitterSchedule(sitter, request)) {
-            matchedList.push(sitter);
+    try {
+        if (request.repeatedRequestId) {
+            const repeated = await models.repeatedRequest.findOne({
+                where: {
+                    id: request.repeatedRequestId,
+                },
+            });
+
+            babysitters.forEach((sitter) => {
+                if (checkBabysitterSchedule(sitter, repeated)) {
+                    matchedList.push(sitter);
+                }
+            });
+        } else {
+            babysitters.forEach((sitter) => {
+                if (checkBabysitterSchedule(sitter, request)) {
+                    matchedList.push(sitter);
+                }
+            });
         }
-    });
+    } catch (error) {
+        console.log('Duong: checkAgainstSchedules -> error', error);
+    }
 
     return matchedList;
 }

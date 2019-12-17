@@ -372,8 +372,8 @@ export async function insertDatabase() {
                     babysitter = {
                         userId: el.id,
                         weeklySchedule: 'MON,TUE,WED,THU,FRI,SUN',
-                        daytime: '08-17',
-                        evening: '17-20',
+                        startTime: '08:00',
+                        endTime: '20:00',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
@@ -384,8 +384,8 @@ export async function insertDatabase() {
                     babysitter = {
                         userId: el.id,
                         weeklySchedule: 'MON,TUE,WED,THU,FRI,SUN',
-                        daytime: '08-17',
-                        evening: '17-21',
+                        startTime: '08:00',
+                        endTime: '21:00',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
@@ -396,8 +396,8 @@ export async function insertDatabase() {
                     babysitter = {
                         userId: el.id,
                         weeklySchedule: 'MON,TUE,WED,THU,FRI,SAT,SUN',
-                        daytime: '08-17',
-                        evening: '17-21',
+                        startTime: '08:00',
+                        endTime: '21:00',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
@@ -407,9 +407,9 @@ export async function insertDatabase() {
                 } else if (index < 4) {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: 'SAT,SUN',
-                        daytime: '08-17',
-                        evening: '17-21',
+                        weeklySchedule: 'MON,TUE,WED,THU,FRI,SAT,SUN',
+                        startTime: '10:00',
+                        endTime: '16:00',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
@@ -419,9 +419,9 @@ export async function insertDatabase() {
                 } else {
                     babysitter = {
                         userId: el.id,
-                        weeklySchedule: 'SAT,SUN',
-                        daytime: '08-17',
-                        evening: '17-22',
+                        weeklySchedule: 'TUE,THU,SAT,SUN',
+                        startTime: '09:00',
+                        endTime: '22:00',
                         minAgeOfChildren: 1,
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,

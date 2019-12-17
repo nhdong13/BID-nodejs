@@ -168,8 +168,8 @@ const update = async (req, res) => {
                         !checkSittingTime(
                             invite.sittingRequest.startTime,
                             invite.sittingRequest.endTime,
-                            updatingSitter.daytime,
-                            updatingSitter.evening,
+                            updatingSitter.startTime,
+                            updatingSitter.endTime,
                         )
                     ) {
                         await models.invitation.update(
