@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getRepeatedDates } from 'utils/common'
 
 /**
  * @param  {String} cron
@@ -105,20 +106,34 @@ export function getScheduleTime(request) {
  */
 export function checkBabysitterSchedule(babysitter, request) {
     let flag = true;
+    let repeatedDates;
+    if (request.repeatedDays) {
+        repeatedDates = getRepeatedDates(request);
+    }
+
     let schedules = babysitter.user.schedules;
     // unavailable schedules
     let unavailable = schedules.filter((schedule) => schedule.type == 'FUTURE');
-    // available schedules
-    let available = schedules.filter(
-        (schedule) => schedule.type == 'AVAILABLE',
-    );
 
     //
     if (unavailable.length > 0) {
         unavailable.forEach((schedule) => {
             let scheduleTime = parseSchedule(schedule.scheduleTime);
-
-            if (request.sittingDate == scheduleTime.date) {
+            if (repeatedDates) {
+                repeatedDates.forEach(date => {
+                    if (date == scheduleTime.date) {
+                        if (
+                            checkScheduleTime(
+                                request.startTime,
+                                request.endTime,
+                                scheduleTime,
+                            )
+                        ) {
+                            flag = false;
+                        }
+                    }
+                });
+            } else if (request.sittingDate == scheduleTime.date) {
                 if (
                     checkScheduleTime(
                         request.startTime,
