@@ -35,6 +35,24 @@ export async function sendSingleMessage(notification) {
     // }
 }
 
+export async function sendMessage(message) {
+    if (!Expo.isExpoPushToken(message.to.trim())) {
+        console.error(
+            `Push token ${message.to} is not a valid Expo push token`,
+        );
+        return;
+    }
+
+    let ticket = await expo
+        .sendPushNotificationsAsync([message])
+        .catch((error) => {
+            console.log('PHUC: sendSingleMessage -> error -> backend', error);
+        });
+    // if (ticket) {
+    //     console.log('PHUC: sendSingleMessage -> ticket', ticket);
+    // }
+}
+
 export async function sendNotificationWithSocket(notification) {
     const data = {
         userId: notification.userId,
