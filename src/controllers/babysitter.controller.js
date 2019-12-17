@@ -40,23 +40,27 @@ const create = async (req, res) => {
 };
 
 const listAllBabysitterWithSchedule = async (req, res, next) => {
-    const list = await models.babysitter.findAll({
-        include: [
-            {
-                model: models.user,
-                as: 'user',
-                include: [
-                    {
-                        model: models.schedule,
-                        as: 'schedules',
-                    },
-                ],
-            },
-        ],
-    });
-
-    res.status(200);
-    res.send(list);
+    try {
+        const list = await models.babysitter.findAll({
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                    include: [
+                        {
+                            model: models.schedule,
+                            as: 'schedules',
+                        },
+                    ],
+                },
+            ],
+        });
+        res.status(200);
+        res.send(list);
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
 };
 
 const readByRequest = async (req, res) => {

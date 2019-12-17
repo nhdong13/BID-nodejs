@@ -321,38 +321,38 @@ function parseToScheduleTime(momentObj) {
 
 function restartJob(job) {
     // console.log('PHUC: restartJob -> job', job);
-    if (job.runOnce) {
-        try {
-            let time = job.nextDate();
-            // console.log('PHUC: restartJob -> time', time);
+    // if (job.runOnce) {
+    try {
+        let time = job.nextDate();
+        // console.log('PHUC: restartJob -> time', time);
 
-            if (time.isAfter(moment())) {
-                time = new CronTime(time);
+        if (time.isAfter(moment())) {
+            time = new CronTime(time);
 
-                job.stop();
-                job.setTime(time);
-                job.start();
-                console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
-                console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
-            } else {
-                console.log('--------- Schedule trong quá khứ !');
-                console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
-                console.log('--- Giờ quá khứ:', time.format('HH:mm:ss'));
-            }
-        } catch (error) {
-            // console.log('PHUC: restartJob -> error', error);
-        }
-    } else {
-        try {
             job.stop();
-
+            job.setTime(time);
             job.start();
             console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
             console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
-        } catch (error) {
-            // console.log('PHUC: restartJob -> not run once', error);
+        } else {
+            console.log('--------- Schedule trong quá khứ !');
+            console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+            console.log('--- Giờ quá khứ:', time.format('HH:mm:ss'));
         }
+    } catch (error) {
+        // console.log('PHUC: restartJob -> error', error);
     }
+    // } else {
+    //     try {
+    //         job.stop();
+
+    //         job.start();
+    //         console.log('--- Giờ hiện tại:', moment().format('HH:mm:ss'));
+    //         console.log('--- Giờ chạy:', job.nextDate().format('HH:mm:ss'));
+    //     } catch (error) {
+    //         // console.log('PHUC: restartJob -> not run once', error);
+    //     }
+    // }
 }
 
 /**
@@ -455,7 +455,11 @@ async function privateCreateRepeatedRequest(foundRequest, request) {
                 totalPrice: request.totalPrice,
             });
 
-            await createSchedule(newRequest, request.acceptedBabysitter, newRequest.id);
+            await createSchedule(
+                newRequest,
+                request.acceptedBabysitter,
+                newRequest.id,
+            );
         });
 
         await Promise.all(promises);
@@ -578,5 +582,5 @@ export default {
 
     createRepeatedRequest(foundRequest, request) {
         privateCreateRepeatedRequest(foundRequest, request);
-    }
+    },
 };
