@@ -7,7 +7,10 @@ import {
     invitationMessages,
 } from '@utils/notificationMessages';
 import { reload } from '@utils/socketIo';
-import { sendNotificationWithSocket } from '@utils/pushNotification';
+import {
+    sendNotificationWithSocket,
+    sendMessage,
+} from '@utils/pushNotification';
 import {
     checkCheckInStatus,
     checkCheckOutStatus,
@@ -488,7 +491,7 @@ const cancelSittingRequest = async (req, res) => {
                         };
 
                         let messages = [];
-                        invitations.forEach(async (invitation) => {
+                        await invitations.forEach(async (invitation) => {
                             await models.invitation.update(updateInvitation, {
                                 where: { requestId: id },
                             });
@@ -498,14 +501,11 @@ const cancelSittingRequest = async (req, res) => {
                                 const message = {
                                     to: token,
                                     sound: 'default',
-                                    body:
-                                        invitationMessages.parentSendRepeatedRequest,
+                                    body: cancelMessages.parentCancel,
                                     data: {
                                         id: invitation.id,
-                                        message:
-                                            invitationMessages.parentSendRepeatedRequest,
-                                        title:
-                                            titleMessages.parentSendRepeatedRequest,
+                                        message: cancelMessages.parentCancel,
+                                        title: titleMessages.parentCancel,
                                         option: {
                                             showConfirm: true,
                                             textConfirm: 'Tiếp tục',
@@ -518,15 +518,10 @@ const cancelSittingRequest = async (req, res) => {
                                     'PHUC: cancelSittingRequest -> message',
                                     message,
                                 );
-
                                 // xu ly notification o day
+                                sendMessage(message);
                             }
                         });
-
-                        console.log(
-                            'PHUC: cancelSittingRequest -> messages',
-                            messages,
-                        );
 
                         // reload(notification);
                         res.status(200);
