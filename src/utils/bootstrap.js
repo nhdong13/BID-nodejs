@@ -180,7 +180,7 @@ export async function insertDatabase() {
         firstTime: false,
         secret: 'J5SEI3RMEVXEO2K5NRIUWR2DPASSGZJD',
         image: Images.user5,
-        token: 'ExponentPushToken[pVfxIfJ1nktR_IIMPWFn7U]',
+        token: 'ExponentPushToken[6rIR3fKUpqQdE_Lnf46i19]',
     };
     users.push(user);
 

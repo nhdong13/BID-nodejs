@@ -490,7 +490,6 @@ const cancelSittingRequest = async (req, res) => {
                             status: 'PARENT_CANCELED',
                         };
 
-                        let messages = [];
                         await invitations.forEach(async (invitation) => {
                             await models.invitation.update(updateInvitation, {
                                 where: { requestId: id },
@@ -548,6 +547,18 @@ const cancelSittingRequest = async (req, res) => {
                     //change status of all the invitation
                     const invitations = await models.invitation.findAll({
                         where: { requestId: id },
+                        include: [
+                            {
+                                model: models.user,
+                                as: 'user',
+                                include: [
+                                    {
+                                        model: models.tracking,
+                                        as: 'tracking',
+                                    },
+                                ],
+                            },
+                        ],
                     });
                     if (invitations) {
                         const updateInvitation = {
@@ -557,6 +568,31 @@ const cancelSittingRequest = async (req, res) => {
                             await models.invitation.update(updateInvitation, {
                                 where: { requestId: id },
                             });
+
+                            if (token) {
+                                const message = {
+                                    to: token,
+                                    sound: 'default',
+                                    body: cancelMessages.parentCancel,
+                                    data: {
+                                        id: invitation.id,
+                                        message: cancelMessages.parentCancel,
+                                        title: titleMessages.parentCancel,
+                                        option: {
+                                            showConfirm: true,
+                                            textConfirm: 'Tiếp tục',
+                                            showCancel: true,
+                                            textCancel: 'Ẩn',
+                                        },
+                                    },
+                                };
+                                console.log(
+                                    'PHUC: cancelSittingRequest -> message',
+                                    message,
+                                );
+                                // xu ly notification o day
+                                sendMessage(message);
+                            }
                         });
                     }
                     const updatingTransaction = {
