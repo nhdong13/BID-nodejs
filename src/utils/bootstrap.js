@@ -127,7 +127,7 @@ export async function insertDatabase() {
         email: 'dong4@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Hoang Nhat Dong',
-        address: '600 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
+        address: '184 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -148,7 +148,7 @@ export async function insertDatabase() {
         email: 'ky@gmail.com',
         password: await hashPassword('12341234'),
         nickname: 'Ho Tan Ky',
-        address: '181 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
+        address: '182 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'FEMALE',
         dateOfBirth: moment().set({
             year: randomInt(1990, 2000),
@@ -156,8 +156,8 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
-        firstTime: false,
-        secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
+        firstTime: true,
+        // secret: 'KRYWM6BBEZ5XCNCENFVVKSKOLNTDOTSD',
         image: Images.user6,
         token: 'ExponentPushToken[fyRIwRHp3ZajYB-b1odwGb]',
     };
@@ -188,7 +188,7 @@ export async function insertDatabase() {
         phoneNumber: '0965474208',
         email: 'vyvly@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Vy Le Yen Vy',
+        nickname: 'Vu Le Yen Vy',
         address: '300 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'FEMALE',
         dateOfBirth: moment().set({
@@ -272,7 +272,7 @@ export async function insertDatabase() {
                 },
                 {
                     userId: 7,
-                    token: 'ExponentPushToken[pVfxIfJ1nktR_IIMPWFn7U]',
+                    token: 'ExponentPushToken[6rIR3fKUpqQdE_Lnf46i19]',
                 },
             ]);
             //#region seed parent based on user and seed circle of parent
@@ -709,7 +709,7 @@ export async function insertDatabase() {
         checkinTimeout: 1,
         checkoutTimeout: 1,
         timezone: 'Asia/Bangkok',
-        maxTravelDistance: 5,
+        maxTravelDistance: 3,
         circleWeight: 0.5,
         ratingWeight: 0.4,
         distanceWeight: 0.1,

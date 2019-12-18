@@ -1,8 +1,16 @@
 import models from '@models';
 import { matching } from '@services/matchingService';
 import { recommendToParent } from '@services/recommendService';
-import { cancelMessages, titleMessages } from '@utils/notificationMessages';
-import { testSocketIo, reload } from '@utils/socketIo';
+import {
+    cancelMessages,
+    titleMessages,
+    invitationMessages,
+} from '@utils/notificationMessages';
+import { reload } from '@utils/socketIo';
+import {
+    sendNotificationWithSocket,
+    sendMessage,
+} from '@utils/pushNotification';
 import {
     checkCheckInStatus,
     checkCheckOutStatus,
@@ -40,7 +48,6 @@ const list = async (req, res, next) => {
                 },
             ],
         });
-        testSocketIo();
         res.send(listSittings);
     } catch (err) {
         res.status(400);
@@ -64,7 +71,6 @@ const listForWeb = async (req, res, next) => {
                 },
             ],
         });
-        testSocketIo();
         res.send(listSittings);
     } catch (err) {
         res.status(400);
@@ -75,12 +81,19 @@ const listForWeb = async (req, res, next) => {
 const listByParentId = async (req, res, next) => {
     const parentId = req.body.userId;
 
+    const notification = {
+        userId: parentId,
+        notificationMessage: cancelMessages.parentCancel,
+        title: titleMessages.parentCancel,
+    };
+
     try {
         const listSittings = await models.sittingRequest.findAll({
             where: {
                 createdUser: parentId,
             },
         });
+        sendNotificationWithSocket(notification);
         res.send(listSittings);
     } catch (err) {
         res.status(400);
@@ -458,21 +471,59 @@ const cancelSittingRequest = async (req, res) => {
                     //cancel tat ca loi moi
                     const invitations = await models.invitation.findAll({
                         where: { requestId: id },
+                        include: [
+                            {
+                                model: models.user,
+                                as: 'user',
+                                include: [
+                                    {
+                                        model: models.tracking,
+                                        as: 'tracking',
+                                    },
+                                ],
+                            },
+                        ],
                     });
+
                     if (invitations) {
                         const updateInvitation = {
                             status: 'PARENT_CANCELED',
                         };
-                        invitations.forEach(async (invitation) => {
+
+                        let messages = [];
+                        await invitations.forEach(async (invitation) => {
                             await models.invitation.update(updateInvitation, {
                                 where: { requestId: id },
                             });
+
+                            const token = invitation.user.tracking.token;
+                            if (token) {
+                                const message = {
+                                    to: token,
+                                    sound: 'default',
+                                    body: cancelMessages.parentCancel,
+                                    data: {
+                                        id: invitation.id,
+                                        message: cancelMessages.parentCancel,
+                                        title: titleMessages.parentCancel,
+                                        option: {
+                                            showConfirm: true,
+                                            textConfirm: 'Tiếp tục',
+                                            showCancel: true,
+                                            textCancel: 'Ẩn',
+                                        },
+                                    },
+                                };
+                                console.log(
+                                    'PHUC: cancelSittingRequest -> message',
+                                    message,
+                                );
+                                // xu ly notification o day
+                                sendMessage(message);
+                            }
                         });
-                        const notification = {
-                            notificationMessage: cancelMessages.parentCancel,
-                            title: titleMessages.parentCancel,
-                        };
-                        reload(notification);
+
+                        // reload(notification);
                         res.status(200);
                         res.send({ message: 'Cancel successfully' });
                     }

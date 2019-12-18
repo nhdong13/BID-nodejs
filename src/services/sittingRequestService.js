@@ -458,12 +458,13 @@ export async function checkForSittingTime(request) {
 }
 
 export async function handleNotCheckingIn(requestId) {
-    let request = await models.sittingRequest.findOne({
+    const request = await models.sittingRequest.findOne({
         where: {
             id: requestId,
             status: 'CONFIRMED',
         },
     });
+    console.log('PHUC: handleNotCheckingIn -> request', request);
 
     if (request) {
         await models.sittingRequest.update(
