@@ -145,13 +145,10 @@ function getWeekRange(range) {
 export function checkSittingTime(startTime, endTime, bStartTime, bEndTime) {
     let flag = false;
 
-    if (startTime <= bStartTime && bStartTime <= endTime) {
-        flag = true;
-    }
-    if (startTime <= bEndTime && bEndTime <= endTime) {
-        flag = true;
-    }
-    if (startTime > bStartTime && endTime < bEndTime) {
+    startTime = moment(startTime, 'HH:mm:ss').format('HH:mm');
+    endTime = moment(endTime, 'HH:mm:ss').format('HH:mm');
+    
+    if (startTime >= bStartTime && endTime <= bEndTime) {
         flag = true;
     }
 
