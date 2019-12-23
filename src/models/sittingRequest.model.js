@@ -44,6 +44,7 @@ export default function(sequelize, DataTypes) {
                     'DONE_BY_NEWSTART',
                     'SITTER_NOT_CHECKIN',
                     'EXPIRED',
+                    'STAFF_CANCELED',
                 ),
                 allowNull: false,
             },
