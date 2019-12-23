@@ -1,7 +1,7 @@
-import seq from "sequelize";
-import models from "@models/";
-import { asyncForEach } from '@utils/common'
-import Config from '@services/configService'
+import seq from 'sequelize';
+import models from '@models/';
+import { asyncForEach } from '@utils/common';
+import Config from '@services/configService';
 
 // CONSTANTS WEIGHTED MULTIPLIER (total = 1)
 // const CIRCLE_WEIGHTED = 0.5;
@@ -12,19 +12,20 @@ import Config from '@services/configService'
 
 // recommend to parent
 export async function recommendToParent(request, listMatched) {
+    console.time('recommend');
     let recommendList = [];
 
     // init a list of matched babysitters's id and their circle weighted
-    let listWithCircle = listMatched.map(sitter => {
+    let listWithCircle = listMatched.map((sitter) => {
         let temp = {
             id: sitter.userId,
-            circleW: 0
+            circleW: 0,
         };
 
         return temp;
     });
     // init a list of matched babysitters's id and their rating weighted
-    let listWithRating = listMatched.map(sitter => {
+    let listWithRating = listMatched.map((sitter) => {
         let temp = {
             id: sitter.userId,
             ratingW: 0,
@@ -35,20 +36,20 @@ export async function recommendToParent(request, listMatched) {
         return temp;
     });
     // init a list of matched babysitters's id and their distance weighted
-    let listWithDistance = listMatched.map(sitter => {
+    let listWithDistance = listMatched.map((sitter) => {
         let temp = {
             id: sitter.userId,
             distanceW: 0,
-            distance: sitter.distance
+            distance: sitter.distance,
         };
 
         return temp;
     });
     // init a list of matched babysitters's id and their total score for recommendation
-    let listWithTotal = listMatched.map(sitter => {
+    let listWithTotal = listMatched.map((sitter) => {
         let temp = {
             id: sitter.userId,
-            total: 0
+            total: 0,
         };
 
         return temp;
@@ -65,11 +66,11 @@ export async function recommendToParent(request, listMatched) {
         listWithCircle,
         listWithRating,
         listWithDistance,
-        listWithTotal
+        listWithTotal,
     );
 
     // filter out babysitter with total score <= 10
-    listWithTotal = listWithTotal.filter(sitter => sitter.total > 10);
+    listWithTotal = listWithTotal.filter((sitter) => sitter.total > 10);
 
     // sort the list descending
     listWithTotal = listWithTotal.sort(function(a, b) {
@@ -80,30 +81,36 @@ export async function recommendToParent(request, listMatched) {
     listWithTotal = listWithTotal.slice(0, 5);
 
     // push to recommendList
-    listWithTotal.forEach(el => {
-        let found = listMatched.find(sitter => sitter.userId == el.id);
+    listWithTotal.forEach((el) => {
+        let found = listMatched.find((sitter) => sitter.userId == el.id);
 
         if (found) {
             recommendList.push(found);
         }
     });
+    console.timeEnd('recommend');
 
     return recommendList;
 }
 
 // calculate the total score of a babysitter to a parent request
-async function calScore(listWithCircle, listWithRating, listWithDistance, listWithTotal) {
-    listWithTotal.forEach(el => {
+async function calScore(
+    listWithCircle,
+    listWithRating,
+    listWithDistance,
+    listWithTotal,
+) {
+    listWithTotal.forEach((el) => {
         //
-        let c = listWithCircle.find(sitter => {
+        let c = listWithCircle.find((sitter) => {
             return sitter.id == el.id;
         });
         //
-        let r = listWithRating.find(sitter => {
+        let r = listWithRating.find((sitter) => {
             return sitter.id == el.id;
         });
         //
-        let d = listWithDistance.find(sitter => {
+        let d = listWithDistance.find((sitter) => {
             return sitter.id == el.id;
         });
 
@@ -127,80 +134,102 @@ async function calScore(listWithCircle, listWithRating, listWithDistance, listWi
 
 // calculate the weight of trust circle
 async function calCircle(parentId, listWithCircle) {
-    let circle = [];
+    try {
+        let circles = [];
 
-    // find all parents in this parent's circle
-    circle = await models.circle.findAll({
-        where: {
-            ownerId: parentId
-        }
-    });
-
-    // 
-    await asyncForEach(circle, async el => {
-        // sitting-requests of parents in the circle
-        let srq = await models.sittingRequest.findAll({
-            // attributes: [[seq.fn('DISTINCT', seq.col('acceptedBabysitter')), 'bId']],
+        // find all parents in this parent's circle
+        circles = await models.circle.findAll({
+            attributes: ['friendId'],
             where: {
-                createdUser: el.friendId
-            }
+                ownerId: parentId,
+            },
         });
 
-        let bsit = srq.map(sitter => {
+        let friendIds = [];
+
+        if (circles.length > 0) {
+            let friendIds = circles.map((id) => {
+                return id.friendId;
+            });
+        }
+
+        // find by the owner Id also
+        friendIds.push(parentId);
+
+        //
+        // sitting-requests of parents in the circle
+        let srq = await models.sittingRequest.findAll({
+            attributes: [
+                [
+                    seq.fn('DISTINCT', seq.col('acceptedBabysitter')),
+                    'acceptedBabysitter',
+                ],
+            ],
+            where: {
+                createdUser: {
+                    [seq.Op.or]: friendIds,
+                },
+            },
+        });
+
+        let bsit = srq.map((sitter) => {
             return sitter.acceptedBabysitter;
         });
 
         // calculate score for each matched babysitter of the requested parent
         // if the babysitter in matched list have been hired by this parent then increase his score
-        listWithCircle = listWithCircle.map(b => {
-            let found = bsit.includes(b.id);
+        const promises = listWithCircle.map(async (sitter) => {
+            let found = bsit.includes(sitter.id);
 
             if (found) {
-                if (b.circleW < 100) {
-                    b.circleW += 50;
+                if (sitter.circleW < 100) {
+                    sitter.circleW += 50;
                 }
             }
 
-            return b;
-        });
-    });
+            return sitter;
+        })
 
+        await Promise.all(promises);
+
+        return listWithCircle;
+    } catch (error) {
+        console.log('Duong: calCircle -> error', error);
+    }
     return listWithCircle;
 }
 
 // calculate the weight of rating
 async function calRating(listWithRating) {
-    let c = await meanRating(listWithRating);
+    // let c = await meanRating(listWithRating);
 
-    await asyncForEach(listWithRating, async el => {
-        el.ratingW = await weightedRating(c, el);
-    });
+    listWithRating.map(async (sitter) => {
+        sitter.ratingW = await weightedRating(sitter);
+    })
 
     return listWithRating;
 }
 
 // calculate the weight of distance
 async function calDistance(listWithDistance) {
-    await asyncForEach(listWithDistance, async el => {
+    await asyncForEach(listWithDistance, async (el) => {
         let temp = el.distance.split(' ');
-        
+
         let unit = temp[1];
-        
+
         if (unit == 'km') {
             let distanceKM = temp[0];
-            let scoreDistance = 10 - distanceKM; 
+            let scoreDistance = 10 - distanceKM;
             let score = scoreDistance * 10;
             el.distanceW = score;
         } else {
             // unit is m(meter) mean the distance is very small => score should be max - 100
-            el.distanceW = 100
+            el.distanceW = 100;
         }
     });
 
     return listWithDistance;
 }
-
-
 
 // (v/(v+M) * r) + (M/(M+v) * C)
 // v is the number of feedback for the babysitter;
@@ -208,26 +237,29 @@ async function calDistance(listWithDistance) {
 // R is the average rating of the babysitter;
 // C is the mean rating across the whole report;
 // reference: https://www.datacamp.com/community/tutorials/recommender-systems-python?utm_source=adwords_ppc&utm_campaignid=1455363063&utm_adgroupid=65083631748&utm_device=m&utm_keyword=&utm_matchtype=b&utm_network=g&utm_adpostion=1t1&utm_creative=332602034358&utm_targetid=aud-517318242147:dsa-473406569915&utm_loc_interest_ms=&utm_loc_physical_ms=1028581&gclid=CjwKCAjw2qHsBRAGEiwAMbPoDNQfPEHKIX-J2DC5HoNN_oD7bWBEgXU_Forvnm3x4VWLy2FbZmNGFhoCV9cQAvD_BwE
-async function weightedRating(C, babysitter) {
+async function weightedRating(babysitter) {
     let v = babysitter.totalFeedback;
     if (v < Config.getMinimumFeedback()) {
         return 0;
     }
     let r = babysitter.averageRating;
 
-    let wR = (v/(v + Config.getMinimumFeedback()) * r) + (Config.getMinimumFeedback()/(Config.getMinimumFeedback() + v) * C);
-    let result = Math.round(wR * 20); 
+    // let wR =
+    //     (v / (v + Config.getMinimumFeedback())) * r +
+    //     (Config.getMinimumFeedback() / (Config.getMinimumFeedback() + v)) * C;
+    let result = Math.round(r * 20);
 
     return result;
 }
 
+// không dùng nữa
 async function meanRating(listWithRating) {
     if (!(listWithRating === undefined || listWithRating.length == 0)) {
         let C = 0.0;
-        listWithRating.forEach(el => {
+        listWithRating.forEach((el) => {
             C += el.averageRating;
         });
-        C = C/listWithRating.length;
+        C = C / listWithRating.length;
 
         return C;
     }

@@ -284,9 +284,8 @@ export async function insertDatabase() {
             userParents.forEach((el) => {
                 let parent = {
                     userId: el.id,
-                    childrenNumber: 3,
                     familyDescription: '',
-                    parentCode: 'A' + el.id,
+                    parentCode: el.id != 3 ? 'P' + el.id : null,
                 };
                 parents.push(parent); // push to array parents
             });
@@ -440,7 +439,7 @@ export async function insertDatabase() {
                     {
                         createdUser: 1,
                         acceptedBabysitter: 5,
-                        childrenNumber: 1,
+                        childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 150000,
                         sittingDate: moment().set({
@@ -666,6 +665,7 @@ export async function insertDatabase() {
                             ]);
                         }
                         //#endregion
+
                         //#region feedbacks
                         if (el.status === 'DONE') {
                             // seed feedback
@@ -673,7 +673,8 @@ export async function insertDatabase() {
                                 {
                                     requestId: el.id,
                                     rating: 4,
-                                    reporter: true,
+                                    reporter: 1,
+                                    description: 'Người giữ trẻ làm tốt',
                                     isReport: false,
                                     order: 1,
                                 },

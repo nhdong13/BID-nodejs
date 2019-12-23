@@ -57,6 +57,10 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            latlog: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            }
         },
         {
             timestamps: true,
