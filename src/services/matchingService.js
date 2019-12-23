@@ -29,25 +29,34 @@ const mapsClient = googleMaps.createClient({
 export async function matching(sittingRequest) {
     console.log('------------------------Matching------------------------');
 
+    console.time('searchSitters');
     let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
+    console.timeEnd('searchSitters');
 
+    console.time('matching');
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
+    console.timeEnd('matching');
 
+    
+    console.time('checkSchedules');
     // check against babysitter schedules
     matchedList = await checkAgainstSchedules(sittingRequest, matchedList);
+    console.timeEnd('checkSchedules');
 
+    console.time('getDistance');
     // calculate distance with api Google
-    // matchedList = await getBabysitterDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
-
-    // calculate distance with magic and stuff you know
-    matchedList = await randomizeDistance(
+    matchedList = await getBabysitterDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
+    console.timeEnd('getDistance');
+
+    // calculate distance with magic and stuff you know
+    // matchedList = await randomizeDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
 
     // only run if this request is created (has id)
     if (
@@ -55,7 +64,9 @@ export async function matching(sittingRequest) {
         sittingRequest.id !== null &&
         sittingRequest.id > 0
     ) {
+        console.time('checkSentInvite');
         matchedList = await checkIfSentInvite(sittingRequest, matchedList);
+        console.timeEnd('checkSentInvite');
     }
 
     console.log(
@@ -103,13 +114,26 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
     let matchedList = [];
 
     let address1LatLog = await placeSearch(sittingAddress);
+    address1LatLog = address1LatLog[0].geometry.location;
 
     try {
         const promises = listOfSitter.map(async (sitter) => {
+            let sitterLatlog;
+            if (!sitter.user.latlog) {
+                sitterLatlog = await placeSearch(sittingAddress);
+                sitterLatlog = sitterLatlog[0].geometry.location;
+                sitterLatlog = `${sitterLatlog.lat},${sitterLatlog.lng}`;
+                sitter.user.update({
+                    latlog: sitterLatlog
+                })
+            } else {
+                sitterLatlog = sitter.user.latlog;
+            }
+
             // x.x km || x.x m
             let distance = await getDistance(
                 address1LatLog,
-                sitter.user.address,
+                sitterLatlog,
             );
 
             // x.x
@@ -193,14 +217,12 @@ async function checkIfSentInvite(sittingRequest, babysitters) {
  * @param  {String} address2
  * @returns {} the distance in 'km'
  */
-async function getDistance(address1LatLog, address2) {
-    let place_2 = await placeSearch(address2);
-
+async function getDistance(address1LatLog, address2LatLog) {
     try {
         let distances = await mapsClient
             .distanceMatrix({
-                origins: [address1LatLog[0].geometry.location], // start address
-                destinations: [place_2[0].geometry.location], // destination address
+                origins: [address1LatLog], // start address
+                destinations: [address2LatLog], // destination address
                 mode: 'walking',
             })
             .asPromise();

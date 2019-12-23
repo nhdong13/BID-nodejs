@@ -284,9 +284,8 @@ export async function insertDatabase() {
             userParents.forEach((el) => {
                 let parent = {
                     userId: el.id,
-                    childrenNumber: 3,
                     familyDescription: '',
-                    parentCode: 'A' + el.id,
+                    parentCode: el.id != 3? 'P' + el.id : null,
                 };
                 parents.push(parent); // push to array parents
             });
@@ -447,7 +446,7 @@ export async function insertDatabase() {
                 .bulkCreate([
                     {
                         createdUser: 1,
-                        acceptedBabysitter: null,
+                        acceptedBabysitter: 5,
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
@@ -472,7 +471,7 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'PENDING',
+                        status: 'DONE',
                     },
                     // {
                     //     createdUser: 1,
@@ -644,55 +643,35 @@ export async function insertDatabase() {
                         }
                     });
                     //#endregion
-                    //#region seed invitations
                     result.forEach((el) => {
-                        if (el.status === 'PENDING') {
+                        //#region seed invitations
+                        if (el.status === 'DONE') {
                             db.invitation.bulkCreate([
                                 {
                                     requestId: el.id,
-                                    receiver: 6,
-                                    status: 'PENDING',
+                                    receiver: 5,
+                                    status: 'DONE',
                                 },
-                                // {
-                                //     requestId: el.id,
-                                //     receiver: 6,
-                                //     status: 'CONFIRMED',
-                                // },
-                                // {
-                                //     requestId: el.id,
-                                //     receiver: 6,
-                                //     status: 'OVERLAP',
-                                // },
-                                // {
-                                //     requestId: el.id,
-                                //     receiver: 6,
-                                //     status: 'PARENT_CANCELED',
-                                // },
-                                // {
-                                //     requestId: el.id,
-                                //     receiver: 6,
-                                //     status: 'DONE',
-                                // },
-                                // {
-                                //     requestId: el.id,
-                                //     receiver: 6,
-                                //     status: 'ONGOING',
-                                // },
                             ]);
                         }
                         //#endregion
+
                         //#region feedbacks
-                        // if (el.status === 'DONE') {
-                        //     // seed feedback
-                        //     db.feedback.bulkCreate([
-                        //         {
-                        //             // requestId: el.id,
-                        //             // rating: 4,
-                        //         },
-                        //     ]);
-                        // }
+                        if (el.status === 'DONE') {
+                            // seed feedback
+                            db.feedback.bulkCreate([
+                                {
+                                    requestId: el.id,
+                                    rating: 4,
+                                    reporter: 1,
+                                    description: 'Người giữ trẻ làm tốt',
+                                    isReport: false,
+                                    order: 1
+                                },
+                            ]);
+                        }
+                        //#endregion
                     });
-                    //#endregion
                 })
                 .catch((err) => {
                     console.log(err);
