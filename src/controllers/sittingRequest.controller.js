@@ -93,7 +93,7 @@ const listByParentId = async (req, res, next) => {
                 createdUser: parentId,
             },
         });
-        sendNotificationWithSocket(notification);
+        // sendNotificationWithSocket(notification);
         res.send(listSittings);
     } catch (err) {
         res.status(400);
