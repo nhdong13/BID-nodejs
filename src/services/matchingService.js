@@ -44,24 +44,20 @@ export async function matching(sittingRequest) {
     console.timeEnd('checkSchedules');
 
     console.time('getDistance');
+
     // calculate distance with api Google
-    matchedList = await getBabysitterDistance(
+    // matchedList = await getBabysitterDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
+
     console.timeEnd('getDistance');
-
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
-
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
 
     // only run if this request is created (has id)
     if (

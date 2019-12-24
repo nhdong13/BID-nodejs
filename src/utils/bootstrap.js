@@ -306,6 +306,13 @@ export async function insertDatabase() {
                     ]);
                     //#endregion
                     //seed children
+                    // img1 phong - male
+                    // img2 - male
+                    // img3 - female
+                    // img4 - female
+                    // img5 - male
+                    // img6 - female
+                    // img7 - female
                     db.children.bulkCreate([
                         {
                             name: 'Phong',
@@ -335,19 +342,19 @@ export async function insertDatabase() {
                             name: 'Dương Jr',
                             age: 1,
                             parentId: 1,
-                            image: Images.img4,
+                            image: Images.img5,
                         },
                         {
                             name: 'Vy',
                             age: 4,
                             parentId: 2,
-                            image: Images.img2,
+                            image: Images.img6,
                         },
                         {
-                            name: 'Nguyên',
+                            name: 'Na',
                             age: 6,
                             parentId: 2,
-                            image: Images.img3,
+                            image: Images.img7,
                         },
                     ]);
                 });
@@ -442,6 +449,7 @@ export async function insertDatabase() {
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 150000,
+                        distance: '0.4 km',
                         sittingDate: moment().set({
                             year: 2019,
                             month: 11,
@@ -470,6 +478,7 @@ export async function insertDatabase() {
                         acceptedBabysitter: 6,
                         childrenNumber: 1,
                         minAgeOfChildren: 1,
+                        distance: '1.2 km',
                         totalPrice: 150000,
                         sittingDate: moment().set({
                             year: 2019,
@@ -500,6 +509,7 @@ export async function insertDatabase() {
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
+                        distance: '0.1 km',
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
@@ -529,6 +539,7 @@ export async function insertDatabase() {
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
+                        distance: '50 m',
                         sittingDate: moment().set({
                             year: 2019,
                             month: 10,
@@ -558,6 +569,7 @@ export async function insertDatabase() {
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
+                        distance: '0.7 km',
                         sittingDate: moment().set({
                             year: 2019,
                             month: 11,
@@ -587,6 +599,7 @@ export async function insertDatabase() {
                         childrenNumber: 2,
                         minAgeOfChildren: 1,
                         totalPrice: 100000,
+                        distance: '0.3',
                         sittingDate: moment().set({
                             year: 2019,
                             month: 11,
@@ -672,9 +685,10 @@ export async function insertDatabase() {
                             db.feedback.bulkCreate([
                                 {
                                     requestId: el.id,
-                                    rating: 4,
+                                    rating: 5,
                                     reporter: 1,
-                                    description: 'Người giữ trẻ làm tốt',
+                                    description:
+                                        'Người giữ trẻ làm việc có tâm, chăm sóc trẻ tốt, chắc chắn sẽ thuê nữa khi cần. Dịch vụ tìm kiếm nhanh.',
                                     isReport: false,
                                     order: 1,
                                 },
