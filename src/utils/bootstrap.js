@@ -103,7 +103,7 @@ export async function insertDatabase() {
         phoneNumber: '0965474204',
         email: 'Khanh@gmail.com',
         password: await hashPassword('12341234'),
-        nickname: 'Mr.K',
+        nickname: 'Nguyen Quang Duy',
         address: '682 Quang Trung, Phường 11, Gò Vấp, Hồ Chí Minh, Vietnam',
         gender: 'MALE',
         dateOfBirth: moment().set({
@@ -417,7 +417,7 @@ export async function insertDatabase() {
                         maxNumOfChildren: 2,
                         maxTravelDistance: 10,
                         averageRating: 5, //4,
-                        totalFeedback: 13, //1,
+                        totalFeedback: 3, //1,
                     };
                 }
 
