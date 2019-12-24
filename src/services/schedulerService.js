@@ -10,7 +10,10 @@ import {
     handleNotCheckingIn,
     handleRequestExpired,
 } from '@services/sittingRequestService';
-import { sendSingleMessage } from '@utils/pushNotification';
+import {
+    sendSingleMessage,
+    sendNotificationWithSocket,
+} from '@utils/pushNotification';
 import Config from '@services/configService';
 
 const CronJob = require('cron').CronJob;
@@ -183,6 +186,7 @@ function remindBabysitter(sitterId, requestId) {
                 if (invitation.user.tracking != null) {
                     try {
                         const notification = {
+                            userId: sitterId,
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
@@ -195,6 +199,7 @@ function remindBabysitter(sitterId, requestId) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } catch (error) {}
                 }
             }
@@ -225,6 +230,7 @@ function remindParent(requestId) {
                 if (request.user.tracking != null) {
                     try {
                         const notification = {
+                            userId: request.user.id,
                             id: request.id,
                             pushToken: request.user.tracking.token,
                             message: reminderMessages.sitterUpcommingSitting,
@@ -237,6 +243,7 @@ function remindParent(requestId) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } catch (error) {}
                 }
             }

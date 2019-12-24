@@ -1,6 +1,9 @@
 import models from '@models';
 import userController from './user.controller';
-import { sendSingleMessage } from '@utils/pushNotification';
+import {
+    sendSingleMessage,
+    sendNotificationWithSocket,
+} from '@utils/pushNotification';
 import { invitationMessages, titleMessages } from '@utils/notificationMessages';
 import Scheduler from '@services/schedulerService';
 
@@ -119,6 +122,7 @@ const create = async (req, res) => {
                 if (tracking) {
                     if (request.repeatedRequestId) {
                         const notification = {
+                            userId: invitation.receiver,
                             id: res.id,
                             pushToken: tracking.token,
                             message:
@@ -132,8 +136,10 @@ const create = async (req, res) => {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } else {
                         const notification = {
+                            userId: invitation.receiver,
                             id: res.id,
                             pushToken: tracking.token,
                             message: invitationMessages.parentSendInvitation,
@@ -146,6 +152,7 @@ const create = async (req, res) => {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     }
                 } else {
                     console.log(
@@ -240,6 +247,7 @@ const update = async (req, res) => {
                 // notify the parent with the request
                 if (updatingInvitation.status == 'ACCEPTED') {
                     const notification = {
+                        userId: invitation.sittingRequest.user.id,
                         pushToken:
                             invitation.sittingRequest.user.tracking.token,
                         message: invitationMessages.babysitterAccepted,
@@ -253,8 +261,10 @@ const update = async (req, res) => {
                         },
                     };
                     sendSingleMessage(notification);
+                    sendNotificationWithSocket(notification);
                 } else {
                     const notification = {
+                        userId: invitation.sittingRequest.user.id,
                         pushToken:
                             invitation.sittingRequest.user.tracking.token,
                         message: invitationMessages.sitterDecline,
@@ -268,6 +278,7 @@ const update = async (req, res) => {
                         },
                     };
                     sendSingleMessage(notification);
+                    sendNotificationWithSocket(notification);
                 }
             });
         res.send(updatingInvitation);
