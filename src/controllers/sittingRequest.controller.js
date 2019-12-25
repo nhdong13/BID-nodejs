@@ -497,6 +497,19 @@ const cancelSittingRequest = async (req, res) => {
 
                             const token = invitation.user.tracking.token;
                             if (token) {
+                                const notification = {
+                                    userId: invitation.user.id,
+                                    id: invitation.id,
+                                    message: cancelMessages.parentCancel,
+                                    title: titleMessages.parentCancel,
+                                    option: {
+                                        showConfirm: false,
+                                        textConfirm: 'Tiếp tục',
+                                        showCancel: true,
+                                        textCancel: 'Ẩn',
+                                    },
+                                };
+
                                 const message = {
                                     to: token,
                                     sound: 'default',
@@ -506,7 +519,7 @@ const cancelSittingRequest = async (req, res) => {
                                         message: cancelMessages.parentCancel,
                                         title: titleMessages.parentCancel,
                                         option: {
-                                            showConfirm: true,
+                                            showConfirm: false,
                                             textConfirm: 'Tiếp tục',
                                             showCancel: true,
                                             textCancel: 'Ẩn',
@@ -519,6 +532,7 @@ const cancelSittingRequest = async (req, res) => {
                                 );
                                 // xu ly notification o day
                                 sendMessage(message);
+                                sendNotificationWithSocket(notification);
                             }
                         });
 
@@ -569,7 +583,21 @@ const cancelSittingRequest = async (req, res) => {
                                 where: { requestId: id },
                             });
 
+                            const token = invitation.user.tracking.token;
                             if (token) {
+                                const notification = {
+                                    userId: invitation.user.id,
+                                    id: invitation.id,
+                                    message: cancelMessages.parentCancel,
+                                    title: titleMessages.parentCancel,
+                                    option: {
+                                        showConfirm: false,
+                                        textConfirm: 'Tiếp tục',
+                                        showCancel: true,
+                                        textCancel: 'Ẩn',
+                                    },
+                                };
+
                                 const message = {
                                     to: token,
                                     sound: 'default',
@@ -579,7 +607,7 @@ const cancelSittingRequest = async (req, res) => {
                                         message: cancelMessages.parentCancel,
                                         title: titleMessages.parentCancel,
                                         option: {
-                                            showConfirm: true,
+                                            showConfirm: false,
                                             textConfirm: 'Tiếp tục',
                                             showCancel: true,
                                             textCancel: 'Ẩn',
@@ -592,6 +620,7 @@ const cancelSittingRequest = async (req, res) => {
                                 );
                                 // xu ly notification o day
                                 sendMessage(message);
+                                sendNotificationWithSocket(notification);
                             }
                         });
                     }
