@@ -43,6 +43,33 @@ const getById = async (req, res) => {
     }
 };
 
+const getAllFeedbackByUserId = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const listFeedbacks = await models.feedback.findAll({
+            include: [
+                {
+                    model: models.sittingRequest,
+                    where: { acceptedBabysitter: userId },
+                    as: 'sitting',
+                    include: [
+                        {
+                            model: models.user,
+                            as: 'user',
+                        },
+                    ],
+                },
+            ],
+        });
+
+        res.send(listFeedbacks);
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
+};
+
 const create = async (req, res) => {
     let newItem = req.body;
 
@@ -120,4 +147,5 @@ export default {
     create,
     getById,
     update,
+    getAllFeedbackByUserId,
 };

@@ -38,25 +38,26 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
     console.timeEnd('matching');
 
-    
     console.time('checkSchedules');
     // check against babysitter schedules
     matchedList = await checkAgainstSchedules(sittingRequest, matchedList);
     console.timeEnd('checkSchedules');
 
     console.time('getDistance');
-    // calculate distance with api Google
-    matchedList = await getBabysitterDistance(
-        sittingRequest.sittingAddress,
-        matchedList,
-    );
-    console.timeEnd('getDistance');
 
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
+    // calculate distance with api Google
+    // matchedList = await getBabysitterDistance(
     //     sittingRequest.sittingAddress,
     //     matchedList,
     // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
+        sittingRequest.sittingAddress,
+        matchedList,
+    );
+
+    console.timeEnd('getDistance');
 
     // only run if this request is created (has id)
     if (
@@ -120,21 +121,18 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
         const promises = listOfSitter.map(async (sitter) => {
             let sitterLatlog;
             if (!sitter.user.latlog) {
-                sitterLatlog = await placeSearch(sittingAddress);
+                sitterLatlog = await placeSearch(sitter.user.address);
                 sitterLatlog = sitterLatlog[0].geometry.location;
                 sitterLatlog = `${sitterLatlog.lat},${sitterLatlog.lng}`;
                 sitter.user.update({
-                    latlog: sitterLatlog
-                })
+                    latlog: sitterLatlog,
+                });
             } else {
                 sitterLatlog = sitter.user.latlog;
             }
 
             // x.x km || x.x m
-            let distance = await getDistance(
-                address1LatLog,
-                sitterLatlog,
-            );
+            let distance = await getDistance(address1LatLog, sitterLatlog);
 
             // x.x
             let temp = distance.split(' ');
