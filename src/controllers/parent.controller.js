@@ -34,33 +34,39 @@ const findByCode = async (req, res) => {
     try {
         const parent = await models.parent.findOne({
             where: {
-                parentCode: code
+                parentCode: code,
             },
-            include: [{
-                model: models.user,
-                as: 'user'
-            }]
-        })
+            include: [
+                {
+                    model: models.user,
+                    as: 'user',
+                },
+            ],
+        });
+        console.log('PHUC: findByCode -> parent', parent);
 
         if (parent) {
+            console.log('vao ham tao roi');
             const circle = await models.circle.findOne({
                 where: {
                     ownerId: userId,
                     friendId: parent.userId,
-                }
-            })
+                },
+            });
 
             if (circle) {
                 parent.isInvited = true;
             }
+            res.send(parent);
+        } else {
+            res.status(400);
+            res.send();
         }
-
-        res.send(parent);
     } catch (error) {
         res.status(400);
         res.send(error);
     }
-}
+};
 
 const list = async (req, res, next) => {
     const listParents = await models.parent.findAll();

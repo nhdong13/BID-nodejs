@@ -46,16 +46,16 @@ export async function matching(sittingRequest) {
     console.time('getDistance');
 
     // calculate distance with api Google
-    // matchedList = await getBabysitterDistance(
-    //     sittingRequest.sittingAddress,
-    //     matchedList,
-    // );
-
-    // calculate distance with magic and stuff you know
-    matchedList = await randomizeDistance(
+    matchedList = await getBabysitterDistance(
         sittingRequest.sittingAddress,
         matchedList,
     );
+
+    // calculate distance with magic and stuff you know
+    // matchedList = await randomizeDistance(
+    //     sittingRequest.sittingAddress,
+    //     matchedList,
+    // );
 
     console.timeEnd('getDistance');
 
