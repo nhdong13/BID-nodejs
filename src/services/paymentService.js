@@ -22,9 +22,10 @@ const createCharges = async (req, res) => {
             const newTransaction = {
                 chargeId,
                 type: 'CHARGE',
-                description: '',
+                description: 'customer_pay_sittingrequest',
                 userId: userId,
                 requestId: requestId,
+                amount: amount,
             };
             // luu charge vao bang transaction
             if (newTransaction) {

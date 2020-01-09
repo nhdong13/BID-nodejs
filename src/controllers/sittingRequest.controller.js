@@ -93,7 +93,7 @@ const listByParentId = async (req, res, next) => {
                 createdUser: parentId,
             },
         });
-        sendNotificationWithSocket(notification);
+        // sendNotificationWithSocket(notification);
         res.send(listSittings);
     } catch (err) {
         res.status(400);
@@ -490,7 +490,6 @@ const cancelSittingRequest = async (req, res) => {
                             status: 'PARENT_CANCELED',
                         };
 
-                        let messages = [];
                         await invitations.forEach(async (invitation) => {
                             await models.invitation.update(updateInvitation, {
                                 where: { requestId: id },
@@ -498,6 +497,19 @@ const cancelSittingRequest = async (req, res) => {
 
                             const token = invitation.user.tracking.token;
                             if (token) {
+                                const notification = {
+                                    userId: invitation.user.id,
+                                    id: invitation.id,
+                                    message: cancelMessages.parentCancel,
+                                    title: titleMessages.parentCancel,
+                                    option: {
+                                        showConfirm: false,
+                                        textConfirm: 'Tiếp tục',
+                                        showCancel: true,
+                                        textCancel: 'Ẩn',
+                                    },
+                                };
+
                                 const message = {
                                     to: token,
                                     sound: 'default',
@@ -507,7 +519,7 @@ const cancelSittingRequest = async (req, res) => {
                                         message: cancelMessages.parentCancel,
                                         title: titleMessages.parentCancel,
                                         option: {
-                                            showConfirm: true,
+                                            showConfirm: false,
                                             textConfirm: 'Tiếp tục',
                                             showCancel: true,
                                             textCancel: 'Ẩn',
@@ -520,6 +532,7 @@ const cancelSittingRequest = async (req, res) => {
                                 );
                                 // xu ly notification o day
                                 sendMessage(message);
+                                sendNotificationWithSocket(notification);
                             }
                         });
 
@@ -548,6 +561,18 @@ const cancelSittingRequest = async (req, res) => {
                     //change status of all the invitation
                     const invitations = await models.invitation.findAll({
                         where: { requestId: id },
+                        include: [
+                            {
+                                model: models.user,
+                                as: 'user',
+                                include: [
+                                    {
+                                        model: models.tracking,
+                                        as: 'tracking',
+                                    },
+                                ],
+                            },
+                        ],
                     });
                     if (invitations) {
                         const updateInvitation = {
@@ -557,6 +582,46 @@ const cancelSittingRequest = async (req, res) => {
                             await models.invitation.update(updateInvitation, {
                                 where: { requestId: id },
                             });
+
+                            const token = invitation.user.tracking.token;
+                            if (token) {
+                                const notification = {
+                                    userId: invitation.user.id,
+                                    id: invitation.id,
+                                    message: cancelMessages.parentCancel,
+                                    title: titleMessages.parentCancel,
+                                    option: {
+                                        showConfirm: false,
+                                        textConfirm: 'Tiếp tục',
+                                        showCancel: true,
+                                        textCancel: 'Ẩn',
+                                    },
+                                };
+
+                                const message = {
+                                    to: token,
+                                    sound: 'default',
+                                    body: cancelMessages.parentCancel,
+                                    data: {
+                                        id: invitation.id,
+                                        message: cancelMessages.parentCancel,
+                                        title: titleMessages.parentCancel,
+                                        option: {
+                                            showConfirm: false,
+                                            textConfirm: 'Tiếp tục',
+                                            showCancel: true,
+                                            textCancel: 'Ẩn',
+                                        },
+                                    },
+                                };
+                                console.log(
+                                    'PHUC: cancelSittingRequest -> message',
+                                    message,
+                                );
+                                // xu ly notification o day
+                                sendMessage(message);
+                                sendNotificationWithSocket(notification);
+                            }
                         });
                     }
                     const updatingTransaction = {

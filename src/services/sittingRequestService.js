@@ -1,5 +1,8 @@
 import models from '@models';
-import { sendSingleMessage } from '@utils/pushNotification';
+import {
+    sendSingleMessage,
+    sendNotificationWithSocket,
+} from '@utils/pushNotification';
 import {
     invitationMessages,
     noticeMessages,
@@ -262,6 +265,7 @@ function notifyBabysitter(requestId, sitterId, transaction) {
                 if (invitation.user != null) {
                     if (invitation.user.tracking != null) {
                         const notification = {
+                            userId: invitation.user.id,
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             title: titleMessages.parentAcceptedBabysitter,
@@ -275,6 +279,7 @@ function notifyBabysitter(requestId, sitterId, transaction) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     }
                 }
             }
@@ -360,6 +365,7 @@ async function notifyForgotToCheckoutParent(requestId) {
                 if (request.user.tracking != null) {
                     try {
                         const notification = {
+                            userId: request.user.id,
                             id: request.id,
                             pushToken: request.user.tracking.token,
                             message:
@@ -373,6 +379,7 @@ async function notifyForgotToCheckoutParent(requestId) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } catch (error) {}
                 }
             }
@@ -404,6 +411,7 @@ async function notifyForgotToCheckoutSitter(sitterId, requestId) {
                 if (invitation.user.tracking != null) {
                     try {
                         const notification = {
+                            userId: invitation.user.id,
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             message:
@@ -417,6 +425,7 @@ async function notifyForgotToCheckoutSitter(sitterId, requestId) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } catch (error) {}
                 }
             }
@@ -507,6 +516,7 @@ async function notifyParentCheckin(requestId) {
                 if (request.user.tracking != null) {
                     try {
                         const notification = {
+                            userId: request.user.id,
                             id: request.id,
                             pushToken: request.user.tracking.token,
                             message: noticeMessages.sitterNotCheckin_Parent,
@@ -519,6 +529,7 @@ async function notifyParentCheckin(requestId) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } catch (error) {}
                 }
             }
@@ -550,6 +561,7 @@ async function notifyBabysitterCheckin(sitterId, requestId) {
                 if (invitation.user.tracking != null) {
                     try {
                         const notification = {
+                            userId: invitation.user.id,
                             id: invitation.id,
                             pushToken: invitation.user.tracking.token,
                             message: noticeMessages.sitterNotCheckin_Sitter,
@@ -562,6 +574,7 @@ async function notifyBabysitterCheckin(sitterId, requestId) {
                             },
                         };
                         sendSingleMessage(notification);
+                        sendNotificationWithSocket(notification);
                     } catch (error) {}
                 }
             }
@@ -618,6 +631,7 @@ function notifyRequestExpired(request) {
         if (request.user.tracking != null) {
             try {
                 const notification = {
+                    userId: request.user.id,
                     id: request.id,
                     pushToken: request.user.tracking.token,
                     message: noticeMessages.parentRequestExpired,
@@ -630,6 +644,7 @@ function notifyRequestExpired(request) {
                     },
                 };
                 sendSingleMessage(notification);
+                sendNotificationWithSocket(notification);
             } catch (error) {}
         }
     }

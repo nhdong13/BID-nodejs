@@ -1,6 +1,6 @@
 import models from '@models';
 import { createJWT } from '@utils/jwt';
-import { comparePassword } from '@utils/hash';
+import { comparePassword, hashPassword } from '@utils/hash';
 import speakeasy from 'speakeasy';
 
 const login = async (req, res) => {
@@ -102,4 +102,40 @@ const checkOtp = async (req, res) => {
     }
 };
 
-export default { login, checkOtp };
+const changePassword = async (req, res) => {
+    const { phoneNumber, password, newPassword } = req.body;
+
+    try {
+        const user = await models.user.findOne({
+            where: {
+                phoneNumber,
+            },
+        });
+
+        if (user) {
+            const isValid = await comparePassword(password, user.password);
+            if (isValid) {
+                const hashedPassword = await hashPassword(newPassword);
+                const updateData = {
+                    password: hashedPassword,
+                };
+                await models.user.update(updateData, {
+                    where: { phoneNumber },
+                });
+                res.status(200);
+                res.send(user);
+            } else {
+                res.status(400);
+                res.send();
+            }
+        } else {
+            res.status(400);
+            res.send();
+        }
+    } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
+export default { login, checkOtp, changePassword };

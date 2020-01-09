@@ -54,10 +54,28 @@ export async function sendMessage(message) {
 }
 
 export async function sendNotificationWithSocket(notification) {
+    // nhung du lieu can thiet la gi
+    // const notification = {
+    //     id: res.id,
+    //     pushToken: tracking.token,
+    //     message:
+    //         invitationMessages.parentSendRepeatedRequest,
+    //     title: titleMessages.parentSendRepeatedRequest,
+    //     option: {
+    //         showConfirm: true,
+    //         textConfirm: 'Tiếp tục',
+    //         showCancel: true,
+    //         textCancel: 'Ẩn',
+    //     },
+    // };
+    // id, message, title, options
     const data = {
         userId: notification.userId,
+
+        id: notification.id,
         message: notification.message,
         title: notification.title,
+        option: notification.option,
     };
 
     io.emit('notification', data);
