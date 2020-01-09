@@ -626,7 +626,7 @@ export async function insertDatabase() {
                     //#endregion
                 ])
                 .then((result) => {
-                    //#region
+                    //#region repeated request
                     // result.forEach((el) => {
                     //     if (el.status === 'PENDING') {
                     //         db.repeatedRequest
@@ -648,6 +648,109 @@ export async function insertDatabase() {
                     //     }
                     // });
                     //#endregion
+
+                    let feedbacks = [
+                        {
+                            rating: 5,
+                            reporter: 1,
+                            description:
+                                'Người giữ trẻ làm việc có tâm, chăm sóc trẻ tốt, chắc chắn sẽ thuê nữa khi cần. Dịch vụ tìm kiếm nhanh.',
+                            isReport: false,
+                            order: 1,
+                        },
+                        {
+                            rating: 5,
+                            reporter: 1,
+                            description:
+                                'Dễ thương, chăm trẻ tốt, biết hát cho con tôi nghe, recommend người giữ trẻ này.',
+                            isReport: false,
+                            order: 1,
+                        },
+                        {
+                            rating: 5,
+                            reporter: 1,
+                            description:
+                                'Chăm em cẩn thận, biết pha sữa đúng liều lượng.',
+                            isReport: false,
+                            order: 1,
+                        },
+                        {
+                            rating: 5,
+                            reporter: 1,
+                            description:
+                                'Nhanh nhẹn, biết nhiều kỹ năng chăm trẻ mà tui còn không biết, chỉ tui được những thứ cần thiết để tui chăm con xịn hơn.',
+                            isReport: false,
+                            order: 1,
+                        },
+                        {
+                            rating: 5,
+                            reporter: 1,
+                            description:
+                                'Làm việc cẩn thận, có tính gọn gàng, sạch sẽ. 10/10',
+                            isReport: false,
+                            order: 1,
+                        },
+                        {
+                            rating: 5,
+                            reporter: 0,
+                            description:
+                                'Trẻ ngoan, phụ huynh nhiệt tình 5sao :D',
+                            isReport: false,
+                            order: 2,
+                        },
+                        {
+                            rating: 5,
+                            reporter: 0,
+                            description:
+                                'Phụ huynh dễ chịu.\nGiữ trẻ vui vẻ.',
+                            isReport: false,
+                            order: 2,
+                        },
+                    ];
+                    let reports = [
+                        {
+                            requestId: 3,
+                            reporter: 1,
+                            rating: 0,
+                            description:
+                                '-T1rẻ bị đánh\n-Người giữ trẻ bỏ về\n-Sẽ không bao giờ sử dụng lại dịch vụ',
+                            isReport: true,
+                            status: 'Unsolve',
+                            order: 3,
+                        },
+                        {
+                            reporter: 1,
+                            requestId: 1,
+                            rating: 0,
+                            description:
+                                'Người giữ trẻ làm mất đồ',
+                            isReport: true,
+                            status: 'Unsolve',
+                            order: 3,
+                        },
+                        {
+                            reporter: 1,
+                            requestId: 1,
+                            rating: 0,
+                            description:
+                                '-Đến không đúng giờ\n-Trông trẻ không tốt',
+                            isReport: true,
+                            status: 'Unsolve',
+                            order: 3,
+                        },
+                        {
+                            reporter: 1,
+                            requestId: 1,
+                            rating: 0,
+                            description:
+                                'Không có ai đến, trễ công việc',
+                            isReport: true,
+                            order: 3,
+                            status: 'Unsolve'
+                        },
+                    ];
+
+                    let i = 0;
                     result.forEach((el) => {
                         //#region seed invitations
                         if (el.status === 'PENDING') {
@@ -681,18 +784,14 @@ export async function insertDatabase() {
 
                         //#region feedbacks
                         if (el.status === 'DONE') {
+                            feedbacks[i].requestId = el.id;
+                            feedbacks[6-i].requestId = el.id;
+                            reports[i].requestId = el.id;
                             // seed feedback
-                            db.feedback.bulkCreate([
-                                {
-                                    requestId: el.id,
-                                    rating: 5,
-                                    reporter: 1,
-                                    description:
-                                        'Người giữ trẻ làm việc có tâm, chăm sóc trẻ tốt, chắc chắn sẽ thuê nữa khi cần. Dịch vụ tìm kiếm nhanh.',
-                                    isReport: false,
-                                    order: 1,
-                                },
-                            ]);
+                            db.feedback.bulkCreate([feedbacks[i]]);
+                            db.feedback.bulkCreate([feedbacks[6-i]]);
+                            db.feedback.bulkCreate([reports[i]]).catch(e => console.log(e));
+                            i++;
                         }
                         //#endregion
                     });
