@@ -120,7 +120,7 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
         const promises = listOfSitter.map(async (sitter) => {
             let sitterLatlog;
             if (!sitter.user.latlog) {
-                sitterLatlog = await placeSearch(sittingAddress);
+                sitterLatlog = await placeSearch(sitter.user.address);
                 sitterLatlog = sitterLatlog[0].geometry.location;
                 sitterLatlog = `${sitterLatlog.lat},${sitterLatlog.lng}`;
                 sitter.user.update({

@@ -169,6 +169,9 @@ async function calCircle(parentId, listWithCircle) {
                 createdUser: {
                     [seq.Op.or]: friendIds,
                 },
+                status: {
+                    [seq.Op.or]: ['DONE', 'DONE_BY_NEWSTART', 'DONE_UNCONFIRMED'],
+                }
             },
         });
 
