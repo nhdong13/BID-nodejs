@@ -701,8 +701,7 @@ export async function insertDatabase() {
                         {
                             rating: 5,
                             reporter: 0,
-                            description:
-                                'Phụ huynh dễ chịu.\nGiữ trẻ vui vẻ.',
+                            description: 'Phụ huynh dễ chịu.\nGiữ trẻ vui vẻ.',
                             isReport: false,
                             order: 2,
                         },
@@ -722,8 +721,7 @@ export async function insertDatabase() {
                             reporter: 1,
                             requestId: 1,
                             rating: 0,
-                            description:
-                                'Người giữ trẻ làm mất đồ',
+                            description: 'Người giữ trẻ làm mất đồ',
                             isReport: true,
                             status: 'Unsolve',
                             order: 3,
@@ -742,11 +740,10 @@ export async function insertDatabase() {
                             reporter: 1,
                             requestId: 1,
                             rating: 0,
-                            description:
-                                'Không có ai đến, trễ công việc',
+                            description: 'Không có ai đến, trễ công việc',
                             isReport: true,
                             order: 3,
-                            status: 'Unsolve'
+                            status: 'Unsolve',
                         },
                     ];
 
@@ -784,13 +781,35 @@ export async function insertDatabase() {
 
                         //#region feedbacks
                         if (el.status === 'DONE') {
+                            // console.log('cai el.id nay la sao? ', el.id);
                             feedbacks[i].requestId = el.id;
-                            feedbacks[6-i].requestId = el.id;
+                            feedbacks[6 - i].requestId = el.id;
                             reports[i].requestId = el.id;
                             // seed feedback
-                            db.feedback.bulkCreate([feedbacks[i]]);
-                            db.feedback.bulkCreate([feedbacks[6-i]]);
-                            db.feedback.bulkCreate([reports[i]]).catch(e => console.log(e));
+                            db.feedback
+                                .bulkCreate([feedbacks[i]])
+                                .catch((error) =>
+                                    console.log(
+                                        'feedback Bulk Create 1 ',
+                                        error,
+                                    ),
+                                );
+                            db.feedback
+                                .bulkCreate([feedbacks[6 - i]])
+                                .catch((error) =>
+                                    console.log(
+                                        'feedback Bulk Create 2 ',
+                                        error,
+                                    ),
+                                );
+                            db.feedback
+                                .bulkCreate([reports[i]])
+                                .catch((error) =>
+                                    console.log(
+                                        'feedback Bulk Create 3 ',
+                                        error,
+                                    ),
+                                );
                             i++;
                         }
                         //#endregion
