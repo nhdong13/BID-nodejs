@@ -5,12 +5,12 @@ export default function(sequelize, DataTypes) {
             requestId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: 'uniqueTag',
+                // unique: 'uniqueTag',
             },
             reporter: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                unique: 'uniqueTag',
+                // unique: 'uniqueTag',
             },
             rating: {
                 type: DataTypes.INTEGER,
@@ -23,7 +23,7 @@ export default function(sequelize, DataTypes) {
             isReport: {
                 type: DataTypes.BOOLEAN,
                 allowNull: false,
-                unique: 'uniqueTag',
+                // unique: 'uniqueTag',
             },
             status: {
                 type: DataTypes.ENUM('Solved', 'Unsolve'),
