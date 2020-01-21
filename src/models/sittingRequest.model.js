@@ -128,6 +128,7 @@ export default function(sequelize, DataTypes) {
             sourceKey: 'id',
         });
 
+        // request - repeatedRequest
         sittingRequest.belongsTo(models.repeatedRequest, {
             foreignKey: {
                 name: 'repeatedRequestId',
@@ -136,6 +137,14 @@ export default function(sequelize, DataTypes) {
             sourceKey: 'id',
             as: 'repeatedRequest',
             onDelete: 'CASCADE',
+        });
+
+        // request - skill
+        sittingRequest.hasMany(models.sittingRequestSkill, {
+            foreignKey: {
+                name: 'requestId',
+            },
+            sourceKey: 'id',
         });
     };
 
