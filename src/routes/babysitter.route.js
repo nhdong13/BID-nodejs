@@ -14,6 +14,6 @@ router
     .get(controller.readByRequest);
 router.route('/:id').put(controller.update);
 router.route('/:id').delete(controller.destroy);
-router.route('/getRequestData/').post(controller.listSittingByBabysitterId);
+// router.route('/getRequestData/').post(controller.listSittingByBabysitterId);
 
 export default router;

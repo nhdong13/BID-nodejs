@@ -139,13 +139,13 @@ export default function(sequelize, DataTypes) {
             onDelete: 'CASCADE',
         });
 
-        // request - skill
-        sittingRequest.hasMany(models.sittingRequestSkill, {
-            foreignKey: {
-                name: 'requestId',
-            },
-            sourceKey: 'id',
-        });
+        // // request - skill
+        // sittingRequest.hasMany(models.sittingRequestSkill, {
+        //     foreignKey: {
+        //         name: 'requestId',
+        //     },
+        //     sourceKey: 'id',
+        // });
     };
 
     return sittingRequest;
