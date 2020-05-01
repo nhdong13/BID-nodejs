@@ -50,3 +50,7 @@ Or build production Docker image:
 ```
 $ docker build -t nodejs-api . && docker run -d --name nodejs-api -p 5000:3000 nodejs-api:latest
 ```
+
+### Testing
+
+Currently using unit testing
