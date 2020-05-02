@@ -140,7 +140,7 @@ export default function(sequelize, DataTypes) {
         });
 
         // request - skill
-        sittingRequest.hasMany(models.requestRequiredSkills, {
+        sittingRequest.hasMany(models.requestRequiredSkill, {
             foreignKey: {
                 name: 'requestId',
                 allowNull: false,

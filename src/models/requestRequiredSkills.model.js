@@ -1,6 +1,6 @@
 export default function(sequelize, DataTypes) {
-    const requestRequiredSkills = sequelize.define(
-        'requestRequiredSkills', // Model Name
+    const requestRequiredSkill = sequelize.define(
+        'requestRequiredSkill', // Model Name
         {
             requestId: {
                 type: DataTypes.INTEGER,
@@ -16,8 +16,8 @@ export default function(sequelize, DataTypes) {
         },
     );
 
-    requestRequiredSkills.associate = function(models) {
-        requestRequiredSkills.belongsTo(models.sittingRequest, {
+    requestRequiredSkill.associate = function(models) {
+        requestRequiredSkill.belongsTo(models.sittingRequest, {
             foreignKey: {
                 name: 'requestId',
                 allowNull: false,
@@ -27,7 +27,7 @@ export default function(sequelize, DataTypes) {
             onDelete: 'CASCADE',
         });
 
-        requestRequiredSkills.belongsTo(models.skill, {
+        requestRequiredSkill.belongsTo(models.skill, {
             foreignKey: {
                 name: 'skillId',
                 allowNull: false,
@@ -38,5 +38,5 @@ export default function(sequelize, DataTypes) {
         });
     };
 
-    return requestRequiredSkills;
+    return requestRequiredSkill;
 }

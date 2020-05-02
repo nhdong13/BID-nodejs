@@ -23,17 +23,17 @@ export default function(sequelize, DataTypes) {
         },
     );
 
-    // sitterSkill.associate = function(models) {
-    //     sitterSkill.belongsTo(models.user, {
-    //         foreignKey: {
-    //             name: 'sitterSkill',
-    //             allowNull: false,
-    //         },
-    //         sourceKey: 'id',
-    //         as: 'user',
-    //         onDelete: 'CASCADE',
-    //     });
-    // };
+    sitterSkill.associate = function(models) {
+        sitterSkill.belongsTo(models.user, {
+            foreignKey: {
+                name: 'sitterSkill',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+            as: 'user',
+            onDelete: 'CASCADE',
+        });
+    };
 
     return sitterSkill;
 }
