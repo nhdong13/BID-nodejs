@@ -17,7 +17,7 @@ const create = async (req, res) => {
 
         if (!tracking) {
             const newTracking = await models.tracking
-                .create({
+                .findOrCreate({
                     userId: userAgent.trim(),
                     token: token,
                 })

@@ -81,7 +81,7 @@ const checkOtp = async (req, res) => {
                 secret: secret,
                 encoding: 'base32',
                 token: otp,
-                window: 0,
+                window: 5,
             });
             console.log('PHUC: checkOtp -> tokenValidates', tokenValidates);
             if (tokenValidates) {

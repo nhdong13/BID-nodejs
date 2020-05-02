@@ -28,6 +28,52 @@ export async function insertDatabase() {
         },
     ]);
 
+    db.cert.bulkCreate([
+        {
+            certName: "junior",
+            certPoint: 1,
+            certActive: true,
+        },
+        {
+            certName: "highschool",
+            certPoint: 1,
+            certActive: true,
+        },
+        {
+            certName: "elementary",
+            certPoint: 1,
+            certActive: true,
+        },
+        {
+            certName: "medical",
+            certPoint: 1,
+            certActive: true,
+        },
+    ]);
+
+    db.skill.bulkCreate([
+        {
+            skillName: "cooking",
+            skillPoint: 1,
+            skillActive: true,
+        },
+        {
+            skillName: "bathing",
+            skillPoint: 1,
+            skillActive: true,
+        },
+        {
+            skillName: "piano",
+            skillPoint: 1,
+            skillActive: true,
+        },
+        {
+            skillName: "storytelling",
+            skillPoint: 1,
+            skillActive: true,
+        },
+    ]);
+
     // seed users
     let users = [];
     // images
@@ -135,10 +181,10 @@ export async function insertDatabase() {
             date: randomInt(1, 28),
         }),
         roleId: 3,
-        firstTime: false,
-        secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
+        firstTime: true,
+        // secret: 'KYQSURRGIBGDAQKFHI4VOTKDFFLCI3BW',
         image: Images.user11,
-        token: 'ExponentPushToken[k6-UsUIE9oT2Zr8R2qbIlC]',
+        // token: 'ExponentPushToken[k6-UsUIE9oT2Zr8R2qbIlC]',
     };
     users.push(user);
 

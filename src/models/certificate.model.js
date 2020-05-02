@@ -1,33 +1,32 @@
 export default function (sequelize, DataTypes) {
-    const skill = sequelize.define(
-        "skill", // Model Name
+    const cert = sequelize.define(
+        "cert", // Model Name
         {
-            skillName: {
+            certName: {
                 type: DataTypes.STRING,
                 unique: true,
                 allowNull: false,
             },
-            skillPoint: {
+            certPoint: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
-            skillActive: {
+            certActive: {
                 type: DataTypes.BOOLEAN,
-                defaultValue: true
+                defaultValue: true,
             }
         }
     );
 
-    skill.associate = function (models) {
-        // skill - user
-        skill.hasMany(models.user, {
+    cert.associate = function (models) {
+        // cert - user
+        cert.hasMany(models.user, {
             foreignKey: {
-                name: 'skillId',
+                name: 'certId',
             },
             sourceKey: 'id',
         });
     }
 
-    return skill;
+    return cert;
 }
-
