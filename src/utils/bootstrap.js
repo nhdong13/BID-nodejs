@@ -459,6 +459,7 @@ export async function insertDatabase() {
 
                     let sitterSkills = [
                         { sitterId: sitters[0].userId, skillId: 1 },
+                        { sitterId: sitters[0].userId, skillId: 2 },
                         { sitterId: sitters[1].userId, skillId: 1 },
                         { sitterId: sitters[2].userId, skillId: 1 },
                         { sitterId: sitters[3].userId, skillId: 1 },
@@ -663,6 +664,10 @@ export async function insertDatabase() {
                         {
                             requestId: requests[0].id,
                             skillId: 1,
+                        },
+                        {
+                            requestId: requests[0].id,
+                            skillId: 2,
                         },
                         {
                             requestId: requests[1].id,

@@ -25,7 +25,6 @@ export default function(sequelize, DataTypes) {
                 allowNull: false,
             },
             sourceKey: 'id',
-            as: 'user',
             onDelete: 'CASCADE',
         });
 
@@ -35,7 +34,6 @@ export default function(sequelize, DataTypes) {
                 allowNull: false,
             },
             sourceKey: 'id',
-            as: 'skill',
             onDelete: 'CASCADE',
         });
     };

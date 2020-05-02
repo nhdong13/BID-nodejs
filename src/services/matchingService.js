@@ -96,6 +96,10 @@ async function searchForBabysitter(sittingAddress) {
                         model: models.schedule,
                         as: 'schedules',
                     },
+                    {
+                        model: models.sitterSkill,
+                        as: 'sitterSkills',
+                    },
                 ],
             },
         ],
@@ -329,6 +333,19 @@ async function matchingCriteria(request, babysitters) {
  */
 async function matchingRequiredSkills(requiredSkills, babysitters) {
     let matchedList = [];
+
+    let requiredSkillSet = requiredSkills.map(skill => {return skill.skillId})
+    console.log(requiredSkillSet);
+
+    const promises = babysitters.map(async (sitter) => {
+        let skillSet = sitter.user.sitterSkills.map(skill => {return skill.skillId});
+
+        const result = requiredSkillSet.every(val => skillSet.includes(val));
+        if (result) {
+            matchedList.push(sitter);
+        }
+    });
+    await Promise.all(promises);
 
     return matchedList;
 }
