@@ -30,47 +30,47 @@ export async function insertDatabase() {
 
     db.cert.bulkCreate([
         {
-            certName: "junior",
-            certPoint: 1,
-            certActive: true,
+            name: "junior",
+            point: 1,
+            active: true,
         },
         {
-            certName: "highschool",
-            certPoint: 1,
-            certActive: true,
+            name: "highschool",
+            point: 1,
+            active: true,
         },
         {
-            certName: "elementary",
-            certPoint: 1,
-            certActive: true,
+            name: "elementary",
+            point: 1,
+            active: true,
         },
         {
-            certName: "medical",
-            certPoint: 1,
-            certActive: true,
+            name: "medical",
+            point: 1,
+            active: true,
         },
     ]);
 
     db.skill.bulkCreate([
         {
-            skillName: "cooking",
-            skillPoint: 1,
-            skillActive: true,
+            name: "cooking",
+            point: 1,
+            active: true,
         },
         {
-            skillName: "bathing",
-            skillPoint: 1,
-            skillActive: true,
+            name: "bathing",
+            point: 1,
+            active: true,
         },
         {
-            skillName: "piano",
-            skillPoint: 1,
-            skillActive: true,
+            name: "piano",
+            point: 1,
+            active: true,
         },
         {
-            skillName: "storytelling",
-            skillPoint: 1,
-            skillActive: true,
+            name: "storytelling",
+            point: 1,
+            active: true,
         },
     ]);
 

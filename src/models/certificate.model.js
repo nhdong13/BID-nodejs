@@ -2,16 +2,16 @@ export default function (sequelize, DataTypes) {
     const cert = sequelize.define(
         "cert", // Model Name
         {
-            certName: {
+            name: {
                 type: DataTypes.STRING,
                 unique: true,
                 allowNull: false,
             },
-            certPoint: {
+            point: {
                 type: DataTypes.INTEGER,
                 allowNull: true,
             },
-            certActive: {
+            active: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true,
             }
