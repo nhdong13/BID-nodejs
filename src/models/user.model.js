@@ -146,6 +146,17 @@ export default function(sequelize, DataTypes) {
             as: 'schedules',
             onDelete: 'CASCADE',
         });
+
+        // user - skill
+        user.hasMany(models.sitterSkill, {
+            foreignKey: {
+                name: 'userId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+            as: 'sitterSkills',
+            onDelete: 'CASCADE',
+        });
     };
 
     return user;
