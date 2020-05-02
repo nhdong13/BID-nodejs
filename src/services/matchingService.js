@@ -38,24 +38,25 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
     console.timeEnd('matching');
 
+    matchedList = await matchingRequiredSkills(sittingRequest.requiredSkills, matchedList);
+
     console.time('checkSchedules');
     // check against babysitter schedules
     matchedList = await checkAgainstSchedules(sittingRequest, matchedList);
     console.timeEnd('checkSchedules');
 
     console.time('getDistance');
-
     // calculate distance with api Google
-    matchedList = await getBabysitterDistance(
-        sittingRequest.sittingAddress,
-        matchedList,
-    );
-
-    // calculate distance with magic and stuff you know
-    // matchedList = await randomizeDistance(
+    // matchedList = await getBabysitterDistance(
     //     sittingRequest.sittingAddress,
     //     matchedList,
     // );
+
+    // calculate distance with magic and stuff you know
+    matchedList = await randomizeDistance(
+        sittingRequest.sittingAddress,
+        matchedList,
+    );
 
     console.timeEnd('getDistance');
 
@@ -94,6 +95,10 @@ async function searchForBabysitter(sittingAddress) {
                     {
                         model: models.schedule,
                         as: 'schedules',
+                    },
+                    {
+                        model: models.sitterSkill,
+                        as: 'sitterSkills',
                     },
                 ],
             },
@@ -317,6 +322,31 @@ async function matchingCriteria(request, babysitters) {
     });
 
     console.log('--- Done matching with criteria');
+    return matchedList;
+}
+
+/**
+ * To check if the sitting-request's sitting date, start time, end time are matched with the babysitter's schedule
+ * @param  {Array<requiredSkill>} requiredSkills the required skills list
+ * @param  {Array<babysitter>} babysitters the list of babysitters to check
+ * @returns {Array} matchedList
+ */
+async function matchingRequiredSkills(requiredSkills, babysitters) {
+    let matchedList = [];
+
+    let requiredSkillSet = requiredSkills.map(skill => {return skill.skillId})
+    console.log(requiredSkillSet);
+
+    const promises = babysitters.map(async (sitter) => {
+        let skillSet = sitter.user.sitterSkills.map(skill => {return skill.skillId});
+
+        const result = requiredSkillSet.every(val => skillSet.includes(val));
+        if (result) {
+            matchedList.push(sitter);
+        }
+    });
+    await Promise.all(promises);
+
     return matchedList;
 }
 

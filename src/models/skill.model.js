@@ -20,12 +20,12 @@ export default function (sequelize, DataTypes) {
 
     skill.associate = function (models) {
         // skill - user
-        skill.hasMany(models.user, {
-            foreignKey: {
-                name: 'skillId',
-            },
-            sourceKey: 'id',
-        });
+        // skill.hasMany(models.user, {
+        //     foreignKey: {
+        //         name: 'skillId',
+        //     },
+        //     sourceKey: 'id',
+        // });
     }
 
     return skill;

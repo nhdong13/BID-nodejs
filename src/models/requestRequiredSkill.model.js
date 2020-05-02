@@ -1,15 +1,13 @@
 export default function(sequelize, DataTypes) {
-    const sitterSkill = sequelize.define(
-        'sitterSkill', // Model Name
+    const requestRequiredSkill = sequelize.define(
+        'requestRequiredSkill', // Model Name
         {
-            sitterId: {
+            requestId: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
             },
             skillId: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
-            },
+            }
         },
         {
             timestamps: true,
@@ -18,25 +16,27 @@ export default function(sequelize, DataTypes) {
         },
     );
 
-    sitterSkill.associate = function(models) {
-        sitterSkill.belongsTo(models.user, {
+    requestRequiredSkill.associate = function(models) {
+        requestRequiredSkill.belongsTo(models.sittingRequest, {
             foreignKey: {
-                name: 'sitterId',
+                name: 'requestId',
                 allowNull: false,
             },
             sourceKey: 'id',
+            as: 'sittingRequest',
             onDelete: 'CASCADE',
         });
 
-        sitterSkill.belongsTo(models.skill, {
+        requestRequiredSkill.belongsTo(models.skill, {
             foreignKey: {
                 name: 'skillId',
                 allowNull: false,
             },
             sourceKey: 'id',
+            as: 'skill',
             onDelete: 'CASCADE',
         });
     };
 
-    return sitterSkill;
+    return requestRequiredSkill;
 }

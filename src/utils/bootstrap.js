@@ -410,7 +410,7 @@ export async function insertDatabase() {
             let userBabysitters = result.filter((user) => user.roleId == 3);
             let babysitters = [];
 
-            userBabysitters.forEach(function(el, index) {
+            userBabysitters.forEach(function (el, index) {
                 let babysitter = {};
                 if (index < 1) {
                     babysitter = {
@@ -482,6 +482,39 @@ export async function insertDatabase() {
                 .then((result) => {
                     let sitters = result;
                     let schedules = [];
+                    let skills = [
+                        {
+                            name: 'BABYSITTING',
+                        },
+                        {
+                            name: 'CHILDREN WITH DISABILITIES',
+                        },
+                        {
+                            name: 'GIVING A BATH',
+                        },
+                        {
+                            name: 'HELP WITH HOMEWORK',
+                        },
+                        {
+                            name: 'SICK CHILDREN',
+                        },
+                        {
+                            name: 'PSC1',
+                        },
+                    ];
+
+                    let sitterSkills = [
+                        { sitterId: sitters[0].userId, skillId: 1 },
+                        { sitterId: sitters[0].userId, skillId: 2 },
+                        { sitterId: sitters[1].userId, skillId: 1 },
+                        { sitterId: sitters[2].userId, skillId: 1 },
+                        { sitterId: sitters[3].userId, skillId: 1 },
+                        { sitterId: sitters[4].userId, skillId: 1 },
+                    ];
+
+                    db.skill.bulkCreate(skills).then((result) => {
+                        db.sitterSkill.bulkCreate(sitterSkills);
+                    });
                 });
             //#endregion
         })
@@ -672,6 +705,35 @@ export async function insertDatabase() {
                     //#endregion
                 ])
                 .then((result) => {
+                    let requests = result;
+                    let requestRequiredSkills = [
+                        {
+                            requestId: requests[0].id,
+                            skillId: 1,
+                        },
+                        {
+                            requestId: requests[0].id,
+                            skillId: 2,
+                        },
+                        {
+                            requestId: requests[1].id,
+                            skillId: 1,
+                        },
+                        {
+                            requestId: requests[2].id,
+                            skillId: 1,
+                        },
+                        {
+                            requestId: requests[3].id,
+                            skillId: 1,
+                        },
+                        {
+                            requestId: requests[4].id,
+                            skillId: 1,
+                        },
+                    ];
+
+                    db.requestRequiredSkill.bulkCreate(requestRequiredSkills);
                     //#region repeated request
                     // result.forEach((el) => {
                     //     if (el.status === 'PENDING') {

@@ -185,6 +185,12 @@ const recommendBabysitter = async (req, res, next) => {
                 where: {
                     id: requestId,
                 },
+                include: [
+                    {
+                        model: models.requestRequiredSkill,
+                        as: 'requiredSkills',
+                    },
+                ],
             });
         }
 
@@ -214,6 +220,7 @@ const recommendBabysitter = async (req, res, next) => {
             recommendList,
         });
     } catch (err) {
+        console.log(err);
         res.status(400);
         res.send(err);
     }
