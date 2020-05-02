@@ -150,7 +150,7 @@ export default function(sequelize, DataTypes) {
         // user - skill
         user.hasMany(models.sitterSkill, {
             foreignKey: {
-                name: 'userId',
+                name: 'sitterId',
                 allowNull: false,
             },
             sourceKey: 'id',

@@ -2,7 +2,7 @@ export default function (sequelize, DataTypes) {
     const skill = sequelize.define(
         "skill", // Model Name
         {
-            skillName: {
+            name: {
                 type: DataTypes.STRING,
                 unique: true,
                 allowNull: false,
