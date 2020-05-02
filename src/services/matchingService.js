@@ -334,7 +334,7 @@ async function matchingCriteria(request, babysitters) {
 async function matchingRequiredSkills(requiredSkills, babysitters) {
     let matchedList = [];
 
-    let requiredSkillSet = requiredSkills.map(skill => {return skill.skillId})
+    let requiredSkillSet = requiredSkills.map(skill => {return parseInt(skill.skillId)})
     console.log(requiredSkillSet);
 
     const promises = babysitters.map(async (sitter) => {
