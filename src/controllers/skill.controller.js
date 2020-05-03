@@ -14,6 +14,16 @@ const getAllSkills = async (req, res) => {
     }
 };
 
+const getAll = async (req, res) => {
+    try {
+        const listSkills = await models.skill.findAll();
+        res.send(listSkills);
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
+};
+
 const create = async (req, res) => {
     const newItem = req.body;
     try {
@@ -33,7 +43,7 @@ const update = async (req, res) => {
         await models.skill.update(updateSkill, {
             where: { id },
         });
-        res.send(updateSkill);
+        res.send(id);
     } catch (err) {
         res.status(422);
         res.send(err);
@@ -57,4 +67,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { getAllSkills, create, update, destroy };
+export default { getAllSkills, create, update, destroy, getAll };
