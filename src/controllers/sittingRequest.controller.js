@@ -190,6 +190,10 @@ const recommendBabysitter = async (req, res, next) => {
                         model: models.requestRequiredSkill,
                         as: 'requiredSkills',
                     },
+                    {
+                        model: models.requestRequiredCert,
+                        as: 'requiredCerts',
+                    },
                 ],
             });
         }

@@ -157,6 +157,17 @@ export default function(sequelize, DataTypes) {
             as: 'sitterSkills',
             onDelete: 'CASCADE',
         });
+
+        // user - cert
+        user.hasMany(models.sitterCert, {
+            foreignKey: {
+                name: 'sitterId',
+                allowNull: false,
+            },
+            sourceKey: 'id',
+            as: 'sitterCerts',
+            onDelete: 'CASCADE',
+        });
     };
 
     return user;
