@@ -1,4 +1,4 @@
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
     const user = sequelize.define(
         'user', // Model Name
         {
@@ -60,16 +60,19 @@ export default function(sequelize, DataTypes) {
             latlog: {
                 type: DataTypes.STRING,
                 allowNull: true,
-            }
+            },
         },
         {
             timestamps: true,
             charset: 'utf8',
             collate: 'utf8_general_ci',
+            defaultScope: {
+                attributes: { exclude: ['password', 'createdAt', 'updatedAt', 'latlog'] },
+            },
         },
     );
 
-    user.associate = function(models) {
+    user.associate = function (models) {
         // user - parent
         user.hasOne(models.parent, {
             foreignKey: 'userId',

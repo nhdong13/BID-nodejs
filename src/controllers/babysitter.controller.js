@@ -9,6 +9,25 @@ const list = async (req, res, next) => {
             {
                 model: models.user,
                 as: 'user',
+                // attributes: ['id'],
+                include: [{
+                    model: models.sitterSkill,
+                    as: 'sitterSkills',
+                    attributes: ['skillId'],
+                    include: [{
+                        model: models.skill,
+                        attributes: ['name'],
+                    }],
+                    
+                }, {
+                    model: models.sitterCert,
+                    as: 'sitterCerts',
+                    attributes: ['certId'],
+                    include: [{
+                        model: models.cert,
+                        attributes: ['name']
+                    }],
+                }]
             },
         ],
     });
@@ -76,6 +95,24 @@ const readByRequest = async (req, res) => {
                 {
                     model: models.user,
                     as: 'user',
+                    include: [{
+                        model: models.sitterSkill,
+                        as: 'sitterSkills',
+                        attributes: ['skillId'],
+                        include: [{
+                            model: models.skill,
+                            attributes: ['name'],
+                        }],
+                        
+                    }, {
+                        model: models.sitterCert,
+                        as: 'sitterCerts',
+                        attributes: ['certId'],
+                        include: [{
+                            model: models.cert,
+                            attributes: ['name']
+                        }],
+                    }]
                 },
             ],
         });
@@ -106,7 +143,7 @@ const readByRequest = async (req, res) => {
 
 const read = async (req, res) => {
     const id = req.params.id;
-
+    console.log(id);
     try {
         const sitter = await models.babysitter.findOne({
             where: {
@@ -116,6 +153,24 @@ const read = async (req, res) => {
                 {
                     model: models.user,
                     as: 'user',
+                    include: [{
+                        model: models.sitterSkill,
+                        as: 'sitterSkills',
+                        attributes: ['skillId'],
+                        include: [{
+                            model: models.skill,
+                            attributes: ['name'],
+                        }],
+                        
+                    }, {
+                        model: models.sitterCert,
+                        as: 'sitterCerts',
+                        attributes: ['certId'],
+                        include: [{
+                            model: models.cert,
+                            attributes: ['name']
+                        }],
+                    }]
                 },
             ],
         });
