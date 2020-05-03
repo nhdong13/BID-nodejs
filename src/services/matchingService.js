@@ -343,9 +343,14 @@ async function matchingRequiredSkills(requiredSkills, babysitters) {
     let requiredSkillSet = requiredSkills.map(skill => {return parseInt(skill.skillId)})
 
     const promises = babysitters.map(async (sitter) => {
-        let skillSet = sitter.user.sitterSkills.map(skill => {return skill.skillId});
+        let skillSet = [];
+        let result = false;
 
-        const result = requiredSkillSet.every(val => skillSet.includes(val));
+        if (sitter.user.sitterSkills !== undefined) {
+            skillSet = sitter.user.sitterSkills.map(skill => {return skill.skillId});
+            result = requiredSkillSet.every(val => skillSet.includes(val));
+        }
+
         if (result) {
             matchedList.push(sitter);
         }
@@ -367,9 +372,14 @@ async function matchingRequiredCerts(requiredCerts, babysitters) {
     let requiredCertSet = requiredCerts.map(cert => {return parseInt(cert.certId)})
 
     const promises = babysitters.map(async (sitter) => {
-        let certSet = sitter.user.sitterCerts.map(cert => {return cert.certId});
+        let certSet = [];
+        let result = false;
 
-        const result = requiredCertSet.every(val => certSet.includes(val));
+        if (sitter.user.sitterCerts !== undefined && sitter.user.sitterCerts != null) {
+            certSet = sitter.user.sitterCerts.map(cert => {return cert.certId});
+            result = requiredCertSet.every(val => certSet.includes(val));
+        }
+
         if (result) {
             matchedList.push(sitter);
         }

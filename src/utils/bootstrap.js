@@ -522,7 +522,6 @@ export async function insertDatabase() {
                         { sitterId: sitters[1].userId, certId: 1 },
                         { sitterId: sitters[2].userId, certId: 1 },
                         { sitterId: sitters[3].userId, certId: 1 },
-                        { sitterId: sitters[4].userId, certId: 1 },
                     ]
 
                     db.sitterCert.bulkCreate(sitterCerts);
