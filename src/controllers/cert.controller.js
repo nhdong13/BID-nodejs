@@ -14,6 +14,16 @@ const getAllCerts = async (req, res) => {
     }
 };
 
+const getAll = async (req, res) => {
+    try {
+        const listCerts = await models.cert.findAll();
+        res.send(listCerts);
+    } catch (error) {
+        res.status(400);
+        res.send(error);
+    }
+};
+
 const create = async (req, res) => {
     const newItem = req.body;
     try {
@@ -30,10 +40,10 @@ const update = async (req, res) => {
     const updateCert = req.body;
 
     try {
-        const isUpdated = await models.cert.update(updateCert, {
+        await models.cert.update(updateCert, {
             where: { id },
         });
-        res.send(isUpdupated);
+        res.send(id);
     } catch (err) {
         res.status(422);
         res.send(err);
@@ -57,4 +67,4 @@ const destroy = async (req, res) => {
     }
 };
 
-export default { getAllCerts, create, update, destroy };
+export default { getAllCerts, create, update, destroy, getAll };
