@@ -14,7 +14,11 @@ export default function (sequelize, DataTypes) {
             active: {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true
-            }
+            },
+            vname: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         }
     );
 
