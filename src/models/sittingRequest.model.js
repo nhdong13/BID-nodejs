@@ -152,6 +152,16 @@ export default function(sequelize, DataTypes) {
             as: "requiredSkills",
             sourceKey: "id"
         });
+
+        // request - cert
+        sittingRequest.hasMany(models.requestRequiredCert, {
+            foreignKey: {
+                name: 'requestId',
+                allowNull: false,
+            },
+            as: 'requiredCerts',
+            sourceKey: 'id',
+        });
     };
 
     return sittingRequest;

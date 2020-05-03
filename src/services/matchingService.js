@@ -39,6 +39,8 @@ export async function matching(sittingRequest) {
     console.timeEnd('matching');
 
     matchedList = await matchingRequiredSkills(sittingRequest.requiredSkills, matchedList);
+    
+    matchedList = await matchingRequiredCerts(sittingRequest.requiredCerts, matchedList);
 
     console.time('checkSchedules');
     // check against babysitter schedules
@@ -99,6 +101,10 @@ async function searchForBabysitter(sittingAddress) {
                     {
                         model: models.sitterSkill,
                         as: 'sitterSkills',
+                    },
+                    {
+                        model: models.sitterCert,
+                        as: 'sitterCerts',
                     },
                 ],
             },
@@ -335,12 +341,35 @@ async function matchingRequiredSkills(requiredSkills, babysitters) {
     let matchedList = [];
 
     let requiredSkillSet = requiredSkills.map(skill => {return parseInt(skill.skillId)})
-    console.log(requiredSkillSet);
 
     const promises = babysitters.map(async (sitter) => {
         let skillSet = sitter.user.sitterSkills.map(skill => {return skill.skillId});
 
         const result = requiredSkillSet.every(val => skillSet.includes(val));
+        if (result) {
+            matchedList.push(sitter);
+        }
+    });
+    await Promise.all(promises);
+
+    return matchedList;
+}
+
+/**
+ * To check if the sitting-request's sitting date, start time, end time are matched with the babysitter's schedule
+ * @param  {Array<requiredCert>} requiredCerts the required skills list
+ * @param  {Array<babysitter>} babysitters the list of babysitters to check
+ * @returns {Array} matchedList
+ */
+async function matchingRequiredCerts(requiredCerts, babysitters) {
+    let matchedList = [];
+
+    let requiredCertSet = requiredCerts.map(cert => {return parseInt(cert.certId)})
+
+    const promises = babysitters.map(async (sitter) => {
+        let certSet = sitter.user.sitterCerts.map(cert => {return cert.certId});
+
+        const result = requiredCertSet.every(val => certSet.includes(val));
         if (result) {
             matchedList.push(sitter);
         }

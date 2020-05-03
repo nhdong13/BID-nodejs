@@ -544,6 +544,17 @@ export async function insertDatabase() {
                     db.skill.bulkCreate(skills).then(result => {
                         db.sitterSkill.bulkCreate(sitterSkills);
                     });
+
+                    let sitterCerts = [
+                        { sitterId: sitters[0].userId, certId: 1 },
+                        { sitterId: sitters[0].userId, certId: 2 },
+                        { sitterId: sitters[1].userId, certId: 1 },
+                        { sitterId: sitters[2].userId, certId: 1 },
+                        { sitterId: sitters[3].userId, certId: 1 },
+                        { sitterId: sitters[4].userId, certId: 1 },
+                    ]
+
+                    db.sitterCert.bulkCreate(sitterCerts);
                 });
             //#endregion
         })
@@ -763,6 +774,15 @@ export async function insertDatabase() {
                     ];
 
                     db.requestRequiredSkill.bulkCreate(requestRequiredSkills);
+
+                    let requestRequiredCerts = [
+                        {
+                            requestId: requests[0].id,
+                            certId: 1,
+                        }
+                    ];
+
+                    db.requestRequiredCert.bulkCreate(requestRequiredCerts);
                     //#region repeated request
                     // result.forEach((el) => {
                     //     if (el.status === 'PENDING') {

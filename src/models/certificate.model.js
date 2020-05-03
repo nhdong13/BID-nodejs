@@ -23,13 +23,6 @@ export default function (sequelize, DataTypes) {
     );
 
     cert.associate = function (models) {
-        // cert - user
-        cert.hasMany(models.user, {
-            foreignKey: {
-                name: 'certId',
-            },
-            sourceKey: 'id',
-        });
     }
 
     return cert;
