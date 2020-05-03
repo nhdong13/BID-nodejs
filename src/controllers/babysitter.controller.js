@@ -10,24 +10,30 @@ const list = async (req, res, next) => {
                 model: models.user,
                 as: 'user',
                 // attributes: ['id'],
-                include: [{
-                    model: models.sitterSkill,
-                    as: 'sitterSkills',
-                    attributes: ['skillId'],
-                    include: [{
-                        model: models.skill,
-                        attributes: ['name'],
-                    }],
-                    
-                }, {
-                    model: models.sitterCert,
-                    as: 'sitterCerts',
-                    attributes: ['certId'],
-                    include: [{
-                        model: models.cert,
-                        attributes: ['name']
-                    }],
-                }]
+                include: [
+                    {
+                        model: models.sitterSkill,
+                        as: 'sitterSkills',
+                        attributes: ['skillId'],
+                        include: [
+                            {
+                                model: models.skill,
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                    {
+                        model: models.sitterCert,
+                        as: 'sitterCerts',
+                        attributes: ['certId'],
+                        include: [
+                            {
+                                model: models.cert,
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                ],
             },
         ],
     });
@@ -95,27 +101,34 @@ const readByRequest = async (req, res) => {
                 {
                     model: models.user,
                     as: 'user',
-                    include: [{
-                        model: models.sitterSkill,
-                        as: 'sitterSkills',
-                        attributes: ['skillId'],
-                        include: [{
-                            model: models.skill,
-                            attributes: ['name'],
-                        }],
-                        
-                    }, {
-                        model: models.sitterCert,
-                        as: 'sitterCerts',
-                        attributes: ['certId'],
-                        include: [{
-                            model: models.cert,
-                            attributes: ['name']
-                        }],
-                    }]
+                    include: [
+                        {
+                            model: models.sitterSkill,
+                            as: 'sitterSkills',
+                            attributes: ['skillId'],
+                            include: [
+                                {
+                                    model: models.skill,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                        {
+                            model: models.sitterCert,
+                            as: 'sitterCerts',
+                            attributes: ['certId'],
+                            include: [
+                                {
+                                    model: models.cert,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         });
+
         if (sitter) {
             await models.invitation
                 .findOne({
@@ -153,24 +166,30 @@ const read = async (req, res) => {
                 {
                     model: models.user,
                     as: 'user',
-                    include: [{
-                        model: models.sitterSkill,
-                        as: 'sitterSkills',
-                        attributes: ['skillId'],
-                        include: [{
-                            model: models.skill,
-                            attributes: ['name'],
-                        }],
-                        
-                    }, {
-                        model: models.sitterCert,
-                        as: 'sitterCerts',
-                        attributes: ['certId'],
-                        include: [{
-                            model: models.cert,
-                            attributes: ['name']
-                        }],
-                    }]
+                    include: [
+                        {
+                            model: models.sitterSkill,
+                            as: 'sitterSkills',
+                            attributes: ['skillId'],
+                            include: [
+                                {
+                                    model: models.skill,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                        {
+                            model: models.sitterCert,
+                            as: 'sitterCerts',
+                            attributes: ['certId'],
+                            include: [
+                                {
+                                    model: models.cert,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         });
