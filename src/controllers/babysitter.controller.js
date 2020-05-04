@@ -1,6 +1,7 @@
 import models from '@models';
 import { hashPassword } from '@utils/hash';
 import { checkSittingTime, dateInRange } from '@utils/common';
+import { searchBabysitterAdvanced } from '@services/searchService';
 
 const list = async (req, res, next) => {
     const listSitters = await models.babysitter.findAll({
@@ -187,6 +188,27 @@ const read = async (req, res) => {
     }
 };
 
+const search = async (req, res) => {
+    let name = req.body.name;
+    let skills = req.body.skills;
+    let certs = req.body.certs;
+    let baseAddress = req.body.baseAddress;
+    
+    try {
+        const sitters = await searchBabysitterAdvanced(name, skills, certs, baseAddress);
+
+        // response
+        res.send({
+            count: sitters.length,
+            sitters
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(400);
+        res.send(err);
+    }
+};
+
 const update = async (req, res) => {
     const id = req.params.id;
 
@@ -284,6 +306,7 @@ export default {
     create,
     read,
     readByRequest,
+    search,
     update,
     destroy,
     listAllBabysitterWithSchedule,

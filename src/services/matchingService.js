@@ -30,7 +30,7 @@ export async function matching(sittingRequest) {
     console.log('------------------------Matching------------------------');
 
     console.time('searchSitters');
-    let babysitters = await searchForBabysitter(sittingRequest.sittingAddress);
+    let babysitters = await searchForBabysitter();
     console.timeEnd('searchSitters');
 
     console.time('matching');
@@ -38,9 +38,12 @@ export async function matching(sittingRequest) {
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
     console.timeEnd('matching');
 
-    matchedList = await matchingRequiredSkills(sittingRequest.requiredSkills, matchedList);
-    
-    matchedList = await matchingRequiredCerts(sittingRequest.requiredCerts, matchedList);
+    if (sittingRequest.requiredSkills !== undefined && sittingRequest.requiredSkills !== null){
+        matchedList = await matchingRequiredSkills(sittingRequest.requiredSkills, matchedList);
+    }
+    if (sittingRequest.requiredCerts !== undefined && sittingRequest.requiredCerts !== null){
+        matchedList = await matchingRequiredCerts(sittingRequest.requiredCerts, matchedList);
+    }
 
     console.time('checkSchedules');
     // check against babysitter schedules
@@ -87,7 +90,7 @@ export async function matching(sittingRequest) {
  * @param  {String} sittingAddress
  * @returns {} list of babysitters
  */
-async function searchForBabysitter(sittingAddress) {
+async function searchForBabysitter() {
     let list = await models.babysitter.findAll({
         include: [
             {
