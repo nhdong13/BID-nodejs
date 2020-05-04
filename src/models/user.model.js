@@ -1,4 +1,4 @@
-export default function (sequelize, DataTypes) {
+export default function(sequelize, DataTypes) {
     const user = sequelize.define(
         'user', // Model Name
         {
@@ -13,7 +13,7 @@ export default function (sequelize, DataTypes) {
                 unique: true,
             },
             password: {
-                type: DataTypes.STRING,
+                type: DataTypes.TEXT,
                 allowNull: false,
             },
             nickname: {
@@ -67,12 +67,14 @@ export default function (sequelize, DataTypes) {
             charset: 'utf8',
             collate: 'utf8_general_ci',
             defaultScope: {
-                attributes: { exclude: ['password', 'createdAt', 'updatedAt', 'latlog'] },
+                attributes: {
+                    exclude: ['password', 'createdAt', 'updatedAt', 'latlog'],
+                },
             },
         },
     );
 
-    user.associate = function (models) {
+    user.associate = function(models) {
         // user - parent
         user.hasOne(models.parent, {
             foreignKey: 'userId',
