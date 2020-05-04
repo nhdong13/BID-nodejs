@@ -1,16 +1,16 @@
-import models from "@models/";
-import env, { checkEnvLoaded } from "@utils/env";
-import Config from "@services/configService";
-import Sequelize, { Op } from "sequelize";
+import models from '@models/';
+import env, { checkEnvLoaded } from '@utils/env';
+import Config from '@services/configService';
+import Sequelize, { Op } from 'sequelize';
 
 checkEnvLoaded();
 const { apiKey } = env;
 
 // const MAX_TRAVEL_DISTANCE = 3;
 const KEY = apiKey;
-var distance = require("google-distance-matrix");
+var distance = require('google-distance-matrix');
 
-const googleMaps = require("@google/maps");
+const googleMaps = require('@google/maps');
 const mapsClient = googleMaps.createClient({
     key: KEY, // api key
     Promise: Promise, // enable promise request
@@ -25,7 +25,7 @@ export async function searchBabysitterAdvanced(
     name,
     skills,
     certs,
-    baseAddress
+    baseAddress,
 ) {
     let matchedList = [];
 
@@ -33,19 +33,22 @@ export async function searchBabysitterAdvanced(
         matchedList = await searchForBabysitter(name);
     }
 
-    if (skills !== undefined && skills !== null) {
+    if (skills && skills.length > 0) {
         matchedList = await matchedSkill(skills, matchedList);
     }
 
-    if (certs !== undefined && certs !== null) {
+    if (certs && certs.length > 0) {
         matchedList = await matchedCert(certs, matchedList);
     }
 
     // calculate distance with api Google
-    // matchedList = await getBabysitterDistance(
-    //     baseAddress,
-    //     matchedList,
-    // );
+
+    if (baseAddress) {
+        // matchedList = await getBabysitterDistance(
+        //     baseAddress,
+        //     matchedList,
+        // );
+    }
 
     // calculate distance with magic and stuff you know
     matchedList = await randomizeDistance(matchedList);
@@ -63,22 +66,22 @@ async function searchForBabysitter(name) {
         include: [
             {
                 model: models.user,
-                as: "user",
+                as: 'user',
                 where: {
                     nickname: { [Op.substring]: name },
                 },
                 include: [
                     {
                         model: models.schedule,
-                        as: "schedules",
+                        as: 'schedules',
                     },
                     {
                         model: models.sitterSkill,
-                        as: "sitterSkills",
+                        as: 'sitterSkills',
                     },
                     {
                         model: models.sitterCert,
-                        as: "sitterCerts",
+                        as: 'sitterCerts',
                     },
                 ],
             },
@@ -189,7 +192,7 @@ async function randomizeDistance(listOfSitter) {
  * @returns {} matchedList distance is in 'km'
  */
 async function getBabysitterDistance(baseAddress, listOfSitter) {
-    console.log("--- Getting distance data ...");
+    console.log('--- Getting distance data ...');
     let matchedList = [];
 
     let address1LatLog = await placeSearch(baseAddress);
@@ -213,16 +216,16 @@ async function getBabysitterDistance(baseAddress, listOfSitter) {
             let distance = await getDistance(address1LatLog, sitterLatlog);
 
             // x.x
-            let temp = distance.split(" ");
+            let temp = distance.split(' ');
             let unit = temp[1];
-            if (unit == "km") {
+            if (unit == 'km') {
                 let distanceKm = temp[0];
                 if (distanceKm < Config.getMaxTravelDistance()) {
                     sitter.distance = distance;
                     matchedList.push(sitter);
                 } else {
                     console.log(
-                        `${sitter.user.nickname} is two far away: ${distance}`
+                        `${sitter.user.nickname} is two far away: ${distance}`,
                     );
                 }
             } else {
@@ -232,10 +235,10 @@ async function getBabysitterDistance(baseAddress, listOfSitter) {
         });
         await Promise.all(promises);
     } catch (error) {
-        console.log("Duong: getBabysitterDistance -> error", error);
+        console.log('Duong: getBabysitterDistance -> error', error);
     }
 
-    console.log("--- Done getting distance data ...");
+    console.log('--- Done getting distance data ...');
     return matchedList;
 }
 
