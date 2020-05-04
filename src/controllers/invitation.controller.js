@@ -46,6 +46,37 @@ const listByRequestAndStatus = async (req, res) => {
                     },
                 ],
             },
+            {
+                model: models.sittingRequest,
+                as: 'sittingRequest',
+                attributes: ['id'],
+                include: [
+                    {
+                        model: models.requestRequiredSkill,
+                        as: 'requiredSkills',
+                        attributes: ['skillId'],
+                        include: [
+                            {
+                                model: models.skill,
+                                as: 'skill',
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                    {
+                        model: models.requestRequiredCert,
+                        as: 'requiredCerts',
+                        attributes: ['certId'],
+                        include: [
+                            {
+                                model: models.cert,
+                                as: 'cert',
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                ],
+            },
         ],
     });
     res.send(invitations);
@@ -70,6 +101,37 @@ const listAllRequestInvitation = async (req, res) => {
                     },
                 ],
             },
+            {
+                model: models.sittingRequest,
+                as: 'sittingRequest',
+                attributes: ['id'],
+                include: [
+                    {
+                        model: models.requestRequiredSkill,
+                        as: 'requiredSkills',
+                        attributes: ['skillId'],
+                        include: [
+                            {
+                                model: models.skill,
+                                as: 'skill',
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                    {
+                        model: models.requestRequiredCert,
+                        as: 'requiredCerts',
+                        attributes: ['certId'],
+                        include: [
+                            {
+                                model: models.cert,
+                                as: 'cert',
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                ],
+            },
         ],
     });
     res.send(invitations);
@@ -89,6 +151,30 @@ const listInvitationBySitterId = async (req, res, next) => {
                     {
                         model: models.user,
                         as: 'user',
+                    },
+                    {
+                        model: models.requestRequiredSkill,
+                        as: 'requiredSkills',
+                        attributes: ['skillId'],
+                        include: [
+                            {
+                                model: models.skill,
+                                as: 'skill',
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                    {
+                        model: models.requestRequiredCert,
+                        as: 'requiredCerts',
+                        attributes: ['certId'],
+                        include: [
+                            {
+                                model: models.cert,
+                                as: 'cert',
+                                attributes: ['vname'],
+                            },
+                        ],
                     },
                 ],
             },
@@ -191,6 +277,30 @@ const getInvitation = async (req, res) => {
                         {
                             model: models.user,
                             as: 'user',
+                        },
+                        {
+                            model: models.requestRequiredSkill,
+                            as: 'requiredSkills',
+                            attributes: ['skillId'],
+                            include: [
+                                {
+                                    model: models.skill,
+                                    as: 'skill',
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                        {
+                            model: models.requestRequiredCert,
+                            as: 'requiredCerts',
+                            attributes: ['certId'],
+                            include: [
+                                {
+                                    model: models.cert,
+                                    as: 'cert',
+                                    attributes: ['vname'],
+                                },
+                            ],
                         },
                     ],
                 },

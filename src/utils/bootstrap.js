@@ -347,6 +347,12 @@ export async function insertDatabase() {
                         {
                             ownerId: result[0].userId, // parent[0]
                             friendId: result[1].userId, // is friend with parent[1]
+                            isParent: 1
+                        },
+                        {
+                            ownerId: result[0].userId, // parent[0]
+                            friendId: 5, // is friend with parent[1]
+                            isParent: 0
                         },
                     ]);
                     //#endregion
