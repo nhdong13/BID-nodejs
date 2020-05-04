@@ -8,6 +8,7 @@ router
     .route('/getAllBabysitterWithSchedule/')
     .get(controller.listAllBabysitterWithSchedule);
 router.route('/').post(controller.create);
+router.route('/search/').post(controller.search);
 router.route('/:id').get(controller.read);
 router
     .route('/readByRequest/:sitterId&:requestId')
