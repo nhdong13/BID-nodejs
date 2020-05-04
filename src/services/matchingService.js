@@ -1,24 +1,24 @@
-import models from '@models/';
+import models from "@models/";
 import {
     parseSchedule,
     checkScheduleTime,
-    checkBabysitterSchedule,
-} from '@utils/schedule';
-import { checkSittingTime, dateInRange } from '@utils/common';
-import env, { checkEnvLoaded } from '@utils/env';
-import Config from '@services/configService';
+    checkBabysitterSchedule
+} from "@utils/schedule";
+import { checkSittingTime, dateInRange } from "@utils/common";
+import env, { checkEnvLoaded } from "@utils/env";
+import Config from "@services/configService";
 
 checkEnvLoaded();
 const { apiKey } = env;
 
 // const MAX_TRAVEL_DISTANCE = 3;
 const KEY = apiKey;
-var distance = require('google-distance-matrix');
+var distance = require("google-distance-matrix");
 
-const googleMaps = require('@google/maps');
+const googleMaps = require("@google/maps");
 const mapsClient = googleMaps.createClient({
     key: KEY, // api key
-    Promise: Promise, // enable promise request
+    Promise: Promise // enable promise request
 });
 
 /**
@@ -27,30 +27,30 @@ const mapsClient = googleMaps.createClient({
  * @return {Array<babysitter>} matchedList
  */
 export async function matching(sittingRequest) {
-    console.log('------------------------Matching------------------------');
+    console.log("------------------------Matching------------------------");
 
     console.time('searchSitters');
     let babysitters = await searchForBabysitter();
     console.timeEnd('searchSitters');
 
-    console.time('matching');
+    console.time("matching");
     // compare each babysitter in the above list against matching criteria and return the matched list
     let matchedList = await matchingCriteria(sittingRequest, babysitters);
-    console.timeEnd('matching');
+    console.timeEnd("matching");
 
-    if (sittingRequest.requiredSkills !== undefined && sittingRequest.requiredSkills !== null){
+    if (sittingRequest.requiredSkills && sittingRequest.requiredSkills.length > 0){
         matchedList = await matchingRequiredSkills(sittingRequest.requiredSkills, matchedList);
     }
-    if (sittingRequest.requiredCerts !== undefined && sittingRequest.requiredCerts !== null){
+    if (sittingRequest.requiredCerts && sittingRequest.requiredCerts.length > 0){
         matchedList = await matchingRequiredCerts(sittingRequest.requiredCerts, matchedList);
     }
 
-    console.time('checkSchedules');
+    console.time("checkSchedules");
     // check against babysitter schedules
     matchedList = await checkAgainstSchedules(sittingRequest, matchedList);
-    console.timeEnd('checkSchedules');
+    console.timeEnd("checkSchedules");
 
-    console.time('getDistance');
+    console.time("getDistance");
     // calculate distance with api Google
     // matchedList = await getBabysitterDistance(
     //     sittingRequest.sittingAddress,
@@ -60,10 +60,10 @@ export async function matching(sittingRequest) {
     // calculate distance with magic and stuff you know
     matchedList = await randomizeDistance(
         sittingRequest.sittingAddress,
-        matchedList,
+        matchedList
     );
 
-    console.timeEnd('getDistance');
+    console.timeEnd("getDistance");
 
     // only run if this request is created (has id)
     if (
@@ -71,16 +71,16 @@ export async function matching(sittingRequest) {
         sittingRequest.id !== null &&
         sittingRequest.id > 0
     ) {
-        console.time('checkSentInvite');
+        console.time("checkSentInvite");
         matchedList = await checkIfSentInvite(sittingRequest, matchedList);
-        console.timeEnd('checkSentInvite');
+        console.timeEnd("checkSentInvite");
     }
 
     console.log(
-        '------------------------DONE MATCHING------------------------',
+        "------------------------DONE MATCHING------------------------"
     );
 
-    console.log('Matched:', matchedList.length);
+    console.log("Matched:", matchedList.length);
 
     return matchedList;
 }
@@ -95,23 +95,23 @@ async function searchForBabysitter() {
         include: [
             {
                 model: models.user,
-                as: 'user',
+                as: "user",
                 include: [
                     {
                         model: models.schedule,
-                        as: 'schedules',
+                        as: "schedules"
                     },
                     {
                         model: models.sitterSkill,
-                        as: 'sitterSkills',
+                        as: "sitterSkills"
                     },
                     {
                         model: models.sitterCert,
-                        as: 'sitterCerts',
-                    },
-                ],
-            },
-        ],
+                        as: "sitterCerts"
+                    }
+                ]
+            }
+        ]
     });
 
     return list;
@@ -125,21 +125,21 @@ async function searchForBabysitter() {
  * @returns {} matchedList distance is in 'km'
  */
 async function getBabysitterDistance(sittingAddress, listOfSitter) {
-    console.log('--- Getting distance data ...');
+    console.log("--- Getting distance data ...");
     let matchedList = [];
 
     let address1LatLog = await placeSearch(sittingAddress);
     address1LatLog = address1LatLog[0].geometry.location;
 
     try {
-        const promises = listOfSitter.map(async (sitter) => {
+        const promises = listOfSitter.map(async sitter => {
             let sitterLatlog;
             if (!sitter.user.latlog) {
                 sitterLatlog = await placeSearch(sitter.user.address);
                 sitterLatlog = sitterLatlog[0].geometry.location;
                 sitterLatlog = `${sitterLatlog.lat},${sitterLatlog.lng}`;
                 sitter.user.update({
-                    latlog: sitterLatlog,
+                    latlog: sitterLatlog
                 });
             } else {
                 sitterLatlog = sitter.user.latlog;
@@ -149,16 +149,16 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
             let distance = await getDistance(address1LatLog, sitterLatlog);
 
             // x.x
-            let temp = distance.split(' ');
+            let temp = distance.split(" ");
             let unit = temp[1];
-            if (unit == 'km') {
+            if (unit == "km") {
                 let distanceKm = temp[0];
                 if (distanceKm < Config.getMaxTravelDistance()) {
                     sitter.distance = distance;
                     matchedList.push(sitter);
                 } else {
                     console.log(
-                        `${sitter.user.nickname} is two far away: ${distance}`,
+                        `${sitter.user.nickname} is two far away: ${distance}`
                     );
                 }
             } else {
@@ -168,10 +168,10 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
         });
         await Promise.all(promises);
     } catch (error) {
-        console.log('Duong: getBabysitterDistance -> error', error);
+        console.log("Duong: getBabysitterDistance -> error", error);
     }
 
-    console.log('--- Done getting distance data ...');
+    console.log("--- Done getting distance data ...");
     return matchedList;
 }
 
@@ -184,7 +184,7 @@ async function getBabysitterDistance(sittingAddress, listOfSitter) {
 async function randomizeDistance(sittingAddress, listOfSitter) {
     let matchedList = [];
 
-    const promises = listOfSitter.map(async (sitter) => {
+    const promises = listOfSitter.map(async sitter => {
         // x.x
         let distance = await parseFloat(sitter.userId / 10).toFixed(1);
 
@@ -206,12 +206,12 @@ async function randomizeDistance(sittingAddress, listOfSitter) {
  * @returns {} babysitters with status isInvited
  */
 async function checkIfSentInvite(sittingRequest, babysitters) {
-    const promises = babysitters.map(async (sitter) => {
+    const promises = babysitters.map(async sitter => {
         let found = await models.invitation.findOne({
             where: {
                 requestId: sittingRequest.id,
-                receiver: sitter.userId,
-            },
+                receiver: sitter.userId
+            }
         });
 
         if (found) {
@@ -235,14 +235,14 @@ async function getDistance(address1LatLog, address2LatLog) {
             .distanceMatrix({
                 origins: [address1LatLog], // start address
                 destinations: [address2LatLog], // destination address
-                mode: 'walking',
+                mode: "walking"
             })
             .asPromise();
         // console.log(distances.requestUrl);
 
         return distances.json.rows[0].elements[0].distance.text;
     } catch (error) {
-        console.log('Duong: getDistance -> error', error);
+        console.log("Duong: getDistance -> error", error);
     }
 }
 
@@ -251,13 +251,13 @@ async function placeSearch(address) {
         let result = await mapsClient
             .findPlace({
                 input: address,
-                inputtype: 'textquery',
-                fields: ['geometry'],
+                inputtype: "textquery",
+                fields: ["geometry"]
             })
             .asPromise();
         return result.json.candidates;
     } catch (error) {
-        console.log('Duong: placeSearch -> error', error);
+        console.log("Duong: placeSearch -> error", error);
     }
 }
 
@@ -270,39 +270,39 @@ async function placeSearch(address) {
  */
 async function matchingCriteria(request, babysitters) {
     let matchedList = [];
-    console.log('--- Matching with criteria');
-    console.log('Number of search: ' + babysitters.length);
-    babysitters.forEach((bsitter) => {
+    console.log("--- Matching with criteria");
+    console.log("Number of search: " + babysitters.length);
+    babysitters.forEach(bsitter => {
         // check children number
         if (request.childrenNumber > bsitter.maxNumOfChildren) {
-            console.log('CHILDREN NUMBER NOT MATCHED');
+            console.log("CHILDREN NUMBER NOT MATCHED");
             console.log(
-                'request: ' +
+                "request: " +
                     request.childrenNumber +
-                    '| bsitter: ' +
-                    bsitter.maxNumOfChildren,
+                    "| bsitter: " +
+                    bsitter.maxNumOfChildren
             );
             return;
         }
         //check minimum age of children
         if (request.minAgeOfChildren < bsitter.minAgeOfChildren) {
-            console.log('MIN AGE NOT MATCHED');
+            console.log("MIN AGE NOT MATCHED");
             console.log(
-                'request: ' +
+                "request: " +
                     request.minAgeOfChildren +
-                    '| bsitter: ' +
-                    bsitter.minAgeOfChildren,
+                    "| bsitter: " +
+                    bsitter.minAgeOfChildren
             );
             return;
         }
         // check date
         if (!dateInRange(request.sittingDate, bsitter.weeklySchedule)) {
-            console.log('SITTING DATE NOT MATCHED');
+            console.log("SITTING DATE NOT MATCHED");
             console.log(
-                'request: ' +
+                "request: " +
                     request.sittingDate +
-                    '| bsitter: ' +
-                    bsitter.weeklySchedule,
+                    "| bsitter: " +
+                    bsitter.weeklySchedule
             );
             return;
         }
@@ -312,16 +312,16 @@ async function matchingCriteria(request, babysitters) {
                 request.startTime,
                 request.endTime,
                 bsitter.startTime,
-                bsitter.endTime,
+                bsitter.endTime
             )
         ) {
-            console.log('SITTING TIME NOT MATCHED');
-            console.log('request: ');
-            console.log('--- start time: ' + request.startTime);
-            console.log('--- end time: ' + request.endTime);
-            console.log('bsitter: ');
+            console.log("SITTING TIME NOT MATCHED");
+            console.log("request: ");
+            console.log("--- start time: " + request.startTime);
+            console.log("--- end time: " + request.endTime);
+            console.log("bsitter: ");
             console.log(
-                '--- Work Time: ' + bsitter.startTime + ' - ' + bsitter.endTime,
+                "--- Work Time: " + bsitter.startTime + " - " + bsitter.endTime
             );
             return;
         }
@@ -330,7 +330,7 @@ async function matchingCriteria(request, babysitters) {
         matchedList.push(bsitter);
     });
 
-    console.log('--- Done matching with criteria');
+    console.log("--- Done matching with criteria");
     return matchedList;
 }
 
@@ -343,24 +343,32 @@ async function matchingCriteria(request, babysitters) {
 async function matchingRequiredSkills(requiredSkills, babysitters) {
     let matchedList = [];
 
-    let requiredSkillSet = requiredSkills.map(skill => {return parseInt(skill.skillId)})
+    if (requiredSkills && requiredSkills.length > 0) {
+        let requiredSkillSet = requiredSkills.map(skill => {
+            return parseInt(skill.skillId);
+        });
 
-    const promises = babysitters.map(async (sitter) => {
-        let skillSet = [];
-        let result = false;
+        const promises = babysitters.map(async sitter => {
+            let skillSet = [];
+            let result = false;
 
-        if (sitter.user.sitterSkills !== undefined) {
-            skillSet = sitter.user.sitterSkills.map(skill => {return skill.skillId});
-            result = requiredSkillSet.every(val => skillSet.includes(val));
-        }
+            if (sitter.user.sitterSkills !== undefined) {
+                skillSet = sitter.user.sitterSkills.map(skill => {
+                    return skill.skillId;
+                });
+                result = requiredSkillSet.every(val => skillSet.includes(val));
+            }
 
-        if (result) {
-            matchedList.push(sitter);
-        }
-    });
-    await Promise.all(promises);
+            if (result) {
+                matchedList.push(sitter);
+            }
+        });
+        await Promise.all(promises);
 
-    return matchedList;
+        return matchedList;
+    }
+
+    return babysitters;
 }
 
 /**
@@ -372,24 +380,34 @@ async function matchingRequiredSkills(requiredSkills, babysitters) {
 async function matchingRequiredCerts(requiredCerts, babysitters) {
     let matchedList = [];
 
-    let requiredCertSet = requiredCerts.map(cert => {return parseInt(cert.certId)})
+    if (requiredCerts && requiredCerts.length > 0) {
+        let requiredCertSet = requiredCerts.map(cert => {
+            return parseInt(cert.certId);
+        });
 
-    const promises = babysitters.map(async (sitter) => {
-        let certSet = [];
-        let result = false;
+        const promises = babysitters.map(async sitter => {
+            let certSet = [];
+            let result = false;
 
-        if (sitter.user.sitterCerts !== undefined && sitter.user.sitterCerts != null) {
-            certSet = sitter.user.sitterCerts.map(cert => {return cert.certId});
-            result = requiredCertSet.every(val => certSet.includes(val));
-        }
+            if (
+                sitter.user.sitterCerts !== undefined &&
+                sitter.user.sitterCerts != null
+            ) {
+                certSet = sitter.user.sitterCerts.map(cert => {
+                    return cert.certId;
+                });
+                result = requiredCertSet.every(val => certSet.includes(val));
+            }
 
-        if (result) {
-            matchedList.push(sitter);
-        }
-    });
-    await Promise.all(promises);
+            if (result) {
+                matchedList.push(sitter);
+            }
+        });
+        await Promise.all(promises);
+        return matchedList;
+    }
 
-    return matchedList;
+    return babysitters;
 }
 
 /**
@@ -405,24 +423,24 @@ async function checkAgainstSchedules(request, babysitters) {
         if (request.repeatedRequestId) {
             const repeated = await models.repeatedRequest.findOne({
                 where: {
-                    id: request.repeatedRequestId,
-                },
+                    id: request.repeatedRequestId
+                }
             });
 
-            babysitters.forEach((sitter) => {
+            babysitters.forEach(sitter => {
                 if (checkBabysitterSchedule(sitter, repeated)) {
                     matchedList.push(sitter);
                 }
             });
         } else {
-            babysitters.forEach((sitter) => {
+            babysitters.forEach(sitter => {
                 if (checkBabysitterSchedule(sitter, request)) {
                     matchedList.push(sitter);
                 }
             });
         }
     } catch (error) {
-        console.log('Duong: checkAgainstSchedules -> error', error);
+        console.log("Duong: checkAgainstSchedules -> error", error);
     }
 
     return matchedList;
