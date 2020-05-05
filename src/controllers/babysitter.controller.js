@@ -1,6 +1,7 @@
 import models from '@models';
 import { hashPassword } from '@utils/hash';
 import { checkSittingTime, dateInRange } from '@utils/common';
+import { searchBabysitterAdvanced } from '@services/searchService';
 
 const list = async (req, res, next) => {
     const listSitters = await models.babysitter.findAll({
@@ -10,24 +11,30 @@ const list = async (req, res, next) => {
                 model: models.user,
                 as: 'user',
                 // attributes: ['id'],
-                include: [{
-                    model: models.sitterSkill,
-                    as: 'sitterSkills',
-                    attributes: ['skillId'],
-                    include: [{
-                        model: models.skill,
-                        attributes: ['name'],
-                    }],
-                    
-                }, {
-                    model: models.sitterCert,
-                    as: 'sitterCerts',
-                    attributes: ['certId'],
-                    include: [{
-                        model: models.cert,
-                        attributes: ['name']
-                    }],
-                }]
+                include: [
+                    {
+                        model: models.sitterSkill,
+                        as: 'sitterSkills',
+                        attributes: ['skillId'],
+                        include: [
+                            {
+                                model: models.skill,
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                    {
+                        model: models.sitterCert,
+                        as: 'sitterCerts',
+                        attributes: ['certId'],
+                        include: [
+                            {
+                                model: models.cert,
+                                attributes: ['vname'],
+                            },
+                        ],
+                    },
+                ],
             },
         ],
     });
@@ -95,27 +102,34 @@ const readByRequest = async (req, res) => {
                 {
                     model: models.user,
                     as: 'user',
-                    include: [{
-                        model: models.sitterSkill,
-                        as: 'sitterSkills',
-                        attributes: ['skillId'],
-                        include: [{
-                            model: models.skill,
-                            attributes: ['name'],
-                        }],
-                        
-                    }, {
-                        model: models.sitterCert,
-                        as: 'sitterCerts',
-                        attributes: ['certId'],
-                        include: [{
-                            model: models.cert,
-                            attributes: ['name']
-                        }],
-                    }]
+                    include: [
+                        {
+                            model: models.sitterSkill,
+                            as: 'sitterSkills',
+                            attributes: ['skillId'],
+                            include: [
+                                {
+                                    model: models.skill,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                        {
+                            model: models.sitterCert,
+                            as: 'sitterCerts',
+                            attributes: ['certId'],
+                            include: [
+                                {
+                                    model: models.cert,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         });
+
         if (sitter) {
             await models.invitation
                 .findOne({
@@ -153,24 +167,30 @@ const read = async (req, res) => {
                 {
                     model: models.user,
                     as: 'user',
-                    include: [{
-                        model: models.sitterSkill,
-                        as: 'sitterSkills',
-                        attributes: ['skillId'],
-                        include: [{
-                            model: models.skill,
-                            attributes: ['name'],
-                        }],
-                        
-                    }, {
-                        model: models.sitterCert,
-                        as: 'sitterCerts',
-                        attributes: ['certId'],
-                        include: [{
-                            model: models.cert,
-                            attributes: ['name']
-                        }],
-                    }]
+                    include: [
+                        {
+                            model: models.sitterSkill,
+                            as: 'sitterSkills',
+                            attributes: ['skillId'],
+                            include: [
+                                {
+                                    model: models.skill,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                        {
+                            model: models.sitterCert,
+                            as: 'sitterCerts',
+                            attributes: ['certId'],
+                            include: [
+                                {
+                                    model: models.cert,
+                                    attributes: ['vname'],
+                                },
+                            ],
+                        },
+                    ],
                 },
             ],
         });
@@ -182,6 +202,27 @@ const read = async (req, res) => {
             res.send();
         }
     } catch (err) {
+        res.status(400);
+        res.send(err);
+    }
+};
+
+const search = async (req, res) => {
+    let name = req.body.name;
+    let skills = req.body.skills;
+    let certs = req.body.certs;
+    let baseAddress = req.body.baseAddress;
+    
+    try {
+        const sitters = await searchBabysitterAdvanced(name, skills, certs, baseAddress);
+
+        // response
+        res.send({
+            count: sitters.length,
+            sitters
+        });
+    } catch (err) {
+        console.log(err);
         res.status(400);
         res.send(err);
     }
@@ -284,6 +325,7 @@ export default {
     create,
     read,
     readByRequest,
+    search,
     update,
     destroy,
     listAllBabysitterWithSchedule,

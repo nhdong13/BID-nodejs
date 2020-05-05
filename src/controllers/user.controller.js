@@ -1,5 +1,5 @@
-import models from '@models';
-import { hashPassword } from '@utils/hash';
+import models from "@models";
+import { hashPassword } from "@utils/hash";
 
 const list = async (req, res) => {
     // const role = req.roleId;
@@ -8,13 +8,13 @@ const list = async (req, res) => {
         include: [
             {
                 model: models.parent,
-                as: 'parent',
+                as: "parent",
                 include: [
                     {
                         model: models.children,
-                        as: 'children',
-                    },
-                ],
+                        as: "children"
+                    }
+                ]
             },
             {
                 model: models.babysitter,
@@ -54,24 +54,46 @@ const read = async (req, res) => {
     try {
         const user = await models.user.findOne({
             where: {
-                id,
+                id
             },
             include: [
                 {
                     model: models.parent,
-                    as: 'parent',
+                    as: "parent",
                     include: [
                         {
                             model: models.children,
-                            as: 'children',
-                        },
-                    ],
+                            as: "children"
+                        }
+                    ]
                 },
                 {
                     model: models.babysitter,
-                    as: 'babysitter',
+                    as: "babysitter"
                 },
-            ],
+                {
+                    model: models.sitterSkill,
+                    as: "sitterSkills",
+                    attributes: ["skillId"],
+                    include: [
+                        {
+                            model: models.skill,
+                            attributes: ["vname"]
+                        }
+                    ]
+                },
+                {
+                    model: models.sitterCert,
+                    as: "sitterCerts",
+                    attributes: ["certId"],
+                    include: [
+                        {
+                            model: models.cert,
+                            attributes: ["vname"]
+                        }
+                    ]
+                }
+            ]
         });
         if (user) {
             res.status(201);
@@ -93,7 +115,7 @@ const update = async (req, res) => {
 
     try {
         await models.user.update(updatingUser, {
-            where: { id },
+            where: { id }
         });
         res.send(updatingUser);
     } catch (err) {
@@ -108,8 +130,8 @@ const destroy = async (req, res) => {
     try {
         await models.user.destroy({
             where: {
-                id,
-            },
+                id
+            }
         });
         res.status(204);
         res.send();
@@ -125,10 +147,11 @@ const createBsitter = async (req, res) => {
         // Hash password
         newItem.password = await hashPassword(newItem.password);
 
-        const newUser = await models.user.create(newItem).then((res) => {
+        const newUser = await models.user.create(newItem).then(res => {
             newItem.userId = res.id;
-            const newBabysitter = models.babysitter.create(newItem).then(res => {
-            });
+            const newBabysitter = models.babysitter
+                .create(newItem)
+                .then(res => {});
         });
         res.send(newItem);
     } catch (err) {
@@ -142,12 +165,12 @@ const createParent = async (req, res) => {
         // Hash password
         newItem.password = await hashPassword(newItem.password);
 
-        const newUser = await models.user.create(newItem).then((res) => {
+        const newUser = await models.user.create(newItem).then(res => {
             newItem.userId = res.id;
-            newItem.parentCode = 'A' + res.id.toString();
-            const newParent = models.parent.create(newItem).then((res)=>{
+            newItem.parentCode = "A" + res.id.toString();
+            const newParent = models.parent.create(newItem).then(res => {
                 let child = newItem.children;
-                child.map(async(element) => {
+                child.map(async element => {
                     element.parentId = await newItem.userId;
                     await models.children.create(element);
                 });
@@ -155,23 +178,18 @@ const createParent = async (req, res) => {
         });
         res.send(newItem);
     } catch (err) {
-        console.log(err)
+        console.log(err);
         res.status(400);
         res.send(err);
     }
 };
 
-const listWithSkill = async (req, res) => {
-    console.log('aaa')
-    const listUsers = await models.user.findAll({
-        // include: [
-        //     {
-        //         model: models.sitterSkill,
-        //         as: 'skills',
-        //     },
-        // ]
-    });
-    res.send(listUsers);
+export default {
+    list,
+    create,
+    read,
+    update,
+    destroy,
+    createBsitter,
+    createParent
 };
-
-export default { list, create, read, update, destroy, createBsitter, createParent, listWithSkill };

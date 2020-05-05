@@ -170,8 +170,12 @@ async function calCircle(parentId, listWithCircle) {
                     [seq.Op.or]: friendIds,
                 },
                 status: {
-                    [seq.Op.or]: ['DONE', 'DONE_BY_NEWSTART', 'DONE_UNCONFIRMED'],
-                }
+                    [seq.Op.or]: [
+                        'DONE',
+                        'DONE_BY_NEWSTART',
+                        'DONE_UNCONFIRMED',
+                    ],
+                },
             },
         });
 
@@ -191,7 +195,7 @@ async function calCircle(parentId, listWithCircle) {
             }
 
             return sitter;
-        })
+        });
 
         await Promise.all(promises);
 
@@ -208,7 +212,7 @@ async function calRating(listWithRating) {
 
     listWithRating.map(async (sitter) => {
         sitter.ratingW = await weightedRating(sitter);
-    })
+    });
 
     return listWithRating;
 }

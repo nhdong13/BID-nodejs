@@ -10,11 +10,18 @@ const login = async (req, res) => {
             where: {
                 phoneNumber,
             },
+            attributes: ['id', 'roleId', 'firstTime', 'secret', 'password'],
         });
 
         if (user) {
-            const { id: userId, roleId, firstTime, secret } = user;
-            const isValid = await comparePassword(password, user.password);
+            const {
+                id: userId,
+                roleId,
+                firstTime,
+                secret,
+                password: hashedPassword,
+            } = user;
+            const isValid = await comparePassword(password, hashedPassword);
             if (isValid) {
                 if (roleId == 2) {
                     const token = createJWT(userId, roleId);
@@ -53,11 +60,12 @@ const login = async (req, res) => {
                 res.send();
             }
         } else {
-            res.status(400);
+            res.status(402);
             res.send();
         }
     } catch (err) {
-        res.status(400);
+        console.log('Error in trycatch: ', err);
+        res.status(401);
         res.send(err);
     }
 };
@@ -110,6 +118,7 @@ const changePassword = async (req, res) => {
             where: {
                 phoneNumber,
             },
+            attributes: ['id', 'roleId', 'firstTime', 'secret', 'password'],
         });
 
         if (user) {
