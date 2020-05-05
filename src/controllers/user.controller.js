@@ -24,6 +24,10 @@ const list = async (req, res) => {
                 model: models.sitterSkill,
                 as: 'sitterSkills',
             },
+            {
+                model: models.sitterCert,
+                as: 'sitterCerts',
+            },
         ],
     });
     res.send(listUsers);

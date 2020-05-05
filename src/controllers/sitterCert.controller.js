@@ -3,8 +3,8 @@ import models from "@models";
 const create = async (req, res) => {
     let newItem = req.body;
     try {
-        const newSisterSkill = await models.sitterSkill.create(newItem);
-        res.send(newSisterSkill);
+        const newSisterCert = await models.sitterCert.create(newItem);
+        res.send(newSisterCert);
     } catch (err) {
         res.status(400);
         res.send(err);
@@ -15,10 +15,10 @@ const terminate = async (req, res) => {
   let newItem = req.body;
 
   try {
-      const isDes = await models.sitterSkill.destroy({
+      const isDes = await models.sitterCert.destroy({
         where: {
           sitterId: newItem.sitterId,
-          skillId: newItem.skillId
+          certId: newItem.certId
         }
       });
       res.status(204);
@@ -33,7 +33,7 @@ const destroy = async (req, res) => {
     const id = req.params.id;
 
     try {
-        await models.circle.destroy({
+        await models.sitterCert.destroy({
             where: {
                 id: id
             }
