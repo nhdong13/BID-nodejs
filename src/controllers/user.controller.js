@@ -20,6 +20,10 @@ const list = async (req, res) => {
                 model: models.babysitter,
                 as: 'babysitter',
             },
+            {
+                model: models.sitterSkill,
+                as: 'sitterSkills',
+            },
         ],
     });
     res.send(listUsers);
@@ -157,4 +161,17 @@ const createParent = async (req, res) => {
     }
 };
 
-export default { list, create, read, update, destroy, createBsitter, createParent };
+const listWithSkill = async (req, res) => {
+    console.log('aaa')
+    const listUsers = await models.user.findAll({
+        // include: [
+        //     {
+        //         model: models.sitterSkill,
+        //         as: 'skills',
+        //     },
+        // ]
+    });
+    res.send(listUsers);
+};
+
+export default { list, create, read, update, destroy, createBsitter, createParent, listWithSkill };

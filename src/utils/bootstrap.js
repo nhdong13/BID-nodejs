@@ -529,15 +529,11 @@ export async function insertDatabase() {
                         { sitterId: sitters[4].userId, skillId: 1 },
 
                         { sitterId: sitters[0].userId, skillId: 4 },
-                        { sitterId: sitters[1].userId, skillId: 2 },
                         { sitterId: sitters[2].userId, skillId: 3 },
                         { sitterId: sitters[3].userId, skillId: 4 },
                         { sitterId: sitters[4].userId, skillId: 8 },
 
-                        { sitterId: sitters[0].userId, skillId: 4 },
                         { sitterId: sitters[1].userId, skillId: 2 },
-                        { sitterId: sitters[2].userId, skillId: 3 },
-                        { sitterId: sitters[3].userId, skillId: 4 },
                         { sitterId: sitters[4].userId, skillId: 5 }
                     ];
 

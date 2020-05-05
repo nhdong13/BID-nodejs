@@ -17,6 +17,7 @@ import repeatedRoutes from "@routes/repeatedRequest.route";
 import childrenRoutes from "@routes/children.route";
 import skillRoutes from "@routes/skill.route";
 import certRoutes from "@routes/cert.route";
+import sitterSkill from "@routes/sitterSkill.route";
 import { jwtAuthentication } from "../middlewares/jwt.middleware";
 
 const router = express.Router();
@@ -41,5 +42,6 @@ router.use("/repeatedRequests", repeatedRoutes);
 router.use("/childrens", childrenRoutes);
 router.use("/skills", skillRoutes);
 router.use("/certs", certRoutes);
+router.use("/sitterSkill", sitterSkill);
 
 export default router;
