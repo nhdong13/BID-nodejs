@@ -1,4 +1,4 @@
-export default function(sequelize, DataTypes) {
+export default function (sequelize, DataTypes) {
     const user = sequelize.define(
         'user', // Model Name
         {
@@ -74,7 +74,7 @@ export default function(sequelize, DataTypes) {
         },
     );
 
-    user.associate = function(models) {
+    user.associate = function (models) {
         // user - parent
         user.hasOne(models.parent, {
             foreignKey: 'userId',
@@ -171,6 +171,26 @@ export default function(sequelize, DataTypes) {
             },
             sourceKey: 'id',
             as: 'sitterCerts',
+            onDelete: 'CASCADE',
+        });
+
+        // user - circle
+        user.hasMany(models.circle, {
+            foreignKey: {
+                name: 'ownerId',
+                allowNull: false,
+            },
+            as: 'ownedCircles',
+            onDelete: 'CASCADE',
+        });
+
+        //
+        user.hasMany(models.circle, {
+            foreignKey: {
+                name: 'friendId',
+                allowNull: false,
+            },
+            as: 'joinedCircles',
             onDelete: 'CASCADE',
         });
     };

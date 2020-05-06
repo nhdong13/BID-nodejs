@@ -32,24 +32,24 @@ export default function(sequelize, DataTypes) {
             as: "user"
         });
         // parent - circle
-        parent.hasMany(models.circle, {
-            foreignKey: {
-                name: "ownerId",
-                allowNull: false
-            },
-            as: "ownedCircles",
-            onDelete: "CASCADE"
-        });
+        // parent.hasMany(models.circle, {
+        //     foreignKey: {
+        //         name: "ownerId",
+        //         allowNull: false
+        //     },
+        //     as: "ownedCircles",
+        //     onDelete: "CASCADE"
+        // });
 
         // parent - circle
-        parent.hasMany(models.circle, {
-            foreignKey: {
-                name: "friendId",
-                allowNull: false
-            },
-            as: "joinedCircles",
-            onDelete: "CASCADE"
-        });
+        // parent.hasMany(models.circle, {
+        //     foreignKey: {
+        //         name: "friendId",
+        //         allowNull: false
+        //     },
+        //     as: "joinedCircles",
+        //     onDelete: "CASCADE"
+        // });
 
         // parent - children
         parent.hasMany(models.children, {
