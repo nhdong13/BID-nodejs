@@ -83,6 +83,14 @@ async function searchForBabysitter(name) {
                         model: models.sitterCert,
                         as: 'sitterCerts',
                     },
+                    {
+                        model: models.circle,
+                        as: 'ownedCircles',
+                    },
+                    {
+                        model: models.circle,
+                        as: 'joinedCircles',
+                    },
                 ],
             },
         ],
