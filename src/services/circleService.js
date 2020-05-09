@@ -20,14 +20,8 @@ async function getCircle(ownerId) {
         },
         include: [
             {
-                model: models.parent,
+                model: models.user,
                 as: 'friend',
-                include: [
-                    {
-                        model: models.user,
-                        as: 'user',
-                    },
-                ],
             },
         ],
     });

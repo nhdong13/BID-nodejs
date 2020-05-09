@@ -73,7 +73,7 @@ export async function recommendToParent(request, listMatched) {
     listWithTotal = listWithTotal.filter((sitter) => sitter.total > 10);
 
     // sort the list descending
-    listWithTotal = listWithTotal.sort(function(a, b) {
+    listWithTotal = listWithTotal.sort(function (a, b) {
         return a.total < b.total;
     });
 
@@ -139,17 +139,32 @@ async function calCircle(parentId, listWithCircle) {
 
         // find all parents in this parent's circle
         circles = await models.circle.findAll({
-            attributes: ['friendId'],
+            attributes: ['friendId', 'isParent'],
             where: {
                 ownerId: parentId,
             },
         });
 
         let friendIds = [];
+        let sitterInCircle = [];
+
+        console.log(circles);
 
         if (circles.length > 0) {
-            let friendIds = circles.map((id) => {
-                return id.friendId;
+            friendIds = circles.filter((element) => {
+                return element.isParent;
+            });
+
+            friendIds = friendIds.map((element) => {
+                return element.friendId;
+            });
+
+            sitterInCircle = circles.filter((element) => {
+                return !element.isParent;
+            });
+
+            sitterInCircle = sitterInCircle.map((element) => {
+                return element.friendId;
             });
         }
 
@@ -182,6 +197,9 @@ async function calCircle(parentId, listWithCircle) {
         let bsit = srq.map((sitter) => {
             return sitter.acceptedBabysitter;
         });
+
+        bsit = bsit.concat(sitterInCircle);
+        bsit = bsit.filter((item, pos) => bsit.indexOf(item) === pos)
 
         // calculate score for each matched babysitter of the requested parent
         // if the babysitter in matched list have been hired by this parent then increase his score
