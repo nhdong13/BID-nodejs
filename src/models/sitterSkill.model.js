@@ -5,12 +5,10 @@ export default function(sequelize, DataTypes) {
             sitterId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: 'compositeIndex',
             },
             skillId: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-                unique: 'compositeIndex',
             },
         },
         {
