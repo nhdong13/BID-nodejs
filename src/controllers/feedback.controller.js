@@ -35,6 +35,22 @@ const getById = async (req, res) => {
             where: {
                 requestId: id,
             },
+            include: [
+                {
+                    model: models.sittingRequest,
+                    as: 'sitting',
+                    include: [
+                        {
+                            model: models.user,
+                            as: 'user',
+                        },
+                        {
+                            model: models.user,
+                            as: 'bsitter',
+                        },
+                    ],
+                },
+            ],
         });
         res.send(list);
     } catch (err) {
