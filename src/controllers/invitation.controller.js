@@ -187,10 +187,32 @@ const create = async (req, res) => {
     const requestId = req.params.requestId;
     const invitation = req.body.invitation;
     const request = req.body.request;
+    const skills = req.body.request.requiredSkills;
+    const certs = req.body.request.requiredCerts;
+
+    console.log('SKILL -----------', skills);
+    console.log('CERT -----------', certs);
     try {
         let newRequest;
         if (requestId == undefined || requestId == null || requestId == 0) {
             newRequest = await models.sittingRequest.create(request);
+            console.log('new request ++++++++++++++ ', newRequest);
+            skills && skills.length > 0
+                ? skills.forEach(async (skill) => {
+                      await models.requestRequiredSkill.create({
+                          requestId: newRequest.id,
+                          skillId: skill.skillId,
+                      });
+                  })
+                : [];
+            certs && certs.length > 0
+                ? certs.forEach(async (cert) => {
+                      await models.requestRequiredCert.create({
+                          requestId: newRequest.id,
+                          certId: cert.certId,
+                      });
+                  })
+                : [];
             if (newRequest) {
                 Scheduler.createRequesExpiredPoint(newRequest);
                 invitation.requestId = newRequest.id;

@@ -17,6 +17,12 @@ export default function(sequelize, DataTypes) {
                 'UNDER_18_MONTHS',
                 'UNDER_6_YEARS',
             ),
+            basePriceSkill: {
+                type: DataTypes.FLOAT,
+            },
+            basePriceCert: {
+                type: DataTypes.FLOAT,
+            },
         },
         {
             timestamps: true,

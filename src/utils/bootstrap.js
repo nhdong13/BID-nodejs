@@ -71,6 +71,12 @@ export async function insertDatabase() {
             active: true,
             vname: 'Sư phạm',
         },
+        {
+            name: 'PRESCHOOL',
+            point: 1,
+            active: true,
+            vname: 'Mầm non',
+        },
     ]);
 
     // seed users
@@ -347,12 +353,12 @@ export async function insertDatabase() {
                         {
                             ownerId: result[0].userId, // parent[0]
                             friendId: result[1].userId, // is friend with parent[1]
-                            isParent: 1
+                            isParent: 1,
                         },
                         {
                             ownerId: result[0].userId, // parent[0]
                             friendId: 5, // is friend with parent[1]
-                            isParent: 0
+                            isParent: 0,
                         },
                     ]);
                     //#endregion
@@ -572,9 +578,26 @@ export async function insertDatabase() {
                     let sitterCerts = [
                         { sitterId: sitters[0].userId, certId: 1 },
                         { sitterId: sitters[0].userId, certId: 2 },
+                        { sitterId: sitters[0].userId, certId: 3 },
+                        { sitterId: sitters[0].userId, certId: 4 },
+                        { sitterId: sitters[0].userId, certId: 4 },
+                        { sitterId: sitters[0].userId, certId: 7 },
+                        { sitterId: sitters[0].userId, certId: 6 },
+
                         { sitterId: sitters[1].userId, certId: 1 },
+                        { sitterId: sitters[1].userId, certId: 2 },
+                        { sitterId: sitters[1].userId, certId: 3 },
+                        { sitterId: sitters[1].userId, certId: 4 },
+
                         { sitterId: sitters[2].userId, certId: 1 },
+                        { sitterId: sitters[2].userId, certId: 2 },
+                        { sitterId: sitters[2].userId, certId: 3 },
+                        { sitterId: sitters[2].userId, certId: 4 },
+
                         { sitterId: sitters[3].userId, certId: 1 },
+                        { sitterId: sitters[3].userId, certId: 2 },
+                        { sitterId: sitters[3].userId, certId: 3 },
+                        { sitterId: sitters[3].userId, certId: 4 },
                     ];
 
                     db.sitterCert.bulkCreate(sitterCerts);
@@ -1034,6 +1057,8 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'BASE',
+        basePriceSkill: '10000',
+        basePriceCert: '10000',
     };
     pricings.push(pricing);
 
@@ -1042,6 +1067,8 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'UNDER_6_YEARS',
+        basePriceSkill: '10000',
+        basePriceCert: '10000',
     };
     pricings.push(pricing);
 
@@ -1050,6 +1077,8 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'UNDER_18_MONTHS',
+        basePriceSkill: '10000',
+        basePriceCert: '10000',
     };
     pricings.push(pricing);
 
@@ -1058,6 +1087,8 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'UNDER_6_MONTHS',
+        basePriceSkill: '10000',
+        basePriceCert: '10000',
     };
     pricings.push(pricing);
 

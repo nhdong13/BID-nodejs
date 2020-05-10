@@ -405,6 +405,30 @@ const read = async (req, res) => {
                     model: models.user,
                     as: 'bsitter',
                 },
+                {
+                    model: models.requestRequiredSkill,
+                    as: 'requiredSkills',
+                    attributes: ['skillId'],
+                    include: [
+                        {
+                            model: models.skill,
+                            as: 'skill',
+                            attributes: ['vname'],
+                        },
+                    ],
+                },
+                {
+                    model: models.requestRequiredCert,
+                    as: 'requiredCerts',
+                    attributes: ['certId'],
+                    include: [
+                        {
+                            model: models.cert,
+                            as: 'cert',
+                            attributes: ['vname'],
+                        },
+                    ],
+                },
             ],
         });
 
