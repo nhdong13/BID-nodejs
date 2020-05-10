@@ -16,6 +16,8 @@ export default function(sequelize, DataTypes) {
                 'UNDER_6_MONTHS',
                 'UNDER_18_MONTHS',
                 'UNDER_6_YEARS',
+                'SKILL',
+                'CERT',
             ),
             basePriceSkill: {
                 type: DataTypes.FLOAT,

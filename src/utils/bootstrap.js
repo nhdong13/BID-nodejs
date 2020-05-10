@@ -1057,8 +1057,6 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'BASE',
-        basePriceSkill: '10000',
-        basePriceCert: '10000',
     };
     pricings.push(pricing);
 
@@ -1067,8 +1065,6 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'UNDER_6_YEARS',
-        basePriceSkill: '10000',
-        basePriceCert: '10000',
     };
     pricings.push(pricing);
 
@@ -1077,8 +1073,6 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'UNDER_18_MONTHS',
-        basePriceSkill: '10000',
-        basePriceCert: '10000',
     };
     pricings.push(pricing);
 
@@ -1087,9 +1081,26 @@ export async function insertDatabase() {
         overtime: 2,
         holiday: 3,
         type: 'UNDER_6_MONTHS',
-        basePriceSkill: '10000',
-        basePriceCert: '10000',
     };
+
+    pricings.push(pricing);
+
+    pricing = {
+        baseAmount: '10000', // 200,000 VND
+        overtime: 2,
+        holiday: 3,
+        type: 'SKILL',
+    };
+
+    pricings.push(pricing);
+
+    pricing = {
+        baseAmount: '10000', // 200,000 VND
+        overtime: 2,
+        holiday: 3,
+        type: 'CERT',
+    };
+
     pricings.push(pricing);
 
     db.pricing.bulkCreate(pricings);
