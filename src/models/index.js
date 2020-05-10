@@ -1,8 +1,8 @@
-import fs from "fs";
-import path from "path";
-import Sequelize from "sequelize";
+import fs from 'fs';
+import path from 'path';
+import Sequelize from 'sequelize';
 
-import env, { checkEnvLoaded } from "@utils/env";
+import env, { checkEnvLoaded } from '@utils/env';
 
 checkEnvLoaded();
 const { dbHost, dbUser, dbPass, dbName, dbDialect } = env;
@@ -14,7 +14,8 @@ const sequelize = new Sequelize(dbName, dbUser, dbPass, {
         paranoid: false,
         underscored: false,
         timestamps: false,
-        freezeTableName: false
+        freezeTableName: false,
+        charset: 'utf8mb4',
     },
     logging: false,
 });
@@ -23,12 +24,12 @@ const basename = path.basename(module.filename);
 const db = {};
 
 fs.readdirSync(__dirname)
-    .filter(file => {
-        return file.indexOf(".") !== 0 && file !== basename;
+    .filter((file) => {
+        return file.indexOf('.') !== 0 && file !== basename;
     })
-    .forEach(file => {
-        if (file.slice(-3) !== ".js") return;
-        const model = sequelize["import"](path.join(__dirname, file));
+    .forEach((file) => {
+        if (file.slice(-3) !== '.js') return;
+        const model = sequelize['import'](path.join(__dirname, file));
         db[model.name] = model;
     });
 
