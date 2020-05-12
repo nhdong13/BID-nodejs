@@ -23,10 +23,20 @@ const list = async (req, res) => {
             {
                 model: models.sitterSkill,
                 as: 'sitterSkills',
+                include: [
+                    {
+                        model: models.skill,
+                    },
+                ],
             },
             {
                 model: models.sitterCert,
                 as: 'sitterCerts',
+                include: [
+                    {
+                        model: models.cert,
+                    },
+                ],
             },
         ],
     });
