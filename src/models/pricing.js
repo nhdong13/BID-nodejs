@@ -19,12 +19,6 @@ export default function(sequelize, DataTypes) {
                 'SKILL',
                 'CERT',
             ),
-            basePriceSkill: {
-                type: DataTypes.FLOAT,
-            },
-            basePriceCert: {
-                type: DataTypes.FLOAT,
-            },
         },
         {
             timestamps: true,

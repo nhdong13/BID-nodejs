@@ -30,6 +30,18 @@ export default function(sequelize, DataTypes) {
                 type: DataTypes.DATE,
                 allowNull: true,
             },
+            childrenDescription: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            skills: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
+            certs: {
+                type: DataTypes.TEXT,
+                allowNull: true,
+            },
         },
         {
             timestamps: true,

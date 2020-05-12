@@ -190,13 +190,10 @@ const create = async (req, res) => {
     const skills = req.body.request.requiredSkills;
     const certs = req.body.request.requiredCerts;
 
-    console.log('SKILL -----------', skills);
-    console.log('CERT -----------', certs);
     try {
         let newRequest;
         if (requestId == undefined || requestId == null || requestId == 0) {
             newRequest = await models.sittingRequest.create(request);
-            console.log('new request ++++++++++++++ ', newRequest);
             skills && skills.length > 0
                 ? skills.forEach(async (skill) => {
                       await models.requestRequiredSkill.create({

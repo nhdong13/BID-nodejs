@@ -447,8 +447,10 @@ async function privateCreateRepeatedRequest(foundRequest, request) {
         const nextDates = recurrence.next(rules.length * 4, 'YYYY-MM-DD');
 
         // sau khi co nhung ngay lap lai roi chi can tao requeset voi tung ngay thoi la xong
+        //
         const promises = nextDates.map(async (date) => {
             const newDate = date;
+            // Chinh lai 1 ti cho xin xo, sau khi da co cac ngay lap lai, gui lan luot cac lenh lap lai vao message queue, voi thoi gian delay tuong ung.
             const newRequest = await models.sittingRequest.create({
                 createdUser: request.createdUser,
                 acceptedBabysitter: request.acceptedBabysitter,
@@ -460,7 +462,31 @@ async function privateCreateRepeatedRequest(foundRequest, request) {
                 minAgeOfChildren: request.minAgeOfChildren,
                 status: 'CONFIRMED',
                 totalPrice: request.totalPrice,
+                childrenDescription: foundRequest.childrenDescription,
             });
+
+            const skills = JSON.parse(foundRequest.skills);
+            const certs = JSON.parse(foundRequest.certs);
+
+            console.log('SKILLSSS _______________ ', skills);
+            console.log('CERTS _______________ ', skills);
+
+            skills && skills.length > 0
+                ? skills.forEach((skill) => {
+                      models.requestRequiredSkill.create({
+                          requestId: newRequest.id,
+                          skillId: skill.id,
+                      });
+                  })
+                : [];
+            certs && certs.length > 0
+                ? certs.forEach((cert) => {
+                      models.requestRequiredCert.create({
+                          requestId: newRequest.id,
+                          certId: cert.id,
+                      });
+                  })
+                : [];
 
             await createSchedule(
                 newRequest,
