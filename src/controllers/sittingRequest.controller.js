@@ -92,6 +92,11 @@ const listByParentId = async (req, res, next) => {
             where: {
                 createdUser: parentId,
             },
+            include: [
+                {
+                    model: models.feedback,
+                },
+            ]
         });
         // sendNotificationWithSocket(notification);
         res.send(listSittings);
@@ -131,7 +136,6 @@ const listByParentAndStatus = async (req, res, next) => {
 
 const listSittingByBabysitterId = async (req, res, next) => {
     const bsId = req.body.bsId;
-
     try {
         const listSittings = await models.sittingRequest.findAll({
             where: {
