@@ -302,6 +302,10 @@ export async function insertDatabase() {
         .then((result) => {
             db.tracking.bulkCreate([
                 {
+                    userId: 1,
+                    token: 'ExponentPushToke[3GB2hTGpcFzIRHCKEJJqwm]',
+                },
+                {
                     userId: 2,
                     token: 'ExponentPushToken[3GB2hTGpcFzIRHCKEJJqwm]',
                     customerId: 'cus_GJZaRe3DrvsY6m',
@@ -616,9 +620,9 @@ export async function insertDatabase() {
                         totalPrice: 150000,
                         distance: '0.4 km',
                         sittingDate: moment().set({
-                            year: 2019,
-                            month: 11,
-                            date: 1,
+                            year: 2020,
+                            month: 5,
+                            date: 16,
                         }),
                         startTime: moment()
                             .set({
@@ -636,7 +640,7 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '589 Quang Trung, Phường 8, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'DONE',
+                        status: 'CONFIRMED',
                     },
                     {
                         createdUser: 1,
@@ -706,9 +710,9 @@ export async function insertDatabase() {
                         totalPrice: 100000,
                         distance: '50 m',
                         sittingDate: moment().set({
-                            year: 2019,
-                            month: 10,
-                            date: 11,
+                            year: 2020,
+                            month: 4,
+                            date: 16,
                         }),
                         startTime: moment()
                             .set({
@@ -726,7 +730,7 @@ export async function insertDatabase() {
                             .format('HH:mm:ss'),
                         sittingAddress:
                             '214 Lê Đức Thọ, Phường 17, Gò Vấp, Hồ Chí Minh, Vietnam',
-                        status: 'DONE',
+                        status: 'CONFIRMED',
                     },
                     {
                         createdUser: 3,
@@ -766,9 +770,9 @@ export async function insertDatabase() {
                         totalPrice: 100000,
                         distance: '0.3',
                         sittingDate: moment().set({
-                            year: 2019,
-                            month: 11,
-                            date: 26,
+                            year: 2020,
+                            month: 4,
+                            date: 16,
                         }),
                         startTime: moment()
                             .set({
