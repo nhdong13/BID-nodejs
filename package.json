@@ -19,7 +19,7 @@
         "expo-server-sdk": "^3.3.0",
         "express": "^4.16.4",
         "google-distance-matrix": "^1.1.1",
-        "jsonwebtoken": "^8.5.1",
+        "jsonwebtoken": "^9.0.0",
         "moment": "^2.24.0",
         "moment-recur": "^1.0.7",
         "morgan": "^1.9.1",
